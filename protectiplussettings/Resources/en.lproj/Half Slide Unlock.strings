@@ -1,0 +1,4 @@
+"HALF_SLIDE_UNLOCK_FOOTER" = "This is a special way to enable/disable Protecti+.
+It depends on your unlock action - swipe action distance on screen.";
+"HALF_SLIDE_UNLOCK_NOTICE" = "NOTICE:
+Always unlock with Protecti+ enabled if set Minimum Slide Distance MORE THAN Maximum Slide Distance. Make sure you know how to disable Protecti+ before do this.";

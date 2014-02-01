@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>ADVANCE_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>AUTO_ENABLE_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>autoEnable</string>
+			<key>label</key>
+			<string>Auto Enable</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Bypass Passcode</string>
+			<key>detail</key>
+			<string>ProtectiPlusSettingsListControllerForBypassPasscode</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Hide App Icons</string>
+			<key>detail</key>
+			<string>ProtectiPlusSettingsListControllerForHideAppIcons</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Half Slide Unlock</string>
+			<key>detail</key>
+			<string>ProtectiPlusSettingsListControllerForHalfSlideUnlock</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Photos Access</string>
+			<key>detail</key>
+			<string>ProtectiPlusSettingsListControllerForPhotosAccess</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>NO_LOAD_PROTECTIPLUS_SETTINGS_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>noLoadSettingsWhenEnable</string>
+			<key>label</key>
+			<string>No Load Protecti+ Settings</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Advance</string>
+</dict>
+</plist>

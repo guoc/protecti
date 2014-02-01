@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>VIBRATE_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>enableVibrate</string>
+			<key>label</key>
+			<string>Vibrate</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>STATUS_BAR_ICON_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>icon</key>
+			<string>Black_Plus@2x.png</string>
+			<key>key</key>
+			<string>enableStatusBarIcon</string>
+			<key>label</key>
+			<string>Status Bar Icon</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Vibrate &amp; Icon</string>
+</dict>
+</plist>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>HALF_SLIDE_UNLOCK_FOOTER</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>enableHalfSlideUnlock</string>
+			<key>label</key>
+			<string>Enable</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Minimum Half Slide Distance</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>default</key>
+			<real>0.2</real>
+			<key>min</key>
+			<string>0.1</string>
+			<key>max</key>
+			<string>0.9</string>
+			<key>showValue</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>halfSlideUnlock_MinDistance</string>
+			<key>label</key>
+			<string>Minimum Half Slide Distance</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Maximum Half Slide Distance</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>default</key>
+			<real>0.33</real>
+			<key>min</key>
+			<string>0.15</string>
+			<key>max</key>
+			<string>0.95</string>
+			<key>showValue</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>halfSlideUnlock_MaxDistance</string>
+			<key>label</key>
+			<string>Maximum Half Slide Distance</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>HALF_SLIDE_UNLOCK_NOTICE</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Half Slide Unlock</string>
+</dict>
+</plist>

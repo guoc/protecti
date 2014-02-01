@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Missing notifications in protected mode will be indicated by highlighting corresponding App icons on Home Screen.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>enableIndicateMissingNotification</string>
+			<key>label</key>
+			<string>Indicate Missing Notifications</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>label</key>
+			<string>Indicator Style</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>default</key>
+			<string>1</string>
+			<key>key</key>
+			<string>missingNotificationIndicatorStyle</string>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>validValues</key>
+			<array>
+				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+			</array>
+			<key>validTitles</key>
+			<array>
+				<string>Tapped</string>
+				<string>Shadow</string>
+				<string>Glow</string>
+			</array>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Notifications</string>
+</dict>
+</plist>

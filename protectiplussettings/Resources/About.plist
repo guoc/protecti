@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Jigsoar icons - handcrafted by Benjamin Humphrey for Jigsoar</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTitleValueCell</string>
+			<key>get</key>
+			<string>versionForSpecifier:</string>
+			<key>label</key>
+			<string>Version</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>QUESTIONS_AND_ANSWERS_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSListItemCell</string>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus.state</string>
+			<key>action</key>
+			<string>openQuestionsAndAnswers</string>
+			<key>label</key>
+			<string>Q &amp; A</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>CONTACT_AUTHOR_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSListItemCell</string>
+			<key>action</key>
+			<string>contactWithAuthor</string>
+			<key>label</key>
+			<string>Email Author</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>About</string>
+</dict>
+</plist>

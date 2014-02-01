@@ -1,0 +1,10 @@
+{
+	entry = {
+		bundle = ProtectiPlusSettings;
+		cell = PSLinkCell;
+		icon = "ProtectiPlusSettings.png";
+		detail = "ProtectiPlusSettingsListController";
+		isController = 1;
+		label = "Protecti+";
+	};
+}

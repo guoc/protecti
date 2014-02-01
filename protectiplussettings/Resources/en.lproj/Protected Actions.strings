@@ -1,0 +1,12 @@
+"PROTECTED_ACTIONS_FOOTERTEXT" = "When Protecti+ is enabled, these actions will be invalid:
+
+- Launch Protected Apps From Icons (in home screen or Control Center) and URL.
+- Edit App Icons (Move or Delete)
+- Swipe Down to Show Notification Center
+- Swipe Down to Show Search iPhone
+- Hold Down Menu Button to Call Siri
+
+App Switcher is valid, but only show Home Screen and Current Application.
+
+Lock Screen Camera is also valid, but only photos taken after enable Protecti+ can be accessed.";
+"ACCESS_CONTROL_CENTER_FOOTERTEXT" = "Allow access to Control Center in protected mode.";

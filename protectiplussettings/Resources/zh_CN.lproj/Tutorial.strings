@@ -1,0 +1,9 @@
+"STEP_ONE" = "第一步：选择需要保护的应用";
+"Choose Protected Apps" = "选择要保护的应用";
+"STEP_TWO" = "第二步：选择一个手势用来开启或者关闭Protecti+。";
+"Choose Gesture" = "选择手势";
+"STEP_THREE" = "第三步：在做手势之前，请记住，关闭Protecti+也用这个手势。
+注意：如果当前应用是被保护的应用，通过手势启用Protecti+之后将无法返回这里。不要担心，使用相同的手势关闭Protecti+即可。";
+"STEP_NOW" = "现在，使用刚刚设置的手势，看看设备和之前有什么不同。";
+"STEP_MORE" = "更多功能，设置 -> Protecti+。";
+"Tutorial" = "快速设置";

@@ -1,0 +1,10 @@
+Package: com.gviridis.protectiplus
+Name: Protecti+
+Depends: firmware (>= 7.0), mobilesubstrate, preferenceloader, applist, libactivator, com.chpwn.iconsupport
+Version: 1.0
+Architecture: iphoneos-arm
+Description: Protect privacy in an elegant way.
+Depiction: http://gviridis.com/protectiplus/info.html
+Maintainer: gviridis
+Author: gviridis
+Section: Tweaks

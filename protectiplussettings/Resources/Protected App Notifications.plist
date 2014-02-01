@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>CUSTOMIZE_NOTIFICATION_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>noNotificationsForProtectedApps</string>
+			<key>label</key>
+			<string>No Notifications</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>noNotificationTitleForProtectedApps</string>
+			<key>label</key>
+			<string>No Notification Title</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>noNotificationMessageForProtectedApps</string>
+			<key>label</key>
+			<string>No Notification Message</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>noNotificationSoundForProtectedApps</string>
+			<key>label</key>
+			<string>No Notification Sound</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>BACKLIGH_FOOTERTEXT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.gviridis.protectiplus</string>
+			<key>PostNotification</key>
+			<string>com.gviridis.protectiplus/UpdatePreferences</string>
+			<key>key</key>
+			<string>enableTurnOnBacklighWhenReceiveNewNotifications</string>
+			<key>label</key>
+			<string>Backligh for New Notifications</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Protected App Notifications</string>
+</dict>
+</plist>
