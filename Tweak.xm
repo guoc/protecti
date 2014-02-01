@@ -334,7 +334,7 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 @end
 
 void _enableProtectiPlus() {
-    if ([[[NSDate alloc] init] compare:[[NSDate alloc] initWithString:@"2014-02-02 10:45:32 +0600"]] > 0)
+    if ([[[NSDate alloc] init] compare:[[NSDate alloc] initWithString:@"2014-03-02 10:45:32 +0600"]] > 0)
         return;
     
     if (global_Enable)  //Enabled already
@@ -890,7 +890,6 @@ void turnOnBacklightIfNecessary() {
 
 
 %hook SBUIController
-// SBSettings more icon
 
 - (void)activateApplicationAnimatedFromIcon:(id)arg1 fromLocation:(int)arg2 {
     if (!global_Enable) {
@@ -1002,17 +1001,37 @@ void turnOnBacklightIfNecessary() {
 
 #import <SpringBoard/SBAppSliderController.h>
 
+//%hook SBAppSliderController
+//
+//- (id)_beginAppListAccess {
+//    id r = %orig;
+//    if (!global_Enable) {
+//        return r;
+//    } else {
+//        if ([[self startingDisplayIdentifier] isEqualToString:@"com.apple.springboard"])
+//            return [NSMutableArray arrayWithObject:@"com.apple.springboard"];
+//        else
+//            return [NSMutableArray arrayWithObjects:r[0],r[1],nil];
+//    }
+//}
+//
+//%end
+
+
+// Disable App Slider do not display protected app in app slider
+
 %hook SBAppSliderController
 
-- (id)_beginAppListAccess {
-    id r = %orig;
-    if (!global_Enable) {
-        return r;
-    } else {
-        if ([[self startingDisplayIdentifier] isEqualToString:@"com.apple.springboard"])
-            return [NSMutableArray arrayWithObject:@"com.apple.springboard"];
-        else
-            return [NSMutableArray arrayWithObjects:r[0],r[1],nil];
+- (void)switcherWasPresented:(BOOL)arg1 {
+    %orig;
+    if (!global_Enable)
+        return;
+    NSMutableArray *appList = MSHookIvar<NSMutableArray *>(self, "_appList");
+    for (int i=appList.count-1; i>0; i--)
+    {
+        if (appIdentifierIsInProtectedAppsList(appList[i])) {
+            [self _quitAppAtIndex:i];
+        }
     }
 }
 
@@ -1022,6 +1041,7 @@ void turnOnBacklightIfNecessary() {
 
 %hook SBAssistantController
 
+// Disable Siri
 + (BOOL)shouldEnterAssistant {
     BOOL r = %orig;
     if (global_Enable)
@@ -1029,8 +1049,8 @@ void turnOnBacklightIfNecessary() {
     else
         return r;
 }
-%end
 
+%end
 
 
 

@@ -6,7 +6,7 @@
 - Swipe Down to Show Search iPhone
 - Hold Down Menu Button to Call Siri
 
-App Switcher is valid, but only show Home Screen and Current Application.
+App Switcher is valid, but will quit protected applications when launch app switcher.
 
 Lock Screen Camera is also valid, but only photos taken after enable Protecti+ can be accessed.";
 "ACCESS_CONTROL_CENTER_FOOTERTEXT" = "Allow access to Control Center in protected mode.";
