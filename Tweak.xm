@@ -890,7 +890,6 @@ void turnOnBacklightIfNecessary() {
 
 
 %hook SBUIController
-// SBSettings more icon
 
 - (void)activateApplicationAnimatedFromIcon:(id)arg1 fromLocation:(int)arg2 {
     if (!global_Enable) {
@@ -1019,9 +1018,29 @@ void turnOnBacklightIfNecessary() {
 %end
 
 
+// Disable App Slider do not display protected app in app slider
+
+%hook SBAppSliderController
+
+- (void)switcherWasPresented:(BOOL)arg1 {
+    %orig;
+    if (!global_Enable)
+        return;
+    NSMutableArray *appList = MSHookIvar<NSMutableArray *>(self, "_appList");
+    for (int i=appList.count-1; i>0; i--)
+    {
+        if (appIdentifierIsInProtectedAppsList(appList[i]))
+            [self _quitAppAtIndex:i];
+    }
+}
+
+%end
+
+
 
 %hook SBAssistantController
 
+// Disable Siri
 + (BOOL)shouldEnterAssistant {
     BOOL r = %orig;
     if (global_Enable)
@@ -1029,8 +1048,8 @@ void turnOnBacklightIfNecessary() {
     else
         return r;
 }
-%end
 
+%end
 
 
 
