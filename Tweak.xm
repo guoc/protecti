@@ -1038,6 +1038,25 @@ void turnOnBacklightIfNecessary() {
 %end
 
 
+// Disable App Slider do not display protected app in app slider
+
+%hook SBAppSliderController
+
+- (void)switcherWasPresented:(BOOL)arg1 {
+    %orig;
+    if (!global_Enable)
+        return;
+    NSMutableArray *appList = MSHookIvar<NSMutableArray *>(self, "_appList");
+    for (int i=appList.count-1; i>0; i--)
+    {
+        if (appIdentifierIsInProtectedAppsList(appList[i]))
+            [self _quitAppAtIndex:i];
+    }
+}
+
+%end
+
+
 
 %hook SBAssistantController
 
