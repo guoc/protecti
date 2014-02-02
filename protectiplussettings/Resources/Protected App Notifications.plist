@@ -74,7 +74,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>BACKLIGH_FOOTERTEXT</string>
+			<string>BACKLIGHT_FOOTERTEXT</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -88,7 +88,7 @@
 			<key>key</key>
 			<string>enableTurnOnBacklighWhenReceiveNewNotifications</string>
 			<key>label</key>
-			<string>Backligh for New Notifications</string>
+			<string>Backlight for New Notifications</string>
 		</dict>
 	</array>
 	<key>title</key>
