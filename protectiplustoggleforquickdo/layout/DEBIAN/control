@@ -1,5 +1,9 @@
 Package: com.gviridis.protectiplustoggleforquickdo
+<<<<<<< HEAD
 Name: Protecti+ Toggle For QuickDo
+=======
+Name: protectiplustoggleforquickdo
+>>>>>>> 4d6af26ca5feb4e1d437e6323abf6772651f7f5c
 Depends: com.clezz.quickdo (>= 3.8)
 Version: 1.0.0
 Architecture: iphoneos-arm
