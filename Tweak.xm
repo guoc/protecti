@@ -916,6 +916,26 @@ void turnOnBacklightIfNecessary() {
 %end
 
 
+
+%hook SpringBoard
+
+// Disable launch from InstaLauncher
+- (_Bool)launchApplicationWithIdentifier:(id)arg1 suspended:(_Bool)arg2 {
+    if (!global_Enable) {
+        return %orig;
+    } else {
+        if (appIdentifierIsInProtectedAppsList([self bundleIdentifier])) {
+            return NO;
+        } else {
+            return %orig;
+        }
+    }
+}
+
+%end
+
+
+
 %hook SpringBoard
 
 - (void)_openURLCore:(id)arg1 display:(id)arg2 animating:(BOOL)arg3 sender:(id)arg4 additionalActivationFlags:(id)arg5 activationHandler:(id)arg6 {
