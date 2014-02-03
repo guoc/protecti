@@ -438,7 +438,7 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
         global_Enable = [getStateObjectForKey(@"enable") boolValue];
         global_IconState = getStateObjectForKey(@"iconState");
         global_EnableTime = getStateObjectForKey(@"enableTime");
-        global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
+//        global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
     }
     
     if (!global_AllApplicationIcons)
@@ -874,8 +874,8 @@ void turnOnBacklightIfNecessary() {
 - (BOOL)icon:(id)arg1 launchFromLocation:(int)arg2 {
     if (!global_Enable) {
         BOOL r = %orig;
-        [global_PendingNotifications removeObject:[arg1 applicationBundleID]];
-        saveStateObjectForKey(global_PendingNotifications, @"pendingNotifications");
+//        [global_PendingNotifications removeObject:[arg1 applicationBundleID]];
+//        saveStateObjectForKey(global_PendingNotifications, @"pendingNotifications");
         return r;
     } else {
         if (appIdentifierIsInProtectedAppsList([self bundleIdentifier])) {
