@@ -13,6 +13,7 @@ after-install::
 	install.exec "killall -9 SpringBoard"
 SUBPROJECTS += protectiplussettings
 SUBPROJECTS += protectiplustoggleforactivator
+SUBPROJECTS += protectiplustoggleforquickdo
 SUBPROJECTS += protectiplusflipswitch
 SUBPROJECTS += protectidap
 include $(THEOS_MAKE_PATH)/aggregate.mk
