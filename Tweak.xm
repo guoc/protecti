@@ -475,6 +475,10 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
     
     if (!global_AllApplicationIcons)
         global_AllApplicationIcons = [[NSMutableArray alloc] init];
+        
+    if (AutoEnable_IsEnabled) {
+        _enableProtectiPlus();
+    }
 }
 
 
