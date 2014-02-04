@@ -2,11 +2,11 @@
 
 - Launch Protected Apps From Icons (in home screen or Control Center) and URL.
 - Edit App Icons (Move or Delete)
-- Swipe Down to Show Notification Center
 - Swipe Down to Show Search iPhone
 - Hold Down Menu Button to Call Siri
 
 App Switcher is valid, but will quit protected applications when launch app switcher.
 
 Lock Screen Camera is also valid, but only photos taken after enable Protecti+ can be accessed.";
-"ACCESS_CONTROL_CENTER_FOOTERTEXT" = "Allow access to Control Center in protected mode.";
+"ACCESS_NOTIFICATION_CENTER_FOOTERTEXT" = "Allow access Notification Center when Protecti+ is enabled.";
+"ACCESS_CONTROL_CENTER_FOOTERTEXT" = "Allow access Control Center when Protecti+ is enabled.";

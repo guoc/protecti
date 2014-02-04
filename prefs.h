@@ -22,6 +22,8 @@ typedef enum MissingNotificationIndicatorStyle : NSUInteger {
 ([global_Preferences objectForKey:@"enableTurnOnBacklighWhenReceiveNewNotifications"] ? [[global_Preferences objectForKey:@"enableTurnOnBacklighWhenReceiveNewNotifications"] boolValue] : NO)
 #define VibrateNotifications_IsEnabled \
 ([global_Preferences objectForKey:@"enableVibrateNotifications"] ? [[global_Preferences objectForKey:@"enableVibrateNotifications"] boolValue] : NO)
+#define AllowAccessNotificationCenter_IsEnabled \
+([global_Preferences objectForKey:@"allowAccessNotificationCenter"] ? [[global_Preferences objectForKey:@"allowAccessNotificationCenter"] boolValue] : NO)
 #define AllowAccessControlCenter_IsEnabled \
 ([global_Preferences objectForKey:@"allowAccessControlCenter"] ? [[global_Preferences objectForKey:@"allowAccessControlCenter"] boolValue] : NO)
 #define HideAppIcons_IsEnabled \

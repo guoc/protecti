@@ -2,13 +2,14 @@
 
 - 通过点击图标或链接运行被保护的应用
 - 移动或者删除主屏幕图标
-- 下滑打开通知中心
 - 下滑打开搜索栏
 - 长按主屏幕按钮打开Siri
 
 多任务栏仍然可以打开，但是打开时会关闭被保护的程序。
 
 锁屏相机仍然可以打开，但是只能访问开启Protecti+之后的照片。";
+"ACCESS_NOTIFICATION_CENTER_FOOTERTEXT" = "允许在开启Protecti+的情况下打开通知中心。";
+"Access Notification Center" = "允许打开通知中心";
 "ACCESS_CONTROL_CENTER_FOOTERTEXT" = "允许在开启Protecti+的情况下打开控制中心。";
 "Access Control Center" = "允许打开控制中心";
 "Protected Actions" = "受保护的操作";

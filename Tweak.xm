@@ -28,6 +28,11 @@
 #import <SpringBoard/SBLockScreenViewController.h>
 #import <SpringBoard/PLApplicationCameraViewController.h>
 #import <SpringBoard/SBLockScreenCameraController.h>
+#import <SpringBoard/SBNotificationCenterController.h>
+#import <SpringBoard/SBNotificationCenterViewController.h>
+#import <SpringBoard/SBNotificationsAllModeViewController.h>
+#import <SpringBoard/SBNotificationsMissedModeViewController.h>
+#import <SpringBoard/SBBulletinViewController.h>
 
 #import <ManagedConfiguration/MCPasscodeManager.h>
 #import <SpringBoard/SBDeviceLockController.h>
@@ -86,7 +91,7 @@ static NSMutableArray *global_PendingNotifications;
 
 
 void refreshNotificationCenter() {
-    SBNotificationCenterViewController *viewController = [[SBNotificationCenterController sharedInstance] viewController];
+    SBNotificationCenterViewController *viewController = [[%c(SBNotificationCenterController) sharedInstance] viewController];
     SBNotificationsAllModeViewController *allModeViewController = MSHookIvar<SBNotificationsAllModeViewController *>(viewController, "_allModeViewController");
     if (allModeViewController) {
         SBBulletinViewController *allModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(allModeViewController, "_bulletinViewController");
@@ -363,6 +368,10 @@ void _enableProtectiPlus() {
     
     vibrateIfNecessary();
     
+    if (AllowAccessNotificationCenter_IsEnabled) {
+        refreshNotificationCenter();
+    }
+    
     if (HideAppIcons_IsEnabled) {
         SBIconModel *iconModel = [(SBIconController *)[%c(SBIconController) sharedInstance] model];
         global_IconState = [[iconModel iconState] retain];
@@ -408,6 +417,10 @@ void _disableProtectiPlus() {
     removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
 
     vibrateIfNecessary();
+    
+    if (AllowAccessNotificationCenter_IsEnabled) {
+        refreshNotificationCenter();
+    }
 
     global_Enable = NO;
     
@@ -870,10 +883,13 @@ void turnOnBacklightIfNecessary() {
 // Disable notification center pull down
 - (void)_showNotificationsGestureBeganWithLocation:(struct CGPoint)arg1 {
     if (global_Enable) {
-        return %orig;
-        return;
+        if (AllowAccessNotificationCenter_IsEnabled) {
+            return %orig;
+        } else {
+            return;
+        }
     } else {
-        %orig;
+        return %orig;
     }
 }
 
