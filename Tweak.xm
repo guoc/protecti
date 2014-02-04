@@ -57,6 +57,7 @@ static void vibrateIfNecessary();
 
 //
 
+void refreshNotificationCenter();
 void exitForegroundApplicationIfNecessary();
 void killApplicationUnderLockScreenIfNecessary();
 static void iconsVisibilityChanged();
@@ -83,6 +84,24 @@ static NSDictionary *global_IconState;
 static NSDate *global_EnableTime;
 static NSMutableArray *global_PendingNotifications;
 
+
+void refreshNotificationCenter() {
+    SBNotificationCenterViewController *viewController = [[SBNotificationCenterController sharedInstance] viewController];
+    SBNotificationsAllModeViewController *allModeViewController = MSHookIvar<SBNotificationsAllModeViewController *>(viewController, "_allModeViewController");
+    if (allModeViewController) {
+        SBBulletinViewController *allModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(allModeViewController, "_bulletinViewController");
+        if (allModeBulletinViewController) {
+            [allModeBulletinViewController setTableViewNeedsReload];
+        }
+    }
+    SBNotificationsMissedModeViewController *missedModeViewController = MSHookIvar<SBNotificationsMissedModeViewController *>(viewController, "_missedModeViewController");
+    if (missedModeViewController) {
+        SBBulletinViewController *missedModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(missedModeViewController, "_bulletinViewController");
+        if (missedModeBulletinViewController) {
+            [missedModeBulletinViewController setTableViewNeedsReload];
+        }
+    }
+}
 
 void killApplicationByAppID(NSString *appID) {
     SBApplication *foregroundApp = [[%c(SBApplicationController) sharedInstance] applicationWithDisplayIdentifier:appID];
@@ -845,11 +864,13 @@ void turnOnBacklightIfNecessary() {
 %end
 
 
+
 %hook SBUIController
 
 // Disable notification center pull down
 - (void)_showNotificationsGestureBeganWithLocation:(struct CGPoint)arg1 {
     if (global_Enable) {
+        return %orig;
         return;
     } else {
         %orig;
