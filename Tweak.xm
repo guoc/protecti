@@ -1090,7 +1090,7 @@ void turnOnBacklightIfNecessary() {
     NSMutableArray *appList = MSHookIvar<NSMutableArray *>(self, "_appList");
     for (int i=appList.count-1; i>0; i--)
     {
-        if (appIdentifierIsInProtectedAppsList(appList[i])) {
+        if (appIdentifierIsInProtectedAppsList(appList[i]) || appIdentifierIsInHiddenAppsList(appList[i])) {
             [self _quitAppAtIndex:i];
         }
     }
