@@ -3,3 +3,6 @@
 "WELCOME_DISMISS" = "稍后";
 "WELCOME_SETTINGS" = "快速设置";
 "http://gviridis.com/protectiplus/questions_and_answers.html.en" = "http://gviridis.com/protectiplus/questions_and_answers.html.cn";
+"PASSWORD_ALERT_TITLE" = "Protecti+";
+"PASSWORD_ALERT_MESSAGE" = "请输入密码";
+"PASSWORD_ALERT_DISMISS" = "取消";

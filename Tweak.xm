@@ -68,6 +68,7 @@ void killApplicationUnderLockScreenIfNecessary();
 static void iconsVisibilityChanged();
 void _enableProtectiPlus();
 void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+void _disableProtectiPlusWithoutPassword();
 void _disableProtectiPlus();
 void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
@@ -88,6 +89,75 @@ static BOOL global_Enable;
 static NSDictionary *global_IconState;
 static NSDate *global_EnableTime;
 static NSMutableArray *global_PendingNotifications;
+
+
+
+/****************** Password *********************************/
+
+@interface PasswordAlertDelegate : NSObject <UITextFieldDelegate, UIAlertViewDelegate>
+@property (retain) UIAlertView *alertView;
+- (void)showAlert;
+
+//- (id)init;
+//- (void)dealloc;
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
+//- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex;
+@end
+
+
+
+#define LOCAL(key) [bundle localizedStringForKey:key value:key table:nil]
+
+//extern NSDictionary *global_Preferences;
+//void _disableProtectiPlusWithoutPassword();
+
+@implementation PasswordAlertDelegate
+
+@synthesize alertView = _alertView;
+
+- (void)showAlert {
+    NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
+    _alertView = [[UIAlertView alloc] initWithTitle:LOCAL(@"PASSWORD_ALERT_TITLE") message:LOCAL(@"PASSWORD_ALERT_MESSAGE") delegate:self cancelButtonTitle:LOCAL(@"PASSWORD_ALERT_DISMISS") otherButtonTitles:nil];
+    _alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
+    
+    NSString * password = GetValueOf_Password;
+    if (![[password stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]] isEqualToString:@""])
+    {   //说明包含非数字 使用默认键盘
+        [[_alertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeDefault];
+    }
+    else
+    {
+        [[_alertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeNumberPad];
+    }
+    
+    [[_alertView textFieldAtIndex:0] setDelegate:self];
+    
+    [_alertView show];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if ([[textField.text stringByReplacingCharactersInRange:range withString:string] isEqualToString:GetValueOf_Password])
+    {
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            _disableProtectiPlusWithoutPassword();
+//        });
+        
+        [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
+        
+        textField.text = @"";
+    }
+	return YES;
+}
+
+//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index {
+//    if (index == 1) {
+//        [[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"prefs:root=Protecti+&path=Tutorial"]];
+//    }
+//}
+@end
+
+/************* End of Password *******************************/
+
 
 
 void refreshNotificationCenter() {
@@ -410,22 +480,19 @@ void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
     _enableProtectiPlus();
 }
 
-void _disableProtectiPlus() {
-    if (!global_Enable) //Disabled already
-        return;
-    
+void _disableProtectiPlusWithoutPassword() {
     removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
-
+    
     vibrateIfNecessary();
     
     if (AllowAccessNotificationCenter_IsEnabled) {
         refreshNotificationCenter();
     }
-
+    
     global_Enable = NO;
     
     global_LockScreenCameraNeedReInitSession = YES;
-
+    
     if (HideAppIcons_IsEnabled) {
         iconsVisibilityChanged();
         if (!global_IconState) {
@@ -433,17 +500,37 @@ void _disableProtectiPlus() {
         }
         [global_IconState writeToFile:[[[%c(SBDefaultIconModelStore) sharedInstance] currentIconStateURL] path] atomically:YES];
         iconsVisibilityChanged();
-//        [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally];
+        //        [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally];
     }
     
     global_EnableTime = nil;
     
     updateIconBadgeView();
-
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         saveStateObjectForKey([NSNull null], @"enableTime");
         saveStateObjectForKey([NSNumber numberWithBool:global_Enable], @"enable");
     });
+}
+
+void _disableProtectiPlus() {
+    if (!global_Enable) //Disabled already
+        return;
+    
+    if (
+        EnablePassword_IsEnabled && ![GetValueOf_Password isEqualToString:@""]
+        &&
+         (
+          (global_HalfSlideUnlock_DeviceHasSystemPasscodeSet && global_OnceUnlockSuccessfully)
+          ||
+          !global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+         )
+        ) {
+        PasswordAlertDelegate *passwordDelegate = [[PasswordAlertDelegate alloc] init];
+        [passwordDelegate showAlert];
+    } else {
+        _disableProtectiPlusWithoutPassword();
+    }
 }
 
 void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {

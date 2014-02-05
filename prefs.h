@@ -60,4 +60,9 @@ typedef enum MissingNotificationIndicatorStyle : NSUInteger {
 #define AutoEnable_IsEnabled \
 ([global_Preferences objectForKey:@"autoEnable"] ? [[global_Preferences objectForKey:@"autoEnable"] boolValue] : NO)
 
+#define EnablePassword_IsEnabled \
+([global_Preferences objectForKey:@"enablePassword"] ? [[global_Preferences objectForKey:@"enablePassword"] boolValue] : NO)
+#define GetValueOf_Password \
+([global_Preferences objectForKey:@"password"] ? : @"")
+
 #endif

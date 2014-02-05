@@ -147,6 +147,16 @@
 
 
 
+@interface ProtectiPlusSettingsListControllerForPassword: PSListController {
+}
+@end
+
+@implementation ProtectiPlusSettingsListControllerForPassword
+
+@end
+
+
+
 @interface ProtectiPlusSettingsListControllerForBypassPasscode: PSListController {
 }
 @end

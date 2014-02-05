@@ -38,6 +38,14 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
+			<string>Password</string>
+			<key>detail</key>
+			<string>ProtectiPlusSettingsListControllerForPassword</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
 			<string>Bypass Passcode</string>
 			<key>detail</key>
 			<string>ProtectiPlusSettingsListControllerForBypassPasscode</string>

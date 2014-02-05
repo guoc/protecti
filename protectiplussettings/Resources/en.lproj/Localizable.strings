@@ -2,3 +2,6 @@
 "WELCOME_MESSAGE" = "Click Tutorial for a simple setup now or find it in Settings app later.";
 "WELCOME_DISMISS" = "Later";
 "WELCOME_SETTINGS" = "Tutorial";
+"PASSWORD_ALERT_TITLE" = "Protecti+";
+"PASSWORD_ALERT_MESSAGE" = "Please input password";
+"PASSWORD_ALERT_DISMISS" = "Cancel";
