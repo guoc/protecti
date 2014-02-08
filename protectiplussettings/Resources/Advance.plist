@@ -46,7 +46,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
-			<string>Bypass Passcode</string>
+			<string>Bypass System Passcode</string>
 			<key>detail</key>
 			<string>ProtectiPlusSettingsListControllerForBypassPasscode</string>
 		</dict>

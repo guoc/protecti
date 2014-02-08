@@ -2,7 +2,7 @@
 关于 -> 常见问题 获取更多细节。";
 "AUTO_ENABLE_FOOTERTEXT" = "锁定屏幕时自动开启Protecti+。";
 "Auto Enable" = "锁屏自动启用";
-"Bypass Passcode" = "绕过系统密码";
+"Bypass System Passcode" = "绕过系统密码";
 "Hide App Icons" = "隐藏应用图标";
 "Half Slide Unlock" = "半滑动解锁";
 "Photos Access" = "访问照片库";

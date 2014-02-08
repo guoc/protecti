@@ -171,9 +171,11 @@ void refreshNotificationCenter() {
     }
     SBNotificationsMissedModeViewController *missedModeViewController = MSHookIvar<SBNotificationsMissedModeViewController *>(viewController, "_missedModeViewController");
     if (missedModeViewController) {
-        SBBulletinViewController *missedModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(missedModeViewController, "_bulletinViewController");
-        if (missedModeBulletinViewController) {
-            [missedModeBulletinViewController setTableViewNeedsReload];
+        if (![missedModeViewController isKindOfClass:[%c(SBControlCenterController) class]]) {  // work around with multitaskinggestures
+            SBBulletinViewController *missedModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(missedModeViewController, "_bulletinViewController");
+            if (missedModeBulletinViewController) {
+                [missedModeBulletinViewController setTableViewNeedsReload];
+            }
         }
     }
 }
