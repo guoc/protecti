@@ -520,12 +520,20 @@ void _disableProtectiPlus() {
     if (
         EnablePassword_IsEnabled && ![GetValueOf_Password isEqualToString:@""]
         &&
+        (
          (
-          (global_HalfSlideUnlock_DeviceHasSystemPasscodeSet && global_OnceUnlockSuccessfully)
-          ||
-          !global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+          global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+          &&
+          (
+           !BypassPasscode_IsEnabled
+           ||
+           (BypassPasscode_IsEnabled && global_OnceUnlockSuccessfully)
+          )
          )
-        ) {
+         ||
+         !global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+        )
+       ) {
         PasswordAlertDelegate *passwordDelegate = [[PasswordAlertDelegate alloc] init];
         [passwordDelegate showAlert];
     } else {
