@@ -48,7 +48,7 @@
 			<key>label</key>
 			<string>Bypass System Passcode</string>
 			<key>detail</key>
-			<string>ProtectiPlusSettingsListControllerForBypassPasscode</string>
+			<string>ProtectiPlusSettingsListControllerForBypassSystemPasscode</string>
 		</dict>
 		<dict>
 			<key>cell</key>

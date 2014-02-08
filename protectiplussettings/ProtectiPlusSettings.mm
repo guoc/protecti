@@ -157,11 +157,11 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForBypassPasscode: PSListController {
+@interface ProtectiPlusSettingsListControllerForBypassSystemPasscode: PSListController {
 }
 @end
 
-@implementation ProtectiPlusSettingsListControllerForBypassPasscode
+@implementation ProtectiPlusSettingsListControllerForBypassSystemPasscode
 
 @end
 

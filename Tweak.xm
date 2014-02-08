@@ -527,9 +527,9 @@ void _disableProtectiPlus() {
           global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
           &&
           (
-           !BypassPasscode_IsEnabled
+           !BypassSystemPasscode_IsEnabled
            ||
-           (BypassPasscode_IsEnabled && global_OnceUnlockSuccessfully)
+           (BypassSystemPasscode_IsEnabled && global_OnceUnlockSuccessfully)
           )
          )
          ||
@@ -1299,7 +1299,7 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
 
 %hook SBLockScreenManager
 - (void)unlockUIFromSource:(int)arg1 withOptions:(id)arg2 {
-    if (BypassPasscode_IsEnabled && global_slfe && [[%c(SBDeviceLockController) sharedController] deviceHasPasscodeSet]) {
+    if (BypassSystemPasscode_IsEnabled && global_slfe && [[%c(SBDeviceLockController) sharedController] deviceHasPasscodeSet]) {
         [[%c(MCPasscodeManager) sharedManager] unlockDeviceWithPasscode:global_slfe outError:NULL];
     }
     %orig;
@@ -1316,7 +1316,7 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
 %hook SBDeviceLockController
 - (BOOL)isPasscodeLocked {
     BOOL r = %orig;
-    if (!BypassPasscode_IsEnabled) {
+    if (!BypassSystemPasscode_IsEnabled) {
         return r;
     } else {
         if (global_HalfSlideUnlock_DeviceHasSystemPasscodeSet) {
@@ -1333,7 +1333,7 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
             return r;
         }
     }
-//    if (!BypassPasscode_IsEnabled) {
+//    if (!BypassSystemPasscode_IsEnabled) {
 //        return %orig;
 //    } else {
 //        BOOL r = %orig;
@@ -1362,7 +1362,7 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
 
 
 - (BOOL)attemptUnlockWithPasscode:(id)arg1 {
-    if (!BypassPasscode_IsEnabled)
+    if (!BypassSystemPasscode_IsEnabled)
         return %orig;
 
     BOOL r = %orig(arg1);
@@ -1392,9 +1392,9 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
 %hook SBLockScreenViewController
 /*
 - (void)attemptToUnlockUIFromNotification {
-    if (!BypassPasscode_IsEnabled)
+    if (!BypassSystemPasscode_IsEnabled)
         return %orig;
-    if (!global_HalfSlideUnlock_DeviceIsPasscodeLocked && BypassPasscode_IsEnabled) {
+    if (!global_HalfSlideUnlock_DeviceIsPasscodeLocked && BypassSystemPasscode_IsEnabled) {
         if ([[%c(SBLockScreenManager) sharedInstance] attemptUnlockWithPasscode:global_slfe]) {
             global_HalfSlideUnlock_DeviceIsPasscodeLocked = NO;
         } else {

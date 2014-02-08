@@ -12,8 +12,8 @@ typedef enum MissingNotificationIndicatorStyle : NSUInteger {
 
 #define HalfSlideUnlock_IsEnabled \
 ([global_Preferences objectForKey:@"enableHalfSlideUnlock"] ? [[global_Preferences objectForKey:@"enableHalfSlideUnlock"] boolValue] : NO)
-#define BypassPasscode_IsEnabled \
-([global_Preferences objectForKey:@"enableBypassPasscode"] ? [[global_Preferences objectForKey:@"enableBypassPasscode"] boolValue] : NO)
+#define BypassSystemPasscode_IsEnabled \
+([global_Preferences objectForKey:@"enableBypassSystemPasscode"] ? [[global_Preferences objectForKey:@"enableBypassSystemPasscode"] boolValue] : NO)
 #define Vibrate_IsEnabled \
 ([global_Preferences objectForKey:@"enableVibrate"] ? [[global_Preferences objectForKey:@"enableVibrate"] boolValue] : NO)
 #define StatusBarIcon_IsEnabled \
