@@ -45,7 +45,10 @@
 #import <UIKit/UIApplication2.h>
 
 #import <SpringBoard/SBBacklightController.h>
+#import <MobileGestalt/MobileGestalt.h>
 
+#import "RSA.h"
+#import "NSString+Base64.h"
 
 static NSDictionary *global_Preferences;
 
@@ -62,6 +65,7 @@ static void vibrateIfNecessary();
 
 //
 
+void check();
 void refreshNotificationCenter();
 void exitForegroundApplicationIfNecessary();
 void killApplicationUnderLockScreenIfNecessary();
@@ -430,6 +434,7 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 @end
 
 void _enableProtectiPlus() {
+    
     if ([[[NSDate alloc] init] compare:[[NSDate alloc] initWithString:@"2014-03-02 10:45:32 +0600"]] > 0)
         return;
     
@@ -576,6 +581,8 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
     if (AutoEnable_IsEnabled) {
         _enableProtectiPlus();
     }
+    
+    check();
 }
 
 
@@ -1536,5 +1543,68 @@ void vibrateIfNecessary() {
 /****************************************************************************************************/
 
 
+
+/*********************************** check ********************************************/
+
+
+
+NSString *getUdid() {
+    CFStringRef value = (CFStringRef)MGCopyAnswer(kMGUniqueDeviceID);
+    NSString *_udid = [NSString stringWithString:(NSString *)value];
+    CFRelease(value);
+    return _udid;
+}
+
+NSString *qyqqma() {
+    NSString *udid = getUdid();
+    
+    NSTimeInterval time = [[[NSDate alloc] init] timeIntervalSince1970];
+    
+    NSString *encryptedQyqqmaStr = [NSString stringWithFormat:@"%@_%f",udid,time];
+    
+    RSA *rsa = [[RSA alloc] init];
+    if (rsa != nil) {
+        return [rsa encryptToString:encryptedQyqqmaStr];
+    }
+    return nil;
+}
+
+NSString *urlsafe_b64encode(NSString *str) {
+    return [[str stringByReplacingOccurrencesOfString:@"+" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+}
+
+NSString *urlsafe_b64decode(NSString *str) {
+    return [[str stringByReplacingOccurrencesOfString:@"_" withString:@"/"] stringByReplacingOccurrencesOfString:@"-" withString:@"+"];
+}
+
+void check() {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSString *urlHead = @"http://gviridis.com/yjvg/yjvg.php/org.thebigboss.protectiplus?";
+        NSString *qyqqmaStr = qyqqma();
+        NSString *url = [urlHead stringByAppendingFormat:@"qyqqma=%@",urlsafe_b64encode(qyqqmaStr)];
+        NSMutableURLRequest *request = [NSMutableURLRequest new];
+        [request setURL:[NSURL URLWithString:url]];
+        [request setHTTPMethod:@"GET"];
+        NSURLResponse *response;
+        NSData *fjhvviEncryptedData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+        NSString *fjhvviEncryptedStr = urlsafe_b64decode([[NSString alloc] initWithData:fjhvviEncryptedData encoding:NSUTF8StringEncoding]);
+        RSA *rsa = [[RSA alloc] init];
+        if (rsa != nil) {
+            NSString *fjhvviStr = [[rsa decryptWithString:fjhvviEncryptedStr] base64DecodedString];
+            NSLog(@"return %@", fjhvviStr);
+//            NSArray *fjhvviArray = [fjhvviStr componentsSeparatedByString:@"_"];
+//            if ([fjhvviArray[0] isEqualToString:getUdid()] && [fjhvviArray[1] isEqualToString:@"completed"]) {
+//                url = @"http://gviridis.com/yjvg/yjvg.php/org.thebigboss.protectiplus.ubju";
+//                request = [NSMutableURLRequest new];
+//                [request setURL:[NSURL URLWithString:url]];
+//                [request setHTTPMethod:@"POST"];
+//            }
+        }
+    });
+
+    return;
+}
+
+/**************************************************************************************/
 
 
