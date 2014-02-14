@@ -1,4 +1,10 @@
-"Version" = "版本";
+"Register Status" = "注册状态";
+"REGISTER_STATUS_FOOTERTEXT" = "如果未注册，Protecti+可能无法开启，其它功能正常。
+注册需要联网完成。
+如果网络可用，请点击下面的Respring（重启）按钮完成注册。";
+"REGISTER_STATUS_CONFIRMATION_TITLE" = "Respring?";
+"REGISTER_STATUS_CONFIRMATION_PROMPT" = "Respring类似于重启，但是比重启快。";
+"Cancel" = "取消";
 "QUESTIONS_AND_ANSWERS_FOOTERTEXT" = "在Safari中打开常见问题";
 "Q & A" = "常见问题";
 "CONTACT_AUTHOR_FOOTERTEXT" = "点击后在打开的Cydia页面中点击作者gviridis给我发送邮件。

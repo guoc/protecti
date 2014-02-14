@@ -4,7 +4,6 @@
 #import <CoreFoundation/CFRunLoop.h>
 #import <SpringBoard/SBUIController.h>
 #import <Preferences/Preferences.h>
-#import "../Version.h"
 #import "../states.h"
 #import "../prefs.h"
 
@@ -203,8 +202,17 @@
 	return _specifiers;
 }
 
-- (NSString *) versionForSpecifier: (PSSpecifier *) specifier {
-    return kCurrentVersion;
+- (NSString *) statusForSpecifier: (PSSpecifier *) specifier {
+    NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
+    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesKeyPath]) {
+        return LOCAL(@"Registered");
+    } else {
+        return LOCAL(@"Unregistered");
+    }
+}
+
+-(void)respring {
+    system("killall -9 SpringBoard");
 }
 
 - (void)contactWithAuthor {

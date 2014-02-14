@@ -6,3 +6,5 @@
 "PASSWORD_ALERT_TITLE" = "Protecti+";
 "PASSWORD_ALERT_MESSAGE" = "请输入密码";
 "PASSWORD_ALERT_DISMISS" = "取消";
+"Registered" = "已注册";
+"Unregistered" = "未注册";

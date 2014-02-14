@@ -3,5 +3,6 @@
 + (NSString *)getUdid;
 + (void)tryToSaveKey;
 + (BOOL)keyIsValid;
++ (BOOL)needGiveMilkPowderMoney;
 
 @end

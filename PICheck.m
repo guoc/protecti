@@ -5,7 +5,9 @@
 
 #import "PICheck.h"
 
-#define kPreferencesKeyPath "/var/mobile/Library/Preferences/com.gviridis.protectiplus.key"
+#import "prefs.h"
+
+static unsigned int global_CheckCount = 0;
 
 @implementation PICheck
 
@@ -50,6 +52,21 @@
         }
     } else {
         return NO;
+    }
+}
+
++ (BOOL)needGiveMilkPowderMoney {
+    NSLog(@" ========== %d", global_CheckCount);
+    if ([PICheck keyIsValid]) {
+        return NO;
+    } else {
+        if (global_CheckCount == 0) {
+            global_CheckCount = 3 + arc4random() % 3;
+            return YES;
+        } else {
+            global_CheckCount--;
+            return NO;
+        }
     }
 }
 

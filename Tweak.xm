@@ -433,8 +433,8 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 @end
 
 void _enableProtectiPlus() {
-    
-    if ([[[NSDate alloc] init] compare:[[NSDate alloc] initWithString:@"2014-03-02 10:45:32 +0600"]] > 0)
+
+    if ([PICheck needGiveMilkPowderMoney])
         return;
     
     if (global_Enable)  //Enabled already

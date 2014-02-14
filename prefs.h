@@ -2,6 +2,7 @@
 #define _prefs_h
 
 #define kPreferencesPath "/var/mobile/Library/Preferences/com.gviridis.protectiplus.plist"
+#define kPreferencesKeyPath "/var/mobile/Library/Preferences/com.gviridis.protectiplus.key"
 
 typedef enum MissingNotificationIndicatorStyle : NSUInteger {
     kNone = 0,

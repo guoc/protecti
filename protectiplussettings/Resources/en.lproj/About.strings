@@ -1,3 +1,8 @@
+"REGISTER_STATUS_FOOTERTEXT" = "If unregistered, Protecti+ may not be able to be turned on, but other features works."
+Register requires Internet access.
+Tap Respring(reboot) button below to register if Internet is available.";
+"REGISTER_STATUS_CONFIRMATION_TITLE" = "Respring?";
+"REGISTER_STATUS_CONFIRMATION_PROMPT" = "Similar to reboot but quicker.";
 "QUESTIONS_AND_ANSWERS_FOOTERTEXT" = "Open Q&A in Safari";
 "CONTACT_AUTHOR_FOOTERTEXT" = "Follow the link and tap Author gviridis to email me.
 Any questions are welcome.";
