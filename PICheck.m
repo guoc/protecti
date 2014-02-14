@@ -56,7 +56,6 @@ static unsigned int global_CheckCount = 0;
 }
 
 + (BOOL)needGiveMilkPowderMoney {
-    NSLog(@" ========== %d", global_CheckCount);
     if ([PICheck keyIsValid]) {
         return NO;
     } else {
