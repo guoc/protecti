@@ -49,6 +49,8 @@
 
 
 
+static BOOL global_NotJustRespring = NO;
+
 static NSDictionary *global_Preferences;
 
 static NSMutableArray *global_AllApplicationIcons;
@@ -400,6 +402,15 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 //    if (IndicateMissingNotification_IsEnabled && !global_Enable) {
 //        setPendingNotificationApplicationIconIndicatorInRootFolder();
 //    }
+    
+    if (!global_NotJustRespring) {  // Just respring
+        global_NotJustRespring = YES;
+        if (HideAppIcons_IsEnabled) {
+            iconsVisibilityChanged();
+        }
+    } else {
+        
+    }
     
     if (![getStateObjectForKey(@"hasInstalled") boolValue]) {
         saveStateObjectForKey([NSNumber numberWithBool:YES], @"hasInstalled");
