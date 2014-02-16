@@ -19,17 +19,34 @@ static unsigned int global_CheckCount = 0;
 }
 
 + (void)tryToSaveKey {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSString *urlHead = @"http://gviridis.com/yjvg/yjvg.php/org.thebigboss.protectiplus?";
         NSString *qyqqmaStr = [PICheck qyqqma];
         NSString *url = [urlHead stringByAppendingFormat:@"qyqqma=%@",[PICheck urlsafe_b64encode:qyqqmaStr]];
         NSMutableURLRequest *request = [NSMutableURLRequest new];
         [request setURL:[NSURL URLWithString:url]];
         [request setHTTPMethod:@"GET"];
-        NSURLResponse *response;
-        NSData *fjhvviEncryptedData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
-        [fjhvviEncryptedData writeToFile:@kPreferencesKeyPath atomically:YES];
-    });
+//        NSURLResponse *response;
+//        NSData *fjhvviEncryptedData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:queue
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                                    if ([data length] >0 && error == nil){
+                                                        [data writeToFile:@kPreferencesKeyPath
+                                                               atomically:YES];
+                                                        NSLog(@"Successfully saved the file");
+                                                    }
+                                                    else if ([data length] == 0 &&
+                                                             error == nil){
+                                                        NSLog(@"Nothing was downloaded.");
+                                                    }
+                                                    else if (error != nil){
+                                                        NSLog(@"Error happened = %@", error);
+                                                    }
+                                                }];
+//        [fjhvviEncryptedData writeToFile:@kPreferencesKeyPath atomically:YES];
+//    });
     
     return;
 }
