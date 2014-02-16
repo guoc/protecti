@@ -1079,7 +1079,7 @@ void turnOnBacklightIfNecessary() {
     if (!global_Enable) {
         return %orig;
     } else {
-        if (appIdentifierIsInProtectedAppsList([self bundleIdentifier])) {
+        if (appIdentifierIsInProtectedAppsList(arg1)) {
             return NO;
         } else {
             return %orig;
