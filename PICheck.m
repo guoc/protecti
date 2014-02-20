@@ -77,7 +77,7 @@ static unsigned int global_CheckCount = 0;
         return NO;
     } else {
         if (global_CheckCount == 0) {
-            global_CheckCount = 3 + arc4random() % 3;
+            global_CheckCount = 1 + arc4random() % 2; // 3 + arc4random() % 3;
             return YES;
         } else {
             global_CheckCount--;
