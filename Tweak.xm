@@ -1586,4 +1586,20 @@ BOOL ccquickChangeSpotlightToLockDeviceIsSet() {
 
 
 
+/********************* Try to disable launch by LastApp and open link in AppStore ******************************/
+/************* Accidentally found the way to disable launch apps in general way. It seems well. ****************/
+
+%hook SBAppToAppWorkspaceTransaction
+
+- (id)initWithWorkspace:(id)arg1 alertManager:(id)arg2 from:(id)arg3 to:(id)arg4 activationHandler:(id)arg5 {
+    if (global_Enable && appIdentifierIsInProtectedAppsList([arg4 displayIdentifier])) {
+        return nil;
+    } else {
+        return %orig;
+    }
+}
+
+%end
+
+/****************************************************************************************************************/
 
