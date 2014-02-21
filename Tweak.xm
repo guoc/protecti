@@ -1605,3 +1605,20 @@ BOOL ccquickChangeSpotlightToLockDeviceIsSet() {
 
 /****************************************************************************************************************/
 
+
+
+/******************** Hidden option: Disable activate App Slider when Protecti+ is enabled **********************/
+
+%hook SBUIController
+
+- (BOOL)_activateAppSwitcherFromSide:(int)arg1 {
+    if (global_Enable && DisableActivateAppSlider_IsEnabled) {
+        return NO;
+    } else {
+        return %orig;
+    }
+}
+
+%end
+
+/****************************************************************************************************************/

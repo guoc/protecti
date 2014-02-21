@@ -66,4 +66,11 @@ typedef enum MissingNotificationIndicatorStyle : NSUInteger {
 #define GetValueOf_Password \
 ([global_Preferences objectForKey:@"password"] ? : @"")
 
+
+
+/********************************************* Hidden Options ****************************************************************/
+#define DisableActivateAppSlider_IsEnabled \
+([global_Preferences objectForKey:@"disableActivateAppSlider"] ? [[global_Preferences objectForKey:@"disableActivateAppSlider"] boolValue] : NO)
+/*****************************************************************************************************************************/
+
 #endif
