@@ -6,6 +6,7 @@
 #import <Preferences/Preferences.h>
 #import "../states.h"
 #import "../prefs.h"
+#import "PICheck.h"
 
 #define LOCAL(key) [bundle localizedStringForKey:key value:key table:nil]
 
@@ -204,7 +205,7 @@
 
 - (NSString *) statusForSpecifier: (PSSpecifier *) specifier {
     NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesKeyPath]) {
+    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesKeyPath] && [PICheck keyIsValid]) {
         return LOCAL(@"Registered");
     } else {
         return LOCAL(@"Unregistered");

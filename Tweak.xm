@@ -48,6 +48,7 @@
 #import <SpringBoard/SBBacklightController.h>
 
 
+static BOOL global_YjvgResult = NO;
 
 static BOOL global_NotJustRespring = NO;
 
@@ -448,7 +449,7 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 
 void _enableProtectiPlus() {
 
-    if ([PICheck needGiveMilkPowderMoney])
+    if (!global_YjvgResult)
         return;
     
     if (global_Enable)  //Enabled already
@@ -596,6 +597,7 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
     }
     
     [PICheck tryToSaveKey];
+    global_YjvgResult = [PICheck keyIsValid];
 }
 
 
