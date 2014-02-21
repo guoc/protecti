@@ -4,6 +4,7 @@
 #import <CoreFoundation/CFRunLoop.h>
 #import <SpringBoard/SBUIController.h>
 #import <Preferences/Preferences.h>
+#import <Preferences/PSSpecifier.h>
 #import "../states.h"
 #import "../prefs.h"
 #import "PICheck.h"
@@ -70,7 +71,25 @@
 @end
 
 @implementation ProtectiPlusSettingsListControllerForProtectedAppNotifications
-
+- (id)specifiers {
+	if(_specifiers == nil) {
+        if ([PICheck keyIsValid]) {
+            _specifiers = [[self loadSpecifiersFromPlistName:@"Protected App Notifications" target:self] retain];
+        } else {
+            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
+            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
+                                                                                target:self
+                                                                                   set:NULL
+                                                                                   get:NULL
+                                                                                detail:Nil
+                                                                                  cell:PSGroupCell
+                                                                                  edit:Nil];
+            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
+            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
+        }
+	}
+	return _specifiers;
+}
 @end
 
 
@@ -80,7 +99,25 @@
 @end
 
 @implementation ProtectiPlusSettingsListControllerForProtectedActions
-
+- (id)specifiers {
+	if(_specifiers == nil) {
+        if ([PICheck keyIsValid]) {
+            _specifiers = [[self loadSpecifiersFromPlistName:@"Protected Actions" target:self] retain];
+        } else {
+            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
+            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
+                                                                                target:self
+                                                                                   set:NULL
+                                                                                   get:NULL
+                                                                                detail:Nil
+                                                                                  cell:PSGroupCell
+                                                                                  edit:Nil];
+            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
+            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
+        }
+	}
+	return _specifiers;
+}
 @end
 
 
@@ -110,7 +147,25 @@
 @end
 
 @implementation ProtectiPlusSettingsListControllerForUnprotectedAppNotifications
-
+- (id)specifiers {
+	if(_specifiers == nil) {
+        if ([PICheck keyIsValid]) {
+            _specifiers = [[self loadSpecifiersFromPlistName:@"Unprotected App Notifications" target:self] retain];
+        } else {
+            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
+            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
+                                                                                target:self
+                                                                                   set:NULL
+                                                                                   get:NULL
+                                                                                detail:Nil
+                                                                                  cell:PSGroupCell
+                                                                                  edit:Nil];
+            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
+            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
+        }
+	}
+	return _specifiers;
+}
 @end
 
 
@@ -130,7 +185,25 @@
 @end
 
 @implementation ProtectiPlusSettingsListControllerForVibrateAndIcon
-
+- (id)specifiers {
+	if(_specifiers == nil) {
+        if ([PICheck keyIsValid]) {
+            _specifiers = [[self loadSpecifiersFromPlistName:@"Vibrate & Icon" target:self] retain];
+        } else {
+            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
+            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
+                                                                                target:self
+                                                                                   set:NULL
+                                                                                   get:NULL
+                                                                                detail:Nil
+                                                                                  cell:PSGroupCell
+                                                                                  edit:Nil];
+            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
+            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
+        }
+	}
+	return _specifiers;
+}
 @end
 
 
@@ -142,7 +215,25 @@
 @end
 
 @implementation ProtectiPlusSettingsListControllerForAdvance
-
+- (id)specifiers {
+	if(_specifiers == nil) {
+        if ([PICheck keyIsValid]) {
+            _specifiers = [[self loadSpecifiersFromPlistName:@"Advance" target:self] retain];
+        } else {
+            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
+            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
+                                                                                target:self
+                                                                                   set:NULL
+                                                                                   get:NULL
+                                                                                detail:Nil
+                                                                                  cell:PSGroupCell
+                                                                                  edit:Nil];
+            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
+            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
+        }
+	}
+	return _specifiers;
+}
 @end
 
 

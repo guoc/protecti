@@ -8,3 +8,4 @@
 "PASSWORD_ALERT_DISMISS" = "取消";
 "Registered" = "已注册";
 "Unregistered" = "未注册";
+"NEED_REGISTER_FOOTERTEXT" = "请在Protecti+设置->关于中检查注册状态。";

@@ -5,3 +5,4 @@
 "PASSWORD_ALERT_TITLE" = "Protecti+";
 "PASSWORD_ALERT_MESSAGE" = "Please input password";
 "PASSWORD_ALERT_DISMISS" = "Cancel";
+"NEED_REGISTER_FOOTERTEXT" = "Please check Register Status in About.";
