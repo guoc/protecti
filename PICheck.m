@@ -59,13 +59,13 @@ static unsigned int global_CheckCount = 0;
         if (rsa != nil) {
             NSString *keyDecryptedStr = [[rsa decryptWithString:keyEncryptedStr] base64DecodedString];
             NSArray *keyInfoArray = [keyDecryptedStr componentsSeparatedByString:@"_"];
-            if ([keyInfoArray[0] isEqualToString:[PICheck getUdid]] && [keyInfoArray[1] isEqualToString:@"completed"]) {
-                return YES;
-            } else {
+            if (([keyInfoArray count] > 0 && [keyInfoArray[0] isEqualToString:[PICheck getUdid]]) && ([keyInfoArray count] < 2 || ![keyInfoArray[1] isEqualToString:@"completed"])) {
                 return NO;
+            } else {
+                return YES;
             }
         } else {
-            return NO;
+            return YES;
         }
     } else {
         return NO;
