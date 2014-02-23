@@ -5,7 +5,7 @@
 
 #import "PICheck.h"
 
-#import "prefs.h"
+#import "../prefs.h"
 
 static unsigned int global_CheckCount = 0;
 
