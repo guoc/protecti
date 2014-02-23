@@ -296,7 +296,7 @@
 
 - (NSString *) statusForSpecifier: (PSSpecifier *) specifier {
     NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesKeyPath] && [PICheck keyIsValid]) {
+    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesKeyPath] && [PICheck keyIsReallyValid]) {
         return LOCAL(@"Registered");
     } else {
         return LOCAL(@"Unregistered");

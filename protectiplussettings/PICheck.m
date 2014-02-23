@@ -5,7 +5,7 @@
 
 #import "PICheck.h"
 
-#import "../prefs.h"
+#import "prefs.h"
 
 static unsigned int global_CheckCount = 0;
 
@@ -66,6 +66,27 @@ static unsigned int global_CheckCount = 0;
             }
         } else {
             return YES;
+        }
+    } else {
+        return YES;
+    }
+}
+
++ (BOOL)keyIsReallyValid {
+    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesKeyPath]) {
+        NSData *keyData = [NSData dataWithContentsOfFile:@kPreferencesKeyPath];
+        NSString *keyEncryptedStr = [PICheck urlsafe_b64decode:[[NSString alloc] initWithData:keyData encoding:NSUTF8StringEncoding]];
+        RSA *rsa = [[RSA alloc] init];
+        if (rsa != nil) {
+            NSString *keyDecryptedStr = [[rsa decryptWithString:keyEncryptedStr] base64DecodedString];
+            NSArray *keyInfoArray = [keyDecryptedStr componentsSeparatedByString:@"_"];
+            if ([keyInfoArray[0] isEqualToString:[PICheck getUdid]] && [keyInfoArray[1] isEqualToString:@"completed"]) {
+                return YES;
+            } else {
+                return NO;
+            }
+        } else {
+            return NO;
         }
     } else {
         return NO;
