@@ -71,6 +71,8 @@ typedef enum MissingNotificationIndicatorStyle : NSUInteger {
 /********************************************* Hidden Options ****************************************************************/
 #define DisableActivateAppSlider_IsEnabled \
 ([global_Preferences objectForKey:@"disableActivateAppSlider"] ? [[global_Preferences objectForKey:@"disableActivateAppSlider"] boolValue] : NO)
+#define GetValueOf_DisabledFolders \
+([global_Preferences objectForKey:@"disabledFolders"] ? : nil)
 /*****************************************************************************************************************************/
 
 #endif
