@@ -1,9 +1,0 @@
-{
-	title = "Protecti+";
-	description = "Protecti+ Toggle For Activator";
-	"compatible-modes" = (
-		springboard,
-		application,
-		lockscreen,
-	);
-}

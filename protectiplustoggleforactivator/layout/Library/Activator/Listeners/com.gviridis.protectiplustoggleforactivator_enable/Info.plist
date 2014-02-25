@@ -1,0 +1,9 @@
+{
+	title = "Enable Protecti+";
+	description = "Enable Protecti+ for Activator";
+	"compatible-modes" = (
+		springboard,
+		application,
+		lockscreen,
+	);
+}
