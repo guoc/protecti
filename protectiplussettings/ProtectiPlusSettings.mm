@@ -268,6 +268,16 @@
 
 
 
+@interface ProtectiPlusSettingsListControllerForDisableOpenFolders: PSListController {
+}
+@end
+
+@implementation ProtectiPlusSettingsListControllerForDisableOpenFolders
+
+@end
+
+
+
 @interface ProtectiPlusSettingsListControllerForHalfSlideUnlock: PSListController {
 }
 @end

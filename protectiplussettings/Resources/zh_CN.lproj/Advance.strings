@@ -4,6 +4,7 @@
 "Auto Enable" = "锁屏自动启用";
 "Password" = "密码";
 "Bypass System Passcode" = "绕过系统密码";
+"Disable Open Folders" = "禁止打开文件夹";
 "Hide App Icons" = "隐藏应用图标";
 "Half Slide Unlock" = "半滑动解锁";
 "Photos Access" = "访问照片库";

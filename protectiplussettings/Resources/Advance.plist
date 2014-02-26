@@ -54,6 +54,14 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
+			<string>Disable Open Folders</string>
+			<key>detail</key>
+			<string>ProtectiPlusSettingsListControllerForDisableOpenFolders</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
 			<string>Hide App Icons</string>
 			<key>detail</key>
 			<string>ProtectiPlusSettingsListControllerForHideAppIcons</string>
