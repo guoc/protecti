@@ -125,7 +125,7 @@ static NSMutableArray *global_PendingNotifications;
 
 - (void)showAlert {
     NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-    _alertView = [[UIAlertView alloc] initWithTitle:LOCAL(@"PASSWORD_ALERT_TITLE") message:LOCAL(@"PASSWORD_ALERT_MESSAGE") delegate:self cancelButtonTitle:LOCAL(@"PASSWORD_ALERT_DISMISS") otherButtonTitles:nil];
+    _alertView = [[[UIAlertView alloc] initWithTitle:LOCAL(@"PASSWORD_ALERT_TITLE") message:LOCAL(@"PASSWORD_ALERT_MESSAGE") delegate:self cancelButtonTitle:LOCAL(@"PASSWORD_ALERT_DISMISS") otherButtonTitles:nil] autorelease];
     _alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
     
     NSString * password = GetValueOf_Password;
