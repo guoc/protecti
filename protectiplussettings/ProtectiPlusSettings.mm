@@ -66,6 +66,16 @@
 
 
 
+@interface ProtectiPlusSettingsListControllerForChooseGestures: PSListController {
+}
+@end
+
+@implementation ProtectiPlusSettingsListControllerForChooseGestures
+
+@end
+
+
+
 @interface ProtectiPlusSettingsListControllerForProtectedAppNotifications: PSListController {
 }
 @end

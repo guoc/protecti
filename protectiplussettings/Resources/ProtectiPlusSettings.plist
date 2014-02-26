@@ -58,13 +58,9 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
-			<string>Choose Gesture</string>
-			<key>isController</key>
-			<true/>
-			<key>bundle</key>
-			<string>LibActivator</string>
-			<key>activatorListener</key>
-			<string>com.gviridis.protectiplustoggleforactivator</string>
+			<string>Choose Gestures</string>
+			<key>detail</key>
+			<string>ProtectiPlusSettingsListControllerForChooseGestures</string>
 		</dict>
 		<dict>
 			<key>cell</key>
