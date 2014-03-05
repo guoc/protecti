@@ -1514,7 +1514,7 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
 
 
 
-/******************************** for libstatusbar *************************************************/
+/******************************** for statues bar icon *************************************************/
 void addStatusBarItemIfNecessary() {
     if (StatusBarIcon_IsEnabled && global_Enable && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
     {
