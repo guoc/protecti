@@ -1515,10 +1515,59 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
 
 
 /******************************** for statues bar icon *************************************************/
+
+#import <libstatusbar/LSStatusBarItem.h>
+
+@interface PIStatusBarIcon : NSObject
+@property (nonatomic, retain) LSStatusBarItem *statusBarItem;
++ (PIStatusBarIcon *)sharedInstance;
+- (PIStatusBarIcon *)init;
+- (void)delayedInit;
+- (void)showIcon;
+- (void)hideIcon;
+@end
+
+@implementation PIStatusBarIcon
+@synthesize statusBarItem = _statusBarItem;
++ (PIStatusBarIcon *)sharedInstance {
+  static PIStatusBarIcon* PIStatusBarIcon_sharedInst = nil;
+  @synchronized(self) {
+    if (PIStatusBarIcon_sharedInst == nil) {
+        PIStatusBarIcon_sharedInst = [[PIStatusBarIcon alloc] init];
+    }
+  }
+  return PIStatusBarIcon_sharedInst;
+}
+
+- (PIStatusBarIcon *)init {
+	[self performSelector:@selector(delayedInit) withObject:nil afterDelay:0];
+    return self;
+}
+
+- (void)delayedInit{
+  self.statusBarItem =  [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier: @"com.gviridis.protectiplus" alignment: StatusBarAlignmentLeft];
+  _statusBarItem.imageName = @"protecti";
+}
+
+- (void)showIcon {
+    self.statusBarItem.visible = YES;
+}
+
+- (void)hideIcon {
+    self.statusBarItem.visible = NO;
+}
+@end
+
+/****************************************************************************************************/
+
+
+
+/******************************** for statues bar icon *************************************************/
 void addStatusBarItemIfNecessary() {
     if (StatusBarIcon_IsEnabled && global_Enable && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
     {
-        [[UIApplication sharedApplication] addStatusBarItem:14];
+//        [[UIApplication sharedApplication] addStatusBarItem:14];
+        [[PIStatusBarIcon sharedInstance] showIcon];
     }
 }
 //void removeStatusBarItemIfNecessary() {
@@ -1530,13 +1579,15 @@ void addStatusBarItemIfNecessary() {
 void addStatusBarItemIfNecessaryNoMatterGlobalEnable() {
     if (StatusBarIcon_IsEnabled && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
     {
-        [[UIApplication sharedApplication] addStatusBarItem:14];
+//        [[UIApplication sharedApplication] addStatusBarItem:14];
+        [[PIStatusBarIcon sharedInstance] showIcon];
     }
 }
 void removeStatusBarItemIfNecessaryNoMatterGlobalEnable() {
     if (StatusBarIcon_IsEnabled && [[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
     {
-        [[UIApplication sharedApplication] removeStatusBarItem:14];
+//        [[UIApplication sharedApplication] removeStatusBarItem:14];
+        [[PIStatusBarIcon sharedInstance] hideIcon];
     }
 }
 /****************************************************************************************************/

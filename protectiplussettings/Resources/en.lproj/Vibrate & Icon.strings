@@ -1,3 +1,5 @@
 "VIBRATE_FOOTERTEXT" = "Vibrate when enable/disable Protecti+
 Settings Sounds Vibrate required";
-"STATUS_BAR_ICON_FOOTERTEXT" = "Status bar icon when enable Protecti+";
+"STATUS_BAR_ICON_FOOTERTEXT" = "Status bar icon when enable Protecti+
+It is a tiny black/white point.
+The icon file is located at /System/Library/Frameworks/UIKit.framework/";

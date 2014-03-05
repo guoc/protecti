@@ -39,8 +39,6 @@
 			<string>com.gviridis.protectiplus</string>
 			<key>PostNotification</key>
 			<string>com.gviridis.protectiplus/UpdatePreferences</string>
-			<key>icon</key>
-			<string>Black_Plus@2x.png</string>
 			<key>key</key>
 			<string>enableStatusBarIcon</string>
 			<key>label</key>
