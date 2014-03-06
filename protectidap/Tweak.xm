@@ -1,3 +1,4 @@
+#import <notify.h>
 #include "../states.h"
 #include "../prefs.h"
 
@@ -38,6 +39,18 @@
         return nil;
     else
         return %orig;
+}
+
+%end
+
+
+
+%hook MCProfileConnection
+
+- (_Bool)changePasscodeFrom:(id)arg1 to:(id)arg2 outError:(id *)arg3 {
+    BOOL r = %orig;
+    notify_post("com.gviridis.protectiplus/SystemPasscodeChanged");
+    return r;
 }
 
 %end

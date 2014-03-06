@@ -569,12 +569,18 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
     }
 }
 
+void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    global_slfe = nil;
+    global_OnceUnlockSuccessfully = NO;
+}
+
 %ctor {
     dlopen("/Library/MobileSubstrate/DynamicLibraries/IconSupport.dylib", RTLD_NOW);
     [[objc_getClass("ISIconSupport") sharedInstance] addExtension:@"com.gviridis.protectiplus"];
     
  CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&enableProtectiPlus,CFSTR("com.gviridis.protectiplus/Enable"),NULL,0); CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&disableProtectiPlus,CFSTR("com.gviridis.protectiplus/Disable"),NULL,0); CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&toggleProtectiPlus,CFSTR("com.gviridis.protectiplus/Toggle"),NULL,0);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&updatePreferences,CFSTR("com.gviridis.protectiplus/UpdatePreferences"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&handleSystemPasscodeChange,CFSTR("com.gviridis.protectiplus/SystemPasscodeChanged"),NULL,0);
     notify_post("com.gviridis.protectiplus/UpdatePreferences");
 
     if (![[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesStatePath]) {
