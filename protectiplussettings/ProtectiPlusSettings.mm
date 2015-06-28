@@ -9,7 +9,6 @@
 #import <Preferences/PSListController.h>
 #import "../states.h"
 #import "../prefs.h"
-#import "PICheck.h"
 
 #define LOCAL(key) [bundle localizedStringForKey:key value:key table:nil]
 
@@ -33,7 +32,7 @@
         notify_post("com.gviridis.protectiplus/Disable");
     }
 }
-    
+
 - (id)getEnabled {
     return getStateObjectForKey(@"enable");
 }
@@ -85,20 +84,7 @@
 @implementation ProtectiPlusSettingsListControllerForProtectedAppNotifications
 - (id)specifiers {
 	if(_specifiers == nil) {
-        if ([PICheck keyIsValid]) {
-            _specifiers = [[self loadSpecifiersFromPlistName:@"Protected App Notifications" target:self] retain];
-        } else {
-            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
-                                                                                target:self
-                                                                                   set:NULL
-                                                                                   get:NULL
-                                                                                detail:Nil
-                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
-                                                                                  edit:Nil];
-            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
-            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
-        }
+        _specifiers = [[self loadSpecifiersFromPlistName:@"Protected App Notifications" target:self] retain];
 	}
 	return _specifiers;
 }
@@ -113,20 +99,7 @@
 @implementation ProtectiPlusSettingsListControllerForProtectedActions
 - (id)specifiers {
 	if(_specifiers == nil) {
-        if ([PICheck keyIsValid]) {
-            _specifiers = [[self loadSpecifiersFromPlistName:@"Protected Actions" target:self] retain];
-        } else {
-            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
-                                                                                target:self
-                                                                                   set:NULL
-                                                                                   get:NULL
-                                                                                detail:Nil
-                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
-                                                                                  edit:Nil];
-            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
-            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
-        }
+        _specifiers = [[self loadSpecifiersFromPlistName:@"Protected Actions" target:self] retain];
 	}
 	return _specifiers;
 }
@@ -161,20 +134,7 @@
 @implementation ProtectiPlusSettingsListControllerForUnprotectedAppNotifications
 - (id)specifiers {
 	if(_specifiers == nil) {
-        if ([PICheck keyIsValid]) {
-            _specifiers = [[self loadSpecifiersFromPlistName:@"Unprotected App Notifications" target:self] retain];
-        } else {
-            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
-                                                                                target:self
-                                                                                   set:NULL
-                                                                                   get:NULL
-                                                                                detail:Nil
-                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
-                                                                                  edit:Nil];
-            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
-            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
-        }
+        _specifiers = [[self loadSpecifiersFromPlistName:@"Unprotected App Notifications" target:self] retain];
 	}
 	return _specifiers;
 }
@@ -199,20 +159,7 @@
 @implementation ProtectiPlusSettingsListControllerForVibrateAndIcon
 - (id)specifiers {
 	if(_specifiers == nil) {
-        if ([PICheck keyIsValid]) {
-            _specifiers = [[self loadSpecifiersFromPlistName:@"Vibrate & Icon" target:self] retain];
-        } else {
-            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
-                                                                                target:self
-                                                                                   set:NULL
-                                                                                   get:NULL
-                                                                                detail:Nil
-                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
-                                                                                  edit:Nil];
-            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
-            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
-        }
+        _specifiers = [[self loadSpecifiersFromPlistName:@"Vibrate & Icon" target:self] retain];
 	}
 	return _specifiers;
 }
@@ -229,20 +176,7 @@
 @implementation ProtectiPlusSettingsListControllerForAdvance
 - (id)specifiers {
 	if(_specifiers == nil) {
-        if ([PICheck keyIsValid]) {
-            _specifiers = [[self loadSpecifiersFromPlistName:@"Advance" target:self] retain];
-        } else {
-            NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-            PSSpecifier* needRegisterSpecifier = [PSSpecifier preferenceSpecifierNamed:nil
-                                                                                target:self
-                                                                                   set:NULL
-                                                                                   get:NULL
-                                                                                detail:Nil
-                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
-                                                                                  edit:Nil];
-            [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
-            _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
-        }
+        _specifiers = [[self loadSpecifiersFromPlistName:@"Advance" target:self] retain];
 	}
 	return _specifiers;
 }
@@ -317,12 +251,7 @@
 }
 
 - (NSString *) statusForSpecifier: (PSSpecifier *) specifier {
-    NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesKeyPath] && [PICheck keyIsReallyValid]) {
-        return LOCAL(@"Registered");
-    } else {
-        return LOCAL(@"Unregistered");
-    }
+    return @"[[:";
 }
 
 -(void)respring {

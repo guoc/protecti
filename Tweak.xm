@@ -4,7 +4,6 @@
 #import <IconSupport/ISIconSupport.h>
 #include "states.h"
 #include "prefs.h"
-#import "PICheck.h"
 
 #import "WelcomeAlertDelegate.h"
 
@@ -127,7 +126,7 @@ static NSMutableArray *global_PendingNotifications;
     NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
     _alertView = [[[UIAlertView alloc] initWithTitle:LOCAL(@"PASSWORD_ALERT_TITLE") message:LOCAL(@"PASSWORD_ALERT_MESSAGE") delegate:self cancelButtonTitle:LOCAL(@"PASSWORD_ALERT_DISMISS") otherButtonTitles:nil] autorelease];
     _alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
-    
+
     NSString * password = GetValueOf_Password;
     if (![[password stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]] isEqualToString:@""])
     {   //说明包含非数字 使用默认键盘
@@ -137,9 +136,9 @@ static NSMutableArray *global_PendingNotifications;
     {
         [[_alertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeNumberPad];
     }
-    
+
     [[_alertView textFieldAtIndex:0] setDelegate:self];
-    
+
     [_alertView show];
 }
 
@@ -149,9 +148,9 @@ static NSMutableArray *global_PendingNotifications;
 //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             _disableProtectiPlusWithoutPassword();
 //        });
-        
+
         [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
-        
+
         textField.text = @"";
     }
 	return YES;
@@ -185,7 +184,7 @@ void killApplicationByAppID(NSString *appID) {
     if (foregroundAppPID) {
         system([[@"kill -9 " stringByAppendingFormat:@"%d", foregroundAppPID] cStringUsingEncoding:NSASCIIStringEncoding]);
     } else {
-        
+
     }
 }
 
@@ -208,7 +207,7 @@ void killApplicationUnderLockScreenIfNecessary() {
     if (appIdentifierIsInProtectedAppsList(foregroundAppID)) {
         killApplicationByAppID(foregroundAppID);
     } else {
-    
+
     }
 }
 
@@ -228,7 +227,7 @@ void welcomeCallback (CFUserNotificationRef userNotification, CFOptionFlags resp
     if ((responseFlags & 0x3) == kCFUserNotificationDefaultResponse) {
         [[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"prefs:root=Protecti+&path=Tutorial"]];
     } else {
-        
+
     }
     CFRunLoopRemoveSource(CFRunLoopGetMain(), runLoopSource, kCFRunLoopCommonModes);
     CFRelease(runLoopSource);
@@ -328,9 +327,9 @@ void setPendingNotificationApplicationIconIndicatorInFolder(SBFolder *folder) {
     if (!global_PendingNotifications) {
         global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
     }
-    
+
     SBIconViewMap *homescreen = [%c(SBIconViewMap) homescreenMap];  // for get iconview
-    SBIconModel *iconModel = [homescreen iconModel];    // for get icon    
+    SBIconModel *iconModel = [homescreen iconModel];    // for get icon
     NSSet *allSubfolderIcons = [folder folderIcons];
 
     for (NSString *identifier in global_PendingNotifications) {
@@ -343,7 +342,7 @@ void setPendingNotificationApplicationIconIndicatorInFolder(SBFolder *folder) {
                 if ([folder.folder listContainingIcon:icon]) {
                     indicateIconView([homescreen mappedIconViewForIcon:folder]);
                 } else {
-                
+
                 }
             }
         }
@@ -354,7 +353,7 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
     if (!global_PendingNotifications) {
         global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
     }
-    
+
     SBFolder *rootFolder = [[[%c(SBIconViewMap) homescreenMap] iconModel] rootFolder];
 
     setPendingNotificationApplicationIconIndicatorInFolder(rootFolder);
@@ -368,7 +367,7 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 //    if (IndicateMissingNotification_IsEnabled && !global_Enable) {
 //        setPendingNotificationApplicationIconIndicatorInRootFolder();
 //    } else {
-//        
+//
 //    }
 //}
 //
@@ -382,7 +381,7 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 //    if (IndicateMissingNotification_IsEnabled && !global_Enable) {
 //        setPendingNotificationApplicationIconIndicatorInFolder([arg1 folder]);
 //    } else {
-//        
+//
 //    }
 //}
 //
@@ -396,16 +395,16 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 //    if (IndicateMissingNotification_IsEnabled && !global_Enable) {
 //        setPendingNotificationApplicationIconIndicatorInRootFolder();
 //    }
-    
+
     if (!global_NotJustRespring) {  // Just respring
         global_NotJustRespring = YES;
         if (HideAppIcons_IsEnabled) {
             iconsVisibilityChanged();
         }
     } else {
-        
+
     }
-    
+
     if (![getStateObjectForKey(@"hasInstalled") boolValue]) {
         saveStateObjectForKey([NSNumber numberWithBool:YES], @"hasInstalled");
         WelcomeAlertDelegate *welcomeDelegate = [[WelcomeAlertDelegate alloc] init];
@@ -442,26 +441,26 @@ void _enableProtectiPlus() {
         return;
 
     addStatusBarItemIfNecessaryNoMatterGlobalEnable();
-    
+
     vibrateIfNecessary();
-    
+
     if (AllowAccessNotificationCenter_IsEnabled) {
         refreshNotificationCenter();
     }
-    
+
     if (HideAppIcons_IsEnabled) {
         SBIconModel *iconModel = [(SBIconController *)[%c(SBIconController) sharedInstance] model];
         global_IconState = [[iconModel iconState] retain];
     }
-    
+
     global_Enable = YES;
-    
+
     global_LockScreenCameraNeedReInitSession = YES;
-    
+
     if (HideAppIcons_IsEnabled) {
         iconsVisibilityChanged();
     }
-        
+
     global_EnableTime = [[NSDate alloc] init];
 
     if ([[%c(SBUserAgent) sharedUserAgent] deviceIsLocked]) {
@@ -469,11 +468,11 @@ void _enableProtectiPlus() {
     } else {
         exitForegroundApplicationIfNecessary();
     }
-    
+
     updateIconBadgeView();
 
 //    [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally]; // clean icons badge
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (HideAppIcons_IsEnabled) {
             saveStateObjectForKey(global_IconState, @"iconState");
@@ -489,17 +488,17 @@ void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
 
 void _disableProtectiPlusWithoutPassword() {
     removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
-    
+
     vibrateIfNecessary();
-    
+
     if (AllowAccessNotificationCenter_IsEnabled) {
         refreshNotificationCenter();
     }
-    
+
     global_Enable = NO;
-    
+
     global_LockScreenCameraNeedReInitSession = YES;
-    
+
     if (HideAppIcons_IsEnabled) {
         iconsVisibilityChanged();
         if (!global_IconState) {
@@ -509,11 +508,11 @@ void _disableProtectiPlusWithoutPassword() {
         iconsVisibilityChanged();
         //        [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally];
     }
-    
+
     global_EnableTime = nil;
-    
+
     updateIconBadgeView();
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         saveStateObjectForKey([NSNull null], @"enableTime");
         saveStateObjectForKey([NSNumber numberWithBool:global_Enable], @"enable");
@@ -523,7 +522,7 @@ void _disableProtectiPlusWithoutPassword() {
 void _disableProtectiPlus() {
     if (!global_Enable) //Disabled already
         return;
-    
+
     if (
         EnablePassword_IsEnabled && ![GetValueOf_Password isEqualToString:@""]
         &&
@@ -568,29 +567,27 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 %ctor {
     dlopen("/Library/MobileSubstrate/DynamicLibraries/IconSupport.dylib", RTLD_NOW);
     [[objc_getClass("ISIconSupport") sharedInstance] addExtension:@"com.gviridis.protectiplus"];
-    
+
  CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&enableProtectiPlus,CFSTR("com.gviridis.protectiplus/Enable"),NULL,0); CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&disableProtectiPlus,CFSTR("com.gviridis.protectiplus/Disable"),NULL,0); CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&toggleProtectiPlus,CFSTR("com.gviridis.protectiplus/Toggle"),NULL,0);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&updatePreferences,CFSTR("com.gviridis.protectiplus/UpdatePreferences"),NULL,0);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&handleSystemPasscodeChange,CFSTR("com.gviridis.protectiplus/SystemPasscodeChanged"),NULL,0);
     notify_post("com.gviridis.protectiplus/UpdatePreferences");
 
     if (![[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesStatePath]) {
-        
+
     } else {
         global_Enable = [getStateObjectForKey(@"enable") boolValue];
         global_IconState = getStateObjectForKey(@"iconState");
         global_EnableTime = getStateObjectForKey(@"enableTime");
 //        global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
     }
-    
+
     if (!global_AllApplicationIcons)
         global_AllApplicationIcons = [[NSMutableArray alloc] init];
-        
+
     if (AutoEnable_IsEnabled) {
         _enableProtectiPlus();
     }
-    
-    [PICheck tryToSaveKey];
 }
 
 
@@ -655,7 +652,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 //        if (IndicateMissingNotification_IsEnabled && global_Enable) {
 //            addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
 //        } else {
-//            
+//
 //        }
         if (appIdentifierIsInProtectedAppsList([(BBBulletin *)arg2 sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
@@ -687,7 +684,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 //        if (IndicateMissingNotification_IsEnabled && global_Enable) {
 //            addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
 //        } else {
-//            
+//
 //        }
         if (appIdentifierIsInProtectedAppsList([(BBBulletin *)arg2 sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
@@ -735,7 +732,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 //        if (IndicateMissingNotification_IsEnabled && global_Enable) {
 //            addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
 //        } else {
-//            
+//
 //        }
         if (appIdentifierIsInProtectedAppsList([(BBBulletin *)arg2 sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
@@ -768,7 +765,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
         if (IndicateMissingNotification_IsEnabled && global_Enable) {
             addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
         } else {
-            
+
         }
     } else {
         %orig;
@@ -796,7 +793,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
             } else {
                 return r;
             }
-            
+
         }
     } else {
         return r;
@@ -909,7 +906,7 @@ void vibrateNotificationIfNecessary() {
 //        if (IndicateMissingNotification_IsEnabled && global_Enable) {
 //            addAndSavePendingNotificationAppID([self applicationBundleID]);
 //        } else {
-//            
+//
 //        }
         return %orig(nil);
     } else {
@@ -929,7 +926,7 @@ void turnOnBacklightIfNecessary() {
         [[%c(SBBacklightController) sharedInstance] resetLockScreenIdleTimer];
         [[%c(SBBacklightController) sharedInstance] turnOnScreenFullyWithBacklightSource:0];
     } else {
-    
+
     }
 }
 
@@ -1268,7 +1265,7 @@ void turnOnBacklightIfNecessary() {
         global_LockScreenCameraNeedReInitSession = NO;
         [self _createCameraViewControllerWithNewSessionID];
     } else {
-    
+
     }
     %orig;
 }
@@ -1408,7 +1405,7 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
     } else {
         global_OnceUnlockSuccessfully = NO;
     }
-    return r; 
+    return r;
 }
 
 - (void)remoteLock:(BOOL)arg1 {
@@ -1438,7 +1435,7 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
             [self _addRemoveOrChangePasscodeViewIfNecessary];
         }
     } else {
-        
+
     }
 }*/
 
@@ -1467,7 +1464,7 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
             }
         }
     } else {
-         
+
     }
 }
 
@@ -1697,5 +1694,3 @@ BOOL ccquickChangeSpotlightToLockDeviceIsSet() {
 %end
 
 /****************************************************************************************************************/
-
-
