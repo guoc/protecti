@@ -1,8 +1,0 @@
-"VIBRATE_FOOTERTEXT" = "开启或者关闭Protecti+时振动
-设置->声音->振动 需要开启";
-"Vibrate" = "振动";
-"STATUS_BAR_ICON_FOOTERTEXT" = "开启Protecti+时显示状态栏图标
-这个图标是一个非常小的黑白点
-图标文件位于/System/Library/Frameworks/UIKit.framework/";
-"Status Bar Icon" = "状态栏图标";
-"Vibrate & Icon" = "振动和图标";

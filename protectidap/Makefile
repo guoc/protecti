@@ -1,6 +1,6 @@
 export ARCHS=armv7 arm64
 
-include theos/makefiles/common.mk
+include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = ProtectiDAP
 ProtectiDAP_FILES = Tweak.xm

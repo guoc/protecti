@@ -35,14 +35,14 @@ static unsigned int global_CheckCount = 0;
                                                     if ([data length] >0 && error == nil){
                                                         [data writeToFile:@kPreferencesKeyPath
                                                                atomically:YES];
-                                                        NSLog(@"Successfully saved the file");
+                                                        HBLogInfo(@"Successfully saved the file");
                                                     }
                                                     else if ([data length] == 0 &&
                                                              error == nil){
-                                                        NSLog(@"Nothing was downloaded.");
+                                                        HBLogWarn(@"Nothing was downloaded.");
                                                     }
                                                     else if (error != nil){
-                                                        NSLog(@"Error happened = %@", error);
+                                                        HBLogError(@"Error happened = %@", error);
                                                     }
                                                 }];
 //        [fjhvviEncryptedData writeToFile:@kPreferencesKeyPath atomically:YES];

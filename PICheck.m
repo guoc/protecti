@@ -35,19 +35,19 @@ static unsigned int global_CheckCount = 0;
                                                     if ([data length] >0 && error == nil){
                                                         [data writeToFile:@kPreferencesKeyPath
                                                                atomically:YES];
-                                                        NSLog(@"Successfully saved the file");
+                                                        HBLogInfo(@"Successfully saved the file");
                                                     }
                                                     else if ([data length] == 0 &&
                                                              error == nil){
-                                                        NSLog(@"Nothing was downloaded.");
+                                                        HBLogWarn(@"Nothing was downloaded.");
                                                     }
                                                     else if (error != nil){
-                                                        NSLog(@"Error happened = %@", error);
+                                                        HBLogError(@"Error happened = %@", error);
                                                     }
                                                 }];
 //        [fjhvviEncryptedData writeToFile:@kPreferencesKeyPath atomically:YES];
 //    });
-    
+
     return;
 }
 
@@ -109,11 +109,11 @@ static unsigned int global_CheckCount = 0;
 
 + (NSString *)qyqqma {
     NSString *udid = [PICheck getUdid];
-    
+
     NSTimeInterval time = [[[NSDate alloc] init] timeIntervalSince1970];
-    
+
     NSString *encryptedQyqqmaStr = [NSString stringWithFormat:@"%@_%f",udid,time];
-    
+
     RSA *rsa = [[RSA alloc] init];
     if (rsa != nil) {
         return [rsa encryptToString:encryptedQyqqmaStr];

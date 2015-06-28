@@ -1,9 +1,9 @@
-export ARCHS=armv7 arm64
+ARCHS=armv7 arm64
 
-include theos/makefiles/common.mk
+include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = protectiplustoggleforactivator
 protectiplustoggleforactivator_FILES = Tweak.xm
-protectiplustoggleforactivator_LDFLAGS = -lactivator
+protectiplustoggleforactivator_LIBRARIES = activator
 
 include $(THEOS_MAKE_PATH)/tweak.mk

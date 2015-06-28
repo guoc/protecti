@@ -1,10 +1,12 @@
 #import <notify.h>
 #import <objc/runtime.h>
-#import <CoreFoundation/CFUserNotification.h>
+//#import <CoreFoundation/CFUserNotification.h>
 #import <CoreFoundation/CFRunLoop.h>
 #import <SpringBoard/SBUIController.h>
-#import <Preferences/Preferences.h>
+//#import <Preferences/Preferences.h>
 #import <Preferences/PSSpecifier.h>
+#import <Preferences/PSTableCell.h>
+#import <Preferences/PSListController.h>
 #import "../states.h"
 #import "../prefs.h"
 #import "PICheck.h"
@@ -92,7 +94,7 @@
                                                                                    set:NULL
                                                                                    get:NULL
                                                                                 detail:Nil
-                                                                                  cell:PSGroupCell
+                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
                                                                                   edit:Nil];
             [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
             _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
@@ -120,7 +122,7 @@
                                                                                    set:NULL
                                                                                    get:NULL
                                                                                 detail:Nil
-                                                                                  cell:PSGroupCell
+                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
                                                                                   edit:Nil];
             [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
             _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
@@ -168,7 +170,7 @@
                                                                                    set:NULL
                                                                                    get:NULL
                                                                                 detail:Nil
-                                                                                  cell:PSGroupCell
+                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
                                                                                   edit:Nil];
             [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
             _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
@@ -206,7 +208,7 @@
                                                                                    set:NULL
                                                                                    get:NULL
                                                                                 detail:Nil
-                                                                                  cell:PSGroupCell
+                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
                                                                                   edit:Nil];
             [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
             _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];
@@ -236,7 +238,7 @@
                                                                                    set:NULL
                                                                                    get:NULL
                                                                                 detail:Nil
-                                                                                  cell:PSGroupCell
+                                                                                  cell:[PSTableCell cellTypeFromString:@"PSGroupCell"]
                                                                                   edit:Nil];
             [needRegisterSpecifier setProperty:LOCAL(@"NEED_REGISTER_FOOTERTEXT") forKey:@"footerText"];
             _specifiers = [[NSArray arrayWithObject:needRegisterSpecifier] retain];

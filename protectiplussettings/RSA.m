@@ -9,26 +9,26 @@
 
     NSString *publicKeyPath = @"/Library/PreferenceBundles/ProtectiPlusSettings.bundle/public_key.der";
     if (publicKeyPath == nil) {
-        NSLog(@"Can not find pub.der");
+        HBLogError(@"Can not find pub.der");
         return nil;
     }
 
-    NSDate *publicKeyFileContent = [NSData dataWithContentsOfFile:publicKeyPath];
+    NSData *publicKeyFileContent = [NSData dataWithContentsOfFile:publicKeyPath];
     if (publicKeyFileContent == nil) {
-        NSLog(@"Can not read from pub.der");
+        HBLogError(@"Can not read from pub.der");
         return nil;
     }
 
     certificate = SecCertificateCreateWithData(kCFAllocatorDefault, ( __bridge CFDataRef)publicKeyFileContent);
     if (certificate == nil) {
-        NSLog(@"Can not read certificate from pub.der");
+        HBLogError(@"Can not read certificate from pub.der");
         return nil;
     }
 
     policy = SecPolicyCreateBasicX509();
     OSStatus returnCode = SecTrustCreateWithCertificates(certificate, policy, &trust);
     if (returnCode != 0) {
-        NSLog(@"SecTrustCreateWithCertificates fail. Error Code: %d", (int)returnCode);
+        HBLogError(@"SecTrustCreateWithCertificates fail. Error Code: %d", (int)returnCode);
         return nil;
     }
 
@@ -40,7 +40,7 @@
 
     publicKey = SecTrustCopyPublicKey(trust);
     if (publicKey == nil) {
-        NSLog(@"SecTrustCopyPublicKey fail");
+        HBLogError(@"SecTrustCopyPublicKey fail");
         return nil;
     }
 
@@ -52,7 +52,7 @@
 
     size_t plainLen = [content length];
     if (plainLen > maxPlainLen) {
-        NSLog(@"content(%ld) is too long, must < %ld", plainLen, maxPlainLen);
+        HBLogError(@"content(%ld) is too long, must < %ld", plainLen, maxPlainLen);
         return nil;
     }
 
@@ -68,7 +68,7 @@
 
     NSData *result = nil;
     if (returnCode != 0) {
-        NSLog(@"SecKeyEncrypt fail. Error Code: %d", (int)returnCode);
+        HBLogError(@"SecKeyEncrypt fail. Error Code: %d", (int)returnCode);
     }
     else {
         result = [NSData dataWithBytes:cipher
@@ -139,7 +139,7 @@
     
     NSData *result = nil;
     if (returnCode != 0) {
-        NSLog(@"SecKeyDecrypt fail. Error Code: %d", (int)returnCode);
+        HBLogError(@"SecKeyDecrypt fail. Error Code: %d", (int)returnCode);
     }
     else {
         result = [NSData dataWithBytes:plainText

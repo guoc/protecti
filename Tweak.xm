@@ -1,7 +1,7 @@
 #import <notify.h>
 #include <substrate.h>
 #include <time.h>
-#import <ISIconSupport.h>
+#import <IconSupport/ISIconSupport.h>
 #include "states.h"
 #include "prefs.h"
 #import "PICheck.h"
@@ -9,30 +9,30 @@
 #import "WelcomeAlertDelegate.h"
 
 #import <AudioToolBox/AudioServices.h>
-#import <CoreFoundation/CFUserNotification.h>
+//#import <CoreFoundation/CFUserNotification.h>
 #import <CoreFoundation/CFRunLoop.h>
 
 #import <SpringBoard/SBApplication.h>
 #import <SpringBoard/SBApplicationIcon.h>
 #import <SpringBoard/SBDefaultIconModelStore.h>
+#import <SpringBoard/SBFolder.h>
 #import <SpringBoard/SBIconModel.h>
 #import <SpringBoard/SBIconController.h>
 #import <SpringBoard/SBUserAgent.h>
 #import <SpringBoard/SBUIController.h>
 #import <SpringBoard/SBApplicationController.h>
-#import <SpringBoard/BBBulletin.h>
+#import <BulletinBoard/BBBulletin.h>
 #import <SpringBoard/SBIcon.h>
 #import <SpringBoard/SBIconView.h>
 #import <SpringBoard/SBIconViewMap.h>
 #import <SpringBoard/SBFolderIcon.h>
-#import <SpringBoard/SBFolderIconBackgroundView.h>
+//#import <SpringBoard/SBFolderIconBackgroundView.h>
 #import <SpringBoard/SBLockScreenViewController.h>
-#import <SpringBoard/PLApplicationCameraViewController.h>
-#import <SpringBoard/SBLockScreenCameraController.h>
+//#import <SpringBoard/PLApplicationCameraViewController.h>
+//#import <SpringBoard/SBLockScreenCameraController.h>
 #import <SpringBoard/SBNotificationCenterController.h>
 #import <SpringBoard/SBNotificationCenterViewController.h>
 #import <SpringBoard/SBNotificationsAllModeViewController.h>
-#import <SpringBoard/SBNotificationsMissedModeViewController.h>
 #import <SpringBoard/SBBulletinViewController.h>
 
 #import <ManagedConfiguration/MCPasscodeManager.h>
@@ -43,7 +43,7 @@
 #import <BulletinBoard/BBSound.h>
 #import <BulletinBoard/BBAttachments.h>
 
-#import <UIKit/UIApplication2.h>
+//#import <UIKit/UIApplication2.h>
 
 #import <SpringBoard/SBBacklightController.h>
 
@@ -177,15 +177,6 @@ void refreshNotificationCenter() {
             [allModeBulletinViewController setTableViewNeedsReload];
         }
     }
-    SBNotificationsMissedModeViewController *missedModeViewController = MSHookIvar<SBNotificationsMissedModeViewController *>(viewController, "_missedModeViewController");
-    if (missedModeViewController) {
-        if (![missedModeViewController isKindOfClass:[%c(SBControlCenterController) class]]) {  // work around with multitaskinggestures
-            SBBulletinViewController *missedModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(missedModeViewController, "_bulletinViewController");
-            if (missedModeBulletinViewController) {
-                [missedModeBulletinViewController setTableViewNeedsReload];
-            }
-        }
-    }
 }
 
 void killApplicationByAppID(NSString *appID) {
@@ -274,7 +265,7 @@ void welcomeCallback (CFUserNotificationRef userNotification, CFOptionFlags resp
 
 static void updateIconBadgeView() {
     SBIconModel *iconModel = [[%c(SBIconViewMap) homescreenMap] iconModel];
-    NSMutableSet *allApplicationIcons = [iconModel _applicationIcons];
+    NSSet *allApplicationIcons = [iconModel _applicationIcons];
     for (SBApplicationIcon *icon in allApplicationIcons) {
         [icon noteBadgeDidChange];
     }
@@ -343,7 +334,7 @@ void setPendingNotificationApplicationIconIndicatorInFolder(SBFolder *folder) {
     NSSet *allSubfolderIcons = [folder folderIcons];
 
     for (NSString *identifier in global_PendingNotifications) {
-        SBIcon *icon = [iconModel applicationIconForDisplayIdentifier:identifier];
+        SBIcon *icon = [iconModel applicationIconForBundleIdentifier:identifier];
         if ([folder listContainingIcon:icon]) {
             SBIconView *iconView = [homescreen mappedIconViewForIcon:icon];
             indicateIconView(iconView);
@@ -723,7 +714,9 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 
 // Disable badge change
 - (BOOL)iconViewDisplaysBadges:(id)arg1 {
-    if (global_Enable && appIdentifierIsInProtectedAppsList([[(SBIconView *)arg1 icon] applicationBundleID])) {
+    SBIcon *icon = MSHookIvar<SBIcon *>(arg1, "_icon");
+
+    if (global_Enable && appIdentifierIsInProtectedAppsList([icon applicationBundleID])) {
         return NO;
     } else {
         return %orig;
@@ -1216,9 +1209,9 @@ void turnOnBacklightIfNecessary() {
 //%end
 
 
-// Disable App Slider do not display protected app in app slider
+// Disable App Switcher do not display protected app in app slider
 
-%hook SBAppSliderController
+%hook SBAppSwitcherController
 
 - (void)switcherWasPresented:(BOOL)arg1 {
     %orig;
@@ -1228,7 +1221,8 @@ void turnOnBacklightIfNecessary() {
     for (int i=appList.count-1; i>0; i--)
     {
         if (appIdentifierIsInProtectedAppsList(appList[i]) || appIdentifierIsInHiddenAppsList(appList[i])) {
-            [self _quitAppAtIndex:i];
+            // TODO find a way to quit the item
+//            [self _quitAppAtIndex:i];
         }
     }
 }
@@ -1265,6 +1259,8 @@ void turnOnBacklightIfNecessary() {
 %end
 
 
+// TODO find an alternative class to hook
+/*
 %hook SBLockScreenCameraController
 
 - (void)activateCamera {
@@ -1278,7 +1274,7 @@ void turnOnBacklightIfNecessary() {
 }
 
 %end
-
+*/
 
 
 

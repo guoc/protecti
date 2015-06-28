@@ -1,8 +1,0 @@
-"HALF_SLIDE_UNLOCK_FOOTER" = "这是一种特别的开启/关闭Protecti+的方法。
-该方法判断滑动解锁时手指在屏幕上的横向移动距离，如果在有效范围内，则解锁屏幕并关闭Protecti+；如果不在有效范围内，则解锁屏幕并开启Protecti+。";
-"Enable" = "启用";
-"Minimum Half Slide Distance" = "半滑动最小有效距离";
-"Maximum Half Slide Distance" = "半滑动最大有效距离";
-"HALF_SLIDE_UNLOCK_NOTICE" = "注意：
-您可以将半滑动最小有效距离设置为大于半滑动最大有效距离的值，这样无论怎样滑动解锁都会开启Protecti+，实现了解锁自动开启Protecti+的效果。在做此修改之前，请确保您了解如何关闭Protecti+。";
-"Half Slide Unlock" = "半滑动解锁";

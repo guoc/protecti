@@ -1,5 +1,5 @@
 export ARCHS=armv7 arm64
-include theos/makefiles/common.mk
+include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = ProtectiPlusFlipSwitch
 ProtectiPlusFlipSwitch_FILES = Switch.x
