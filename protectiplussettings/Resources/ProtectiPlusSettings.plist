@@ -50,7 +50,7 @@
 			<key>ALSettingsKeyPrefix</key>
 			<string>ProtectedApp_</string>
 			<key>ALSettingsPath</key>
-			<string>/var/mobile/Library/Preferences/com.gviridis.protectiplus.plist</string>
+			<string>/var/mobile/Library/Preferences/com.gviridis.protectiplus.protectedapps.plist</string>
 			<key>ALSingleEnabledMode</key>
 			<false/>
 		</dict>

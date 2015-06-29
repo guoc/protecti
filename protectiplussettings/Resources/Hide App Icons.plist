@@ -11,8 +11,6 @@
 			<false/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>enableHideAppIcons</string>
 			<key>label</key>
@@ -40,7 +38,7 @@
 			<key>ALSettingsKeyPrefix</key>
 			<string>HiddenApp_</string>
 			<key>ALSettingsPath</key>
-			<string>/var/mobile/Library/Preferences/com.gviridis.protectiplus.plist</string>
+			<string>/var/mobile/Library/Preferences/com.gviridis.protectiplus.hiddenApps.plist</string>
 			<key>ALSingleEnabledMode</key>
 			<false/>
 		</dict>

@@ -23,8 +23,6 @@
 			<false/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>allowAccessNotificationCenter</string>
 			<key>label</key>
@@ -43,8 +41,6 @@
 			<false/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>allowAccessControlCenter</string>
 			<key>label</key>

@@ -5,20 +5,20 @@
 
 @interface ProtectiLAListener_Toggle : NSObject<LAListener> { }
 @end
- 
+
 @implementation ProtectiLAListener_Toggle
- 
+
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event
 {
     ToggleProtectiPlus;
     [event setHandled:YES]; // To prevent the default OS implementation
 }
- 
+
 - (void)activator:(LAActivator *)activator abortEvent:(LAEvent *)event
 {
     // Dismiss your plugin
 }
- 
+
 + (void)load
 {
     [[LAActivator sharedInstance] registerListener:[self new] forName:@"com.gviridis.protectiplustoggleforactivator_toggle"];
@@ -75,4 +75,3 @@
 }
 
 @end
-

@@ -41,7 +41,7 @@
     notify_post("com.gviridis.protectiplus/Disable");
     sleep(3);
     system("rm -f /var/mobile/Library/Preferences/com.gviridis.protectiplus.plist /var/mobile/Library/Preferences/com.gviridis.protectiplus.state.plist");
-    notify_post("com.gviridis.protectiplus/UpdatePreferences");
+	// TODO
 }
 @end
 

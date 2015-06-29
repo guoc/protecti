@@ -17,8 +17,6 @@
 			<true/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>enableIndicateMissingNotification</string>
 			<key>label</key>
@@ -37,8 +35,6 @@
 			<string>missingNotificationIndicatorStyle</string>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>validValues</key>
 			<array>
 				<integer>1</integer>

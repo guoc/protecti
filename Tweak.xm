@@ -6,6 +6,7 @@
 #include "prefs.h"
 
 #import "WelcomeAlertDelegate.h"
+#import "UserDefaults.h"
 
 #import <AudioToolBox/AudioServices.h>
 //#import <CoreFoundation/CFUserNotification.h>
@@ -49,8 +50,6 @@
 
 
 static BOOL global_NotJustRespring = NO;
-
-static NSDictionary *global_Preferences;
 
 static NSMutableArray *global_AllApplicationIcons;
 
@@ -114,9 +113,6 @@ static NSMutableArray *global_PendingNotifications;
 
 
 #define LOCAL(key) [bundle localizedStringForKey:key value:key table:nil]
-
-//extern NSDictionary *global_Preferences;
-//void _disableProtectiPlusWithoutPassword();
 
 @implementation PasswordAlertDelegate
 
@@ -552,6 +548,7 @@ void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringR
 }
 
 void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    HBLogInfo(@"Toggle Protecti %d", global_Enable);
     if (global_Enable) {
         _disableProtectiPlus();
     } else {
@@ -616,17 +613,15 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 
 void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
 
-    [global_Preferences release];
-    global_Preferences = nil;
-    global_Preferences = [[NSDictionary dictionaryWithContentsOfFile:@kPreferencesPath] retain];
+    [UserDefaults updatePreferences];
 }
 
 BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier) {
-    return [[global_Preferences objectForKey:[@"ProtectedApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
+    return [[UserDefaults.sharedDefaults objectForKey:[@"ProtectedApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
 }
 
 BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
-    return [[global_Preferences objectForKey:[@"HiddenApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
+    return [[UserDefaults.sharedDefaults objectForKey:[@"HiddenApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
 }
 
 
@@ -1011,6 +1006,7 @@ void turnOnBacklightIfNecessary() {
 
 // Disable control center pull up
 - (void)_showControlCenterGestureBeganWithLocation:(struct CGPoint)arg1 {
+    HBLogInfo(@"ControlCenter? %@", [UserDefaults.sharedDefaults dictionaryRepresentation]);
     if (!AllowAccessControlCenter_IsEnabled && global_Enable) {
         return;
     } else {

@@ -17,8 +17,6 @@
 			<false/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>enableBypassSystemPasscode</string>
 			<key>label</key>

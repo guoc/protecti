@@ -17,8 +17,6 @@
 			<false/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>noNotificationsForProtectedApps</string>
 			<key>label</key>
@@ -31,8 +29,6 @@
 			<true/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>noNotificationTitleForProtectedApps</string>
 			<key>label</key>
@@ -45,8 +41,6 @@
 			<true/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>noNotificationMessageForProtectedApps</string>
 			<key>label</key>
@@ -63,8 +57,6 @@
 			<false/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>noNotificationSoundForProtectedApps</string>
 			<key>label</key>
@@ -83,8 +75,6 @@
 			<false/>
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
-			<key>PostNotification</key>
-			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>key</key>
 			<string>enableTurnOnBacklighWhenReceiveNewNotifications</string>
 			<key>label</key>
