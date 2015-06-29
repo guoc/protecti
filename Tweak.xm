@@ -6,7 +6,7 @@
 #include "prefs.h"
 
 #import "WelcomeAlertDelegate.h"
-#import "UserDefaults.h"
+#import "PIPreferences.h"
 
 #import <AudioToolBox/AudioServices.h>
 //#import <CoreFoundation/CFUserNotification.h>
@@ -613,15 +613,15 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 
 void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
 
-    [UserDefaults updatePreferences];
+    [PIPreferences updatePreferences];
 }
 
 BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier) {
-    return [[UserDefaults.sharedDefaults objectForKey:[@"ProtectedApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
+    return [[PIPreferences.sharedPreferences objectForKey:[@"ProtectedApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
 }
 
 BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
-    return [[UserDefaults.sharedDefaults objectForKey:[@"HiddenApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
+    return [[PIPreferences.sharedPreferences objectForKey:[@"HiddenApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
 }
 
 
@@ -1006,7 +1006,6 @@ void turnOnBacklightIfNecessary() {
 
 // Disable control center pull up
 - (void)_showControlCenterGestureBeganWithLocation:(struct CGPoint)arg1 {
-    HBLogInfo(@"ControlCenter? %@", [UserDefaults.sharedDefaults dictionaryRepresentation]);
     if (!AllowAccessControlCenter_IsEnabled && global_Enable) {
         return;
     } else {

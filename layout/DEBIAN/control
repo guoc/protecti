@@ -1,6 +1,6 @@
 Package: org.thebigboss.protectiplus
 Name: Protecti+
-Depends: firmware (>= 7.0), mobilesubstrate, preferenceloader, applist, libactivator, com.chpwn.iconsupport, libstatusbar
+Depends: firmware (>= 7.0), mobilesubstrate, preferenceloader, applist, libactivator, com.chpwn.iconsupport, libstatusbar, ws.hbang.common (>= 1.2)
 Version: 1.4.5
 Architecture: iphoneos-arm
 Description: Protect privacy in an elegant way.

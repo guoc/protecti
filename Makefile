@@ -3,10 +3,10 @@ export ARCHS=armv7 arm64
 include theos/makefiles/common.mk
 
 TWEAK_NAME = ProtectiPlus
-ProtectiPlus_FILES = Tweak.xm WelcomeAlertDelegate.m UserDefaults.m
+ProtectiPlus_FILES = Tweak.xm WelcomeAlertDelegate.m PIPreferences.m
 #ProtectiPlus_CFLAGS = -Qunused-arguments
 ProtectiPlus_FRAMEWORKS = UIKit AudioToolBox Security
-ProtectiPlus_LIBRARIES = MobileGestalt
+ProtectiPlus_LIBRARIES = MobileGestalt cephei
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

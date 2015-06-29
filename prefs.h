@@ -4,75 +4,68 @@
 #define kPreferencesPath "/var/mobile/Library/Preferences/com.gviridis.protectiplus.plist"
 #define kPreferencesKeyPath "/var/mobile/Library/Preferences/com.gviridis.protectiplus.key"
 
-typedef enum MissingNotificationIndicatorStyle : NSUInteger {
-    kNone = 0,
-    kTapped,
-    kShadow,
-    kGlow
-} MissingNotificationIndicatorStyle;
-
 #define HalfSlideUnlock_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enableHalfSlideUnlock"] ? [[UserDefaults.sharedDefaults objectForKey:@"enableHalfSlideUnlock"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"enableHalfSlideUnlock"] ? [[PIPreferences.sharedPreferences objectForKey:@"enableHalfSlideUnlock"] boolValue] : NO)
 #define BypassSystemPasscode_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enableBypassSystemPasscode"] ? [[UserDefaults.sharedDefaults objectForKey:@"enableBypassSystemPasscode"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"enableBypassSystemPasscode"] ? [[PIPreferences.sharedPreferences objectForKey:@"enableBypassSystemPasscode"] boolValue] : NO)
 #define Vibrate_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enableVibrate"] ? [[UserDefaults.sharedDefaults objectForKey:@"enableVibrate"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"enableVibrate"] ? [[PIPreferences.sharedPreferences objectForKey:@"enableVibrate"] boolValue] : NO)
 #define StatusBarIcon_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enableStatusBarIcon"] ? [[UserDefaults.sharedDefaults objectForKey:@"enableStatusBarIcon"] boolValue] : YES)
+([PIPreferences.sharedPreferences objectForKey:@"enableStatusBarIcon"] ? [[PIPreferences.sharedPreferences objectForKey:@"enableStatusBarIcon"] boolValue] : YES)
 #define TurnOnBacklighWhenReceiveNewNotifications_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enableTurnOnBacklighWhenReceiveNewNotifications"] ? [[UserDefaults.sharedDefaults objectForKey:@"enableTurnOnBacklighWhenReceiveNewNotifications"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"enableTurnOnBacklighWhenReceiveNewNotifications"] ? [[PIPreferences.sharedPreferences objectForKey:@"enableTurnOnBacklighWhenReceiveNewNotifications"] boolValue] : NO)
 #define VibrateNotifications_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enableVibrateNotifications"] ? [[UserDefaults.sharedDefaults objectForKey:@"enableVibrateNotifications"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"enableVibrateNotifications"] ? [[PIPreferences.sharedPreferences objectForKey:@"enableVibrateNotifications"] boolValue] : NO)
 #define AllowAccessNotificationCenter_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"allowAccessNotificationCenter"] ? [[UserDefaults.sharedDefaults objectForKey:@"allowAccessNotificationCenter"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"allowAccessNotificationCenter"] ? [[PIPreferences.sharedPreferences objectForKey:@"allowAccessNotificationCenter"] boolValue] : NO)
 #define AllowAccessControlCenter_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"allowAccessControlCenter"] ? [[UserDefaults.sharedDefaults objectForKey:@"allowAccessControlCenter"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"allowAccessControlCenter"] ? [[PIPreferences.sharedPreferences objectForKey:@"allowAccessControlCenter"] boolValue] : NO)
 #define HideAppIcons_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enableHideAppIcons"] ? [[UserDefaults.sharedDefaults objectForKey:@"enableHideAppIcons"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"enableHideAppIcons"] ? [[PIPreferences.sharedPreferences objectForKey:@"enableHideAppIcons"] boolValue] : NO)
 #define IndicateMissingNotification_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enableIndicateMissingNotification"] ? [[UserDefaults.sharedDefaults objectForKey:@"enableIndicateMissingNotification"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"enableIndicateMissingNotification"] ? [[PIPreferences.sharedPreferences objectForKey:@"enableIndicateMissingNotification"] boolValue] : NO)
 #define GetValueOf_MissingNotificationIndicatorStyle \
-([UserDefaults.sharedDefaults objectForKey:@"missingNotificationIndicatorStyle"] ? [[UserDefaults.sharedDefaults objectForKey:@"missingNotificationIndicatorStyle"] integerValue] : kTapped)
+([PIPreferences.sharedPreferences objectForKey:@"missingNotificationIndicatorStyle"] ? [[PIPreferences.sharedPreferences objectForKey:@"missingNotificationIndicatorStyle"] integerValue] : kTapped)
 #define GetValueOf_HalfSlideUnlock_MinDistance \
-([UserDefaults.sharedDefaults objectForKey:@"halfSlideUnlock_MinDistance"] ? [[UserDefaults.sharedDefaults objectForKey:@"halfSlideUnlock_MinDistance"] floatValue] : 0.2)
+([PIPreferences.sharedPreferences objectForKey:@"halfSlideUnlock_MinDistance"] ? [[PIPreferences.sharedPreferences objectForKey:@"halfSlideUnlock_MinDistance"] floatValue] : 0.2)
 #define GetValueOf_HalfSlideUnlock_MaxDistance \
-([UserDefaults.sharedDefaults objectForKey:@"halfSlideUnlock_MaxDistance"] ? [[UserDefaults.sharedDefaults objectForKey:@"halfSlideUnlock_MaxDistance"] floatValue] : 0.33)
+([PIPreferences.sharedPreferences objectForKey:@"halfSlideUnlock_MaxDistance"] ? [[PIPreferences.sharedPreferences objectForKey:@"halfSlideUnlock_MaxDistance"] floatValue] : 0.33)
 //#define NoLoadSettingsWhenEnable_IsEnabled \
-//([UserDefaults.sharedDefaults objectForKey:@"noLoadSettingsWhenEnable"] ? [[UserDefaults.sharedDefaults objectForKey:@"noLoadSettingsWhenEnable"] boolValue] : NO)
+//([PIPreferences.sharedPreferences objectForKey:@"noLoadSettingsWhenEnable"] ? [[PIPreferences.sharedPreferences objectForKey:@"noLoadSettingsWhenEnable"] boolValue] : NO)
 
 #define NoNotificationsForProtectedApps_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"noNotificationsForProtectedApps"] ? [[UserDefaults.sharedDefaults objectForKey:@"noNotificationsForProtectedApps"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"noNotificationsForProtectedApps"] ? [[PIPreferences.sharedPreferences objectForKey:@"noNotificationsForProtectedApps"] boolValue] : NO)
 #define NoNotificationTitleForProtectedApps_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"noNotificationTitleForProtectedApps"] ? [[UserDefaults.sharedDefaults objectForKey:@"noNotificationTitleForProtectedApps"] boolValue] : YES)
+([PIPreferences.sharedPreferences objectForKey:@"noNotificationTitleForProtectedApps"] ? [[PIPreferences.sharedPreferences objectForKey:@"noNotificationTitleForProtectedApps"] boolValue] : YES)
 #define NoNotificationMessageForProtectedApps_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"noNotificationMessageForProtectedApps"] ? [[UserDefaults.sharedDefaults objectForKey:@"noNotificationMessageForProtectedApps"] boolValue] : YES)
+([PIPreferences.sharedPreferences objectForKey:@"noNotificationMessageForProtectedApps"] ? [[PIPreferences.sharedPreferences objectForKey:@"noNotificationMessageForProtectedApps"] boolValue] : YES)
 #define NoNotificationSoundForProtectedApps_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"noNotificationSoundForProtectedApps"] ? [[UserDefaults.sharedDefaults objectForKey:@"noNotificationSoundForProtectedApps"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"noNotificationSoundForProtectedApps"] ? [[PIPreferences.sharedPreferences objectForKey:@"noNotificationSoundForProtectedApps"] boolValue] : NO)
 
 #define NoNotificationsForUnprotectedApps_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"noNotificationsForUnprotectedApps"] ? [[UserDefaults.sharedDefaults objectForKey:@"noNotificationsForUnprotectedApps"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"noNotificationsForUnprotectedApps"] ? [[PIPreferences.sharedPreferences objectForKey:@"noNotificationsForUnprotectedApps"] boolValue] : NO)
 #define NoNotificationTitleForUnprotectedApps_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"noNotificationTitleForUnprotectedApps"] ? [[UserDefaults.sharedDefaults objectForKey:@"noNotificationTitleForUnprotectedApps"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"noNotificationTitleForUnprotectedApps"] ? [[PIPreferences.sharedPreferences objectForKey:@"noNotificationTitleForUnprotectedApps"] boolValue] : NO)
 #define NoNotificationMessageForUnprotectedApps_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"noNotificationMessageForUnprotectedApps"] ? [[UserDefaults.sharedDefaults objectForKey:@"noNotificationMessageForUnprotectedApps"] boolValue] : YES)
+([PIPreferences.sharedPreferences objectForKey:@"noNotificationMessageForUnprotectedApps"] ? [[PIPreferences.sharedPreferences objectForKey:@"noNotificationMessageForUnprotectedApps"] boolValue] : YES)
 #define NoNotificationSoundForUnprotectedApps_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"noNotificationSoundForUnprotectedApps"] ? [[UserDefaults.sharedDefaults objectForKey:@"noNotificationSoundForUnprotectedApps"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"noNotificationSoundForUnprotectedApps"] ? [[PIPreferences.sharedPreferences objectForKey:@"noNotificationSoundForUnprotectedApps"] boolValue] : NO)
 
 #define AutoEnable_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"autoEnable"] ? [[UserDefaults.sharedDefaults objectForKey:@"autoEnable"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"autoEnable"] ? [[PIPreferences.sharedPreferences objectForKey:@"autoEnable"] boolValue] : NO)
 
 #define EnablePassword_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"enablePassword"] ? [[UserDefaults.sharedDefaults objectForKey:@"enablePassword"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"enablePassword"] ? [[PIPreferences.sharedPreferences objectForKey:@"enablePassword"] boolValue] : NO)
 #define GetValueOf_Password \
-([UserDefaults.sharedDefaults objectForKey:@"password"] ? : @"")
+([PIPreferences.sharedPreferences objectForKey:@"password"] ? : @"")
 
 
 
 /********************************************* Hidden Options ****************************************************************/
 #define DisableActivateAppSlider_IsEnabled \
-([UserDefaults.sharedDefaults objectForKey:@"disableActivateAppSlider"] ? [[UserDefaults.sharedDefaults objectForKey:@"disableActivateAppSlider"] boolValue] : NO)
+([PIPreferences.sharedPreferences objectForKey:@"disableActivateAppSlider"] ? [[PIPreferences.sharedPreferences objectForKey:@"disableActivateAppSlider"] boolValue] : NO)
 #define GetValueOf_DisabledFolders \
-([UserDefaults.sharedDefaults objectForKey:@"disabledFolders"] ? : nil)
+([PIPreferences.sharedPreferences objectForKey:@"disabledFolders"] ? : nil)
 /*****************************************************************************************************************************/
 
 #endif
