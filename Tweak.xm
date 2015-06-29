@@ -641,7 +641,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 %hook SBBulletinBannerController
 
 // Disable banner notification.
-- (void)observer:(id)arg1 addBulletin:(id)arg2 forFeed:(unsigned int)arg3 {
+- (void)observer:(id)observer addBulletin:(id)bulletin forFeed:(unsigned)feed playLightsAndSirens:(BOOL)sirens withReply:(id)reply {
     if (global_Enable) {
         turnOnBacklightIfNecessary();
 //        if (IndicateMissingNotification_IsEnabled && global_Enable) {
@@ -649,7 +649,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 //        } else {
 //
 //        }
-        if (appIdentifierIsInProtectedAppsList([(BBBulletin *)arg2 sectionID])) {
+        if (appIdentifierIsInProtectedAppsList([(BBBulletin *)bulletin sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
                 return;
             } else {
@@ -673,7 +673,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 %hook SBBulletinModalController
 
 // Disable alert notification
-- (void)observer:(id)arg1 addBulletin:(id)arg2 forFeed:(unsigned int)arg3 {
+- (void)observer:(id)observer addBulletin:(id)bulletin forFeed:(unsigned)feed playLightsAndSirens:(BOOL)sirens withReply:(id)reply {
     if (global_Enable) {
         turnOnBacklightIfNecessary();
 //        if (IndicateMissingNotification_IsEnabled && global_Enable) {
@@ -681,7 +681,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 //        } else {
 //
 //        }
-        if (appIdentifierIsInProtectedAppsList([(BBBulletin *)arg2 sectionID])) {
+        if (appIdentifierIsInProtectedAppsList([(BBBulletin *)bulletin sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
                 return;
             } else {
@@ -721,7 +721,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 %hook SBLockScreenNotificationListController
 
 // Disable lock screen notification
-- (void)observer:(id)arg1 addBulletin:(id)arg2 forFeed:(unsigned int)arg3 {
+- (void)observer:(id)observer addBulletin:(id)bulletin forFeed:(unsigned)feed playLightsAndSirens:(BOOL)sirens withReply:(id)reply {
     if (global_Enable) {
         turnOnBacklightIfNecessary();
 //        if (IndicateMissingNotification_IsEnabled && global_Enable) {
@@ -729,7 +729,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 //        } else {
 //
 //        }
-        if (appIdentifierIsInProtectedAppsList([(BBBulletin *)arg2 sectionID])) {
+        if (appIdentifierIsInProtectedAppsList([(BBBulletin *)bulletin sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
                 return;
             } else {
@@ -1019,7 +1019,7 @@ void turnOnBacklightIfNecessary() {
 %hook SBApplication
 
 // Disable launch from tapping
-- (BOOL)icon:(id)arg1 launchFromLocation:(int)arg2 {
+- (BOOL)icon:(id)icon launchFromLocation:(int)location context:(id)context {
     if (!global_Enable) {
         BOOL r = %orig;
 //        [global_PendingNotifications removeObject:[arg1 applicationBundleID]];
@@ -1101,11 +1101,11 @@ void turnOnBacklightIfNecessary() {
 
 %hook SpringBoard
 
-- (void)_openURLCore:(id)arg1 display:(id)arg2 animating:(BOOL)arg3 sender:(id)arg4 additionalActivationFlags:(id)arg5 activationHandler:(id)arg6 {
+- (void)_openURLCore:(id)core display:(id)display animating:(BOOL)animating sender:(id)sender activationSettings:(id)settings withResult:(id)result {
     if (!global_Enable) {
         return %orig;
     } else {
-        if (appIdentifierIsInProtectedAppsList([(SBApplication *)arg2 displayIdentifier])) {
+        if (appIdentifierIsInProtectedAppsList([(SBApplication *)display displayIdentifier])) {
             return;
         } else {
             return %orig;
@@ -1238,7 +1238,7 @@ void turnOnBacklightIfNecessary() {
 
 
 
-%hook PLApplicationCameraViewController
+%hook CAMApplicationViewController
 
 - (id)initWithSessionID:(id)arg1 usesCameraLocationBundleID:(_Bool)arg2 startPreviewImmediately:(_Bool)arg3 {
     if (global_Enable) {
@@ -1631,8 +1631,8 @@ BOOL ccquickChangeSpotlightToLockDeviceIsSet() {
 
 %hook SBAppToAppWorkspaceTransaction
 
-- (id)initWithWorkspace:(id)arg1 alertManager:(id)arg2 from:(id)arg3 to:(id)arg4 activationHandler:(id)arg5 {
-    if (global_Enable && appIdentifierIsInProtectedAppsList([arg4 displayIdentifier])) {
+- (id)initWithAlertManager:(id)alertManager from:(id)from to:(id)to withResult:(id)result {
+    if (global_Enable && appIdentifierIsInProtectedAppsList([to displayIdentifier])) {
         return nil;
     } else {
         return %orig;
@@ -1649,7 +1649,7 @@ BOOL ccquickChangeSpotlightToLockDeviceIsSet() {
 
 %hook SBUIController
 
-- (BOOL)_activateAppSwitcherFromSide:(int)arg1 {
+- (BOOL)_activateAppSwitcher {
     if (global_Enable && DisableActivateAppSlider_IsEnabled) {
         return NO;
     } else {
