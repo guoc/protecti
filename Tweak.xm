@@ -14,7 +14,10 @@
 
 #import <SpringBoard/SBApplication.h>
 #import <SpringBoard/SBApplicationIcon.h>
+#import <SpringBoard/SBAppSwitcherModel.h>
 #import <SpringBoard/SBDefaultIconModelStore.h>
+#import <SpringBoard/SBDisplayItem.h>
+#import <SpringBoard/SBDisplayLayout.h>
 #import <SpringBoard/SBFolder.h>
 #import <SpringBoard/SBIconModel.h>
 #import <SpringBoard/SBIconController.h>
@@ -86,7 +89,8 @@ void removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
 
 void turnOnBacklightIfNecessary();
 void vibrateNotificationIfNecessary();
-//
+
+void removeProtectedOrHiddenAppsInAppSwitcher();
 
 BOOL ccquickIsInstalled();
 BOOL ccquickChangeSpotlightToLockDeviceIsSet();
@@ -448,6 +452,8 @@ void _enableProtectiPlus() {
         SBIconModel *iconModel = [(SBIconController *)[%c(SBIconController) sharedInstance] model];
         global_IconState = [[iconModel iconState] retain];
     }
+
+    removeProtectedOrHiddenAppsInAppSwitcher();
 
     global_Enable = YES;
 
@@ -1200,28 +1206,18 @@ void turnOnBacklightIfNecessary() {
 //
 //%end
 
-
 // Disable App Switcher do not display protected app in app slider
 
-%hook SBAppSwitcherController
-
-- (void)switcherWasPresented:(BOOL)arg1 {
-    %orig;
-    if (!global_Enable)
-        return;
-    NSMutableArray *appList = MSHookIvar<NSMutableArray *>(self, "_appList");
-    for (int i=appList.count-1; i>0; i--)
-    {
-        if (appIdentifierIsInProtectedAppsList(appList[i]) || appIdentifierIsInHiddenAppsList(appList[i])) {
-            // TODO find a way to quit the item
-//            [self _quitAppAtIndex:i];
+void removeProtectedOrHiddenAppsInAppSwitcher() {
+    NSArray *displayLayouts = [[%c(SBAppSwitcherModel) sharedInstance] _recentsFromPrefs];
+    for (SBDisplayLayout *displayLayout in displayLayouts) {
+        SBDisplayItem *displayItem = displayLayout.displayItems[0];
+        NSString *appIdentifier = displayItem.displayIdentifier;
+        if (appIdentifierIsInProtectedAppsList(appIdentifier) || appIdentifierIsInHiddenAppsList(appIdentifier)) {
+            [[%c(SBAppSwitcherModel) sharedInstance] remove: displayLayout];
         }
     }
 }
-
-%end
-
-
 
 %hook SBAssistantController
 
