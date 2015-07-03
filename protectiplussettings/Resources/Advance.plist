@@ -13,24 +13,6 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>AUTO_ENABLE_FOOTERTEXT</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.gviridis.protectiplus</string>
-			<key>key</key>
-			<string>autoEnable</string>
-			<key>label</key>
-			<string>Auto Enable</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -71,14 +53,6 @@
 			<string>Half Slide Unlock</string>
 			<key>detail</key>
 			<string>ProtectiPlusSettingsListControllerForHalfSlideUnlock</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>label</key>
-			<string>Photos Access</string>
-			<key>detail</key>
-			<string>ProtectiPlusSettingsListControllerForPhotosAccess</string>
 		</dict>
 		<dict>
 			<key>cell</key>

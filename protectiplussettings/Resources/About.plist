@@ -14,59 +14,6 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>REGISTER_STATUS_FOOTERTEXT</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSTitleValueCell</string>
-			<key>get</key>
-			<string>statusForSpecifier:</string>
-			<key>label</key>
-			<string>Register Status</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSButtonCell</string>
-			<key>action</key>
-			<string>respring</string>
-			<key>label</key>
-			<string>Respring</string>
-			<key>confirmation</key>
-			<dict>
-				<key>title</key>
-				<string>REGISTER_STATUS_CONFIRMATION_TITLE</string>
-				<key>prompt</key>
-				<string>REGISTER_STATUS_CONFIRMATION_PROMPT</string>
-				<key>okTitle</key>
-				<string>Ok</string>
-				<key>cancelTitle</key>
-				<string>Cancel</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>QUESTIONS_AND_ANSWERS_FOOTERTEXT</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSListItemCell</string>
-			<key>defaults</key>
-			<string>com.gviridis.protectiplus.state</string>
-			<key>action</key>
-			<string>openQuestionsAndAnswers</string>
-			<key>label</key>
-			<string>Q &amp; A</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>footerText</key>
 			<string>CONTACT_AUTHOR_FOOTERTEXT</string>
 		</dict>
 		<dict>
