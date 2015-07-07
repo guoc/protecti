@@ -1,9 +1,0 @@
-Package: com.gviridis.protectiplustoggleforactivator
-Name: protectiplustoggleforactivator
-Depends: mobilesubstrate
-Version: 1.0.0
-Architecture: iphoneos-arm
-Description: Protecti+ toggle for Activator
-Maintainer: gviridis
-Author: gviridis
-Section: Tweaks
