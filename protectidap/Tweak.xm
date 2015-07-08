@@ -2,6 +2,7 @@
 #include "../states.h"
 #include "../prefs.h"
 
+#import <UIKit/UIKit.h>
 
 %hook UIImagePickerController
 
@@ -54,7 +55,3 @@
 }
 
 %end
-
-
-
-

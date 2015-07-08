@@ -554,7 +554,7 @@ void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringR
 }
 
 void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
-    HBLogInfo(@"Toggle Protecti %d", global_Enable);
+    NSLog(@"Toggle Protecti %d", global_Enable);
     if (global_Enable) {
         _disableProtectiPlus();
     } else {

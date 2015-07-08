@@ -1,4 +1,6 @@
 #include <objc/runtime.h>
+#include <dlfcn.h>
+
 #import <libactivator/libactivator.h>
 
 #import "../states.h"
