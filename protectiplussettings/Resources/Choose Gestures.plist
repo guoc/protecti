@@ -8,15 +8,15 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
-			<string>Toggle Protecti+</string>
+			<string>Enable/Disable Protecti+</string>
 			<key>isController</key>
 			<true/>
 			<key>bundle</key>
 			<string>LibActivator</string>
 			<key>activatorListener</key>
-			<string>com.gviridis.protectiplustoggleforactivator</string>
+			<string>com.gviridis.protectiplustoggleforactivator_toggle</string>
 		</dict>
-		<!-- <dict>
+		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>label</key>
@@ -39,7 +39,7 @@
 			<string>LibActivator</string>
 			<key>activatorListener</key>
 			<string>com.gviridis.protectiplustoggleforactivator_disable</string>
-		</dict> -->
+		</dict>
 	</array>
 	<key>title</key>
 	<string>Choose Gestures</string>
