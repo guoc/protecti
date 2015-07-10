@@ -31,8 +31,6 @@
 			<string>1</string>
 			<key>label</key>
 			<string>Choose Hidden App Icons</string>
-			<key>ALAllowsSelection</key>
-			<string>1</string>
 			<key>ALChangeNotification</key>
 			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>ALSettingsKeyPrefix</key>
