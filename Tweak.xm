@@ -449,7 +449,7 @@ void _enableProtectiPlus() {
     }
 
     if (HideAppIcons_IsEnabled) {
-        SBIconModel *iconModel = [(SBIconController *)[%c(SBIconController) sharedInstance] model];
+        SBIconModel *iconModel = [(SBIconController *)[objc_getClass("SBIconController") sharedInstance] model];
         global_IconState = [[iconModel iconState] retain];
     }
 
