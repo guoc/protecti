@@ -36,7 +36,7 @@
 			<key>ALSettingsKeyPrefix</key>
 			<string>HiddenApp_</string>
 			<key>ALSettingsPath</key>
-			<string>/var/mobile/Library/Preferences/com.gviridis.protectiplus.hiddenApps.plist</string>
+			<string>/var/mobile/Library/Preferences/com.gviridis.protectiplus.hiddenapps.plist</string>
 			<key>ALSingleEnabledMode</key>
 			<false/>
 		</dict>
