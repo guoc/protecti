@@ -168,7 +168,7 @@ static NSMutableArray *global_PendingNotifications;
 
 
 void refreshNotificationCenter() {
-    SBNotificationCenterViewController *viewController = [[%c(SBNotificationCenterController) sharedInstance] viewController];
+    SBNotificationCenterViewController *viewController = (SBNotificationCenterViewController *)[[%c(SBNotificationCenterController) sharedInstance] viewController];
     SBNotificationsAllModeViewController *allModeViewController = MSHookIvar<SBNotificationsAllModeViewController *>(viewController, "_allModeViewController");
     if (allModeViewController) {
         SBBulletinViewController *allModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(allModeViewController, "_bulletinViewController");
@@ -354,7 +354,7 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
         global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
     }
 
-    SBFolder *rootFolder = [[[%c(SBIconViewMap) homescreenMap] iconModel] rootFolder];
+    SBFolder *rootFolder = (SBFolder *)[[[%c(SBIconViewMap) homescreenMap] iconModel] rootFolder];
 
     setPendingNotificationApplicationIconIndicatorInFolder(rootFolder);
 }
@@ -1176,8 +1176,9 @@ void turnOnBacklightIfNecessary() {
 
 - (BOOL)isIconVisible:(SBApplicationIcon *)icon {
     BOOL r = %orig;
-    if (HideAppIcons_IsEnabled && global_Enable && appIdentifierIsInHiddenAppsList([icon applicationBundleID]))
+    if (HideAppIcons_IsEnabled && global_Enable && appIdentifierIsInHiddenAppsList([icon applicationBundleID])) {
         return NO;
+    }
     return r;
 }
 
@@ -1214,7 +1215,7 @@ void removeProtectedOrHiddenAppsInAppSwitcher() {
         SBDisplayItem *displayItem = displayLayout.displayItems[0];
         NSString *appIdentifier = displayItem.displayIdentifier;
         if (appIdentifierIsInProtectedAppsList(appIdentifier) || appIdentifierIsInHiddenAppsList(appIdentifier)) {
-            [[%c(SBAppSwitcherModel) sharedInstance] remove: displayLayout];
+            [(SBAppSwitcherModel *)[%c(SBAppSwitcherModel) sharedInstance] remove: displayLayout];
         }
     }
 }

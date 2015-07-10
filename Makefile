@@ -1,6 +1,6 @@
 export ARCHS=armv7 arm64
 
-include theos/makefiles/common.mk
+include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = ProtectiPlus
 ProtectiPlus_FILES = Tweak.xm WelcomeAlertDelegate.m PIPreferences.m

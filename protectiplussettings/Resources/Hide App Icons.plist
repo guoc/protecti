@@ -31,14 +31,12 @@
 			<string>1</string>
 			<key>label</key>
 			<string>Choose Hidden App Icons</string>
-			<key>ALAllowsSelection</key>
-			<string>1</string>
 			<key>ALChangeNotification</key>
 			<string>com.gviridis.protectiplus/UpdatePreferences</string>
 			<key>ALSettingsKeyPrefix</key>
 			<string>HiddenApp_</string>
 			<key>ALSettingsPath</key>
-			<string>/var/mobile/Library/Preferences/com.gviridis.protectiplus.hiddenApps.plist</string>
+			<string>/var/mobile/Library/Preferences/com.gviridis.protectiplus.hiddenapps.plist</string>
 			<key>ALSingleEnabledMode</key>
 			<false/>
 		</dict>
