@@ -1,7 +1,7 @@
 {
 	group = "Protecti+";
-	title = "Enable Protecti+";
-	description = "Enable Protecti+ for Activator";
+	title = "Disable Protecti+";
+	description = "Disable Protecti+ for Activator";
 	"compatible-modes" = (
 		springboard,
 		application,
