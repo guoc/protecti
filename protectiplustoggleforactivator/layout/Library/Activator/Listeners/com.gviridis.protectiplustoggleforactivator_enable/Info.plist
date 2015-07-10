@@ -1,4 +1,5 @@
 {
+	group = "Protecti+";
 	title = "Enable Protecti+";
 	description = "Enable Protecti+ for Activator";
 	"compatible-modes" = (
