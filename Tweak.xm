@@ -1584,7 +1584,7 @@ void addStatusBarItemIfNecessaryNoMatterGlobalEnable() {
     }
 }
 void removeStatusBarItemIfNecessaryNoMatterGlobalEnable() {
-    if (StatusBarIcon_IsEnabled && [[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
     {
 //        [[UIApplication sharedApplication] removeStatusBarItem:14];
         [[PIStatusBarIcon sharedInstance] hideIcon];
