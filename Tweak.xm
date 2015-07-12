@@ -78,6 +78,7 @@ void _disableProtectiPlusWithoutPassword();
 void _disableProtectiPlus();
 void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier);
 BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier);
 
@@ -571,8 +572,11 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
     dlopen("/Library/MobileSubstrate/DynamicLibraries/IconSupport.dylib", RTLD_NOW);
     [[objc_getClass("ISIconSupport") sharedInstance] addExtension:@"com.gviridis.protectiplus"];
 
- CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&enableProtectiPlus,CFSTR("com.gviridis.protectiplus/Enable"),NULL,0); CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&disableProtectiPlus,CFSTR("com.gviridis.protectiplus/Disable"),NULL,0); CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&toggleProtectiPlus,CFSTR("com.gviridis.protectiplus/Toggle"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&enableProtectiPlus,CFSTR("com.gviridis.protectiplus/Enable"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&disableProtectiPlus,CFSTR("com.gviridis.protectiplus/Disable"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&toggleProtectiPlus,CFSTR("com.gviridis.protectiplus/Toggle"),NULL,0);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&updatePreferences,CFSTR("com.gviridis.protectiplus/UpdatePreferences"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&resetPreferences,CFSTR("com.gviridis.protectiplus/ResetPreferences"),NULL,0);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&handleSystemPasscodeChange,CFSTR("com.gviridis.protectiplus/SystemPasscodeChanged"),NULL,0);
     notify_post("com.gviridis.protectiplus/UpdatePreferences");
 
@@ -620,6 +624,11 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
 
     [PIPreferences updatePreferences];
+}
+
+void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+
+    [PIPreferences resetPreferences];
 }
 
 BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier) {

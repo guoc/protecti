@@ -47,6 +47,7 @@ typedef enum MissingNotificationIndicatorStyle : NSUInteger {
 @interface PIPreferences: HBPreferences
 
 + (void)updatePreferences;
++ (void)resetPreferences;
 
 #pragma mark Singleton Methods
 + (id)sharedPreferences;
