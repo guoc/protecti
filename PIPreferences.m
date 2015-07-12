@@ -1,5 +1,39 @@
 #import "PIPreferences.h"
 
+#define PREF_VALUES @{ \
+    kPIPreferencesEnableHalfSlideUnlockKey: @NO, \
+    kPIPreferencesEnableBypassSystemPasscodeKey: @NO, \
+    kPIPreferencesEnableVibrateKey: @NO, \
+    kPIPreferencesEnableStatusBarIconKey: @YES, \
+    kPIPreferencesEnableTurnOnBacklighWhenReceiveNewNotificationsKey: @NO, \
+    kPIPreferencesEnableVibrateNotificationsKey: @NO, \
+    kPIPreferencesAllowAccessNotificationCenterKey: @NO, \
+    kPIPreferencesAllowAccessControlCenterKey: @NO, \
+    kPIPreferencesEnableHideAppIconsKey: @NO, \
+    kPIPreferencesEnableIndicateMissingNotificationKey: @NO, \
+    kPIPreferencesMissingNotificationIndicatorStyleKey: [NSNumber numberWithInt: kTapped], \
+    kPIPreferencesHalfSlideUnlock_MinDistanceKey: @0.2, \
+    kPIPreferencesHalfSlideUnlock_MaxDistanceKey: @0.33, \
+    \
+    kPIPreferencesNoNotificationsForProtectedAppsKey: @NO, \
+    kPIPreferencesNoNotificationTitleForProtectedAppsKey: @YES, \
+    kPIPreferencesNoNotificationMessageForProtectedAppsKey: @YES, \
+    kPIPreferencesNoNotificationSoundForProtectedAppsKey: @NO, \
+    \
+    kPIPreferencesNoNotificationsForUnprotectedAppsKey: @NO, \
+    kPIPreferencesNoNotificationTitleForUnprotectedAppsKey: @NO, \
+    kPIPreferencesNoNotificationMessageForUnprotectedAppsKey: @YES, \
+    kPIPreferencesNoNotificationSoundForUnprotectedAppsKey: @NO, \
+    \
+    kPIPreferencesAutoEnableKey: @NO, \
+    \
+    kPIPreferencesEnablePasswordKey: @NO, \
+    kPIPreferencesPasswordKey: @"", \
+    \
+    kPIPreferencesDisableActivateAppSliderKey: @NO \
+}
+
+
 // http://www.galloway.me.uk/tutorials/singleton-classes/
 // http://sharedinstance.net/2014/11/settings-the-right-way/
 
@@ -18,6 +52,11 @@ static HBPreferences *sharedPreferences = nil;
     [hiddenApps enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
         [PIPreferences.sharedPreferences setObject:object forKey: key];
     }];
+}
+
++ (void)resetPreferences {
+    CFPreferencesSetMultiple(nil, (CFArrayRef)[PREF_VALUES allKeys], (CFStringRef)kPIPreferencesDomain, CFSTR("mobile"), kCFPreferencesCurrentHost );
+    [[self sharedPreferences] synchronize];
 }
 
 #pragma mark Singleton Methods
@@ -48,38 +87,7 @@ static HBPreferences *sharedPreferences = nil;
 }
 - (id)init {
   self = (PIPreferences *)[[HBPreferences alloc] initWithIdentifier:kPIPreferencesDomain];
-  [self registerDefaults:@{
-        kPIPreferencesEnableHalfSlideUnlockKey: @NO,
-        kPIPreferencesEnableBypassSystemPasscodeKey: @NO,
-        kPIPreferencesEnableVibrateKey: @NO,
-        kPIPreferencesEnableStatusBarIconKey: @YES,
-        kPIPreferencesEnableTurnOnBacklighWhenReceiveNewNotificationsKey: @NO,
-        kPIPreferencesEnableVibrateNotificationsKey: @NO,
-        kPIPreferencesAllowAccessNotificationCenterKey: @NO,
-        kPIPreferencesAllowAccessControlCenterKey: @NO,
-        kPIPreferencesEnableHideAppIconsKey: @NO,
-        kPIPreferencesEnableIndicateMissingNotificationKey: @NO,
-        kPIPreferencesMissingNotificationIndicatorStyleKey: [NSNumber numberWithInt: kTapped],
-        kPIPreferencesHalfSlideUnlock_MinDistanceKey: @0.2,
-        kPIPreferencesHalfSlideUnlock_MaxDistanceKey: @0.33,
-
-        kPIPreferencesNoNotificationsForProtectedAppsKey: @NO,
-        kPIPreferencesNoNotificationTitleForProtectedAppsKey: @YES,
-        kPIPreferencesNoNotificationMessageForProtectedAppsKey: @YES,
-        kPIPreferencesNoNotificationSoundForProtectedAppsKey: @NO,
-
-        kPIPreferencesNoNotificationsForUnprotectedAppsKey: @NO,
-        kPIPreferencesNoNotificationTitleForUnprotectedAppsKey: @NO,
-        kPIPreferencesNoNotificationMessageForUnprotectedAppsKey: @YES,
-        kPIPreferencesNoNotificationSoundForUnprotectedAppsKey: @NO,
-
-        kPIPreferencesAutoEnableKey: @NO,
-
-        kPIPreferencesEnablePasswordKey: @NO,
-        kPIPreferencesPasswordKey: @"",
-
-        kPIPreferencesDisableActivateAppSliderKey: @NO,
-    }];
+  [self registerDefaults:PREF_VALUES];
   return self;
 }
 - (void)dealloc {

@@ -38,10 +38,13 @@
 }
 
 -(void)restoreDefaults {
-    notify_post("com.gviridis.protectiplus/Disable");
+	notify_post("com.gviridis.protectiplus/Disable");
+	notify_post("com.gviridis.protectiplus/ResetPreferences");
     sleep(3);
-    system("rm -f /var/mobile/Library/Preferences/com.gviridis.protectiplus.plist /var/mobile/Library/Preferences/com.gviridis.protectiplus.state.plist");
-	// TODO
+	system("rm -f /var/mobile/Library/Preferences/com.gviridis.protectiplus.plist");
+	system("rm -f /var/mobile/Library/Preferences/com.gviridis.protectiplus.state.plist");
+	system("rm -f /var/mobile/Library/Preferences/com.gviridis.protectiplus.protectedapps.plist");
+	system("rm -f /var/mobile/Library/Preferences/com.gviridis.protectiplus.hiddenapps.plist");
 }
 @end
 
