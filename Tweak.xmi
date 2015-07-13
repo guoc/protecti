@@ -4,6 +4,7 @@
 #import <IconSupport/ISIconSupport.h>
 #include "states.h"
 #include "prefs.h"
+#import "PIStatusBarIcon.h"
 
 #import "WelcomeAlertDelegate.h"
 #import "PIPreferences.h"
@@ -50,43 +51,75 @@
 
 #import <SpringBoard/SBBacklightController.h>
 
-
+#import "PasswordAlertDelegate.h"
 
 static BOOL global_NotJustRespring = NO;
 
 static NSMutableArray *global_AllApplicationIcons;
 
-static BOOL global_LockScreenCameraNeedReInitSession = NO;
 static BOOL global_NoVibrateWhenEnable = NO;
 
 static id global_slfe;
 static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(float)arg1 percentScrolledVelocity:(float)arg2 targetScrollPercentage:(float)arg3
 static BOOL global_OnceUnlockSuccessfully = NO;
 static BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;    //Get value in global_HalfSlideUnlock_DeviceHasSystemPasscodeSet SBDeviceLockController - (BOOL)deviceHasPasscodeSet
-static void vibrateIfNecessary();
 
 //
 
-void check();
-void refreshNotificationCenter();
-void exitForegroundApplicationIfNecessary();
-void killApplicationUnderLockScreenIfNecessary();
-static void iconsVisibilityChanged();
+/* Toggle Functions */
+
+static BOOL global_Enable;
+
 void _enableProtectiPlus();
 void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 void _disableProtectiPlusWithoutPassword();
 void _disableProtectiPlus();
 void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
-void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+
+void vibrateIfNecessary();
+void removeProtectedOrHiddenAppsInAppSwitcher();
+void killApplicationUnderLockScreenIfNecessary();
+void exitForegroundApplicationIfNecessary();
+void updateIconBadgeView();
+void killApplicationByAppID(NSString *appID);
+
 BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier);
 BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier);
+
+static NSDictionary *global_IconState;
+static NSDate *global_EnableTime;
+
+static BOOL global_LockScreenCameraNeedReInitSession = NO;
+
+extern BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;
+extern BOOL global_OnceUnlockSuccessfully;
+extern BOOL global_NoVibrateWhenEnable;
+
+/* End Of Toggle Functions */
+
+
+/* Status Bar Icon Functions */
 
 void addStatusBarItemIfNecessary();
 //void removeStatusBarItemIfNecessary();
 void addStatusBarItemIfNecessaryNoMatterGlobalEnable();
 void removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
 
+/* End Of Status Bar Icon Functions */
+
+
+/* Helpers */
+
+static void refreshNotificationCenter();
+static void iconsVisibilityChanged();
+
+/* End Of Helpers */
+
+void check();
+
+void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 
 void turnOnBacklightIfNecessary();
 void vibrateNotificationIfNecessary();
@@ -96,80 +129,14 @@ void removeProtectedOrHiddenAppsInAppSwitcher();
 BOOL ccquickIsInstalled();
 BOOL ccquickChangeSpotlightToLockDeviceIsSet();
 
-static BOOL global_Enable;
-static NSDictionary *global_IconState;
-static NSDate *global_EnableTime;
 static NSMutableArray *global_PendingNotifications;
 
+#include "disable_open_folders.xm"
 
+/* Helpers */
 
-/****************** Password *********************************/
-
-@interface PasswordAlertDelegate : NSObject <UITextFieldDelegate, UIAlertViewDelegate>
-@property (retain) UIAlertView *alertView;
-- (void)showAlert;
-
-//- (id)init;
-//- (void)dealloc;
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
-//- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex;
-@end
-
-
-
-#define LOCAL(key) [bundle localizedStringForKey:key value:key table:nil]
-
-@implementation PasswordAlertDelegate
-
-@synthesize alertView = _alertView;
-
-- (void)showAlert {
-    NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-    _alertView = [[[UIAlertView alloc] initWithTitle:LOCAL(@"PASSWORD_ALERT_TITLE") message:LOCAL(@"PASSWORD_ALERT_MESSAGE") delegate:self cancelButtonTitle:LOCAL(@"PASSWORD_ALERT_DISMISS") otherButtonTitles:nil] autorelease];
-    _alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
-
-    NSString * password = GetValueOf_Password;
-    if (![[password stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]] isEqualToString:@""])
-    {   //说明包含非数字 使用默认键盘
-        [[_alertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeDefault];
-    }
-    else
-    {
-        [[_alertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeNumberPad];
-    }
-
-    [[_alertView textFieldAtIndex:0] setDelegate:self];
-
-    [_alertView show];
-}
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    if ([[textField.text stringByReplacingCharactersInRange:range withString:string] isEqualToString:GetValueOf_Password])
-    {
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            _disableProtectiPlusWithoutPassword();
-//        });
-
-        [self.alertView dismissWithClickedButtonIndex:0 animated:YES];
-
-        textField.text = @"";
-    }
-	return YES;
-}
-
-//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index {
-//    if (index == 1) {
-//        [[UIApplication sharedApplication] openURL: [NSURL URLWithString:@"prefs:root=Protecti+&path=Tutorial"]];
-//    }
-//}
-@end
-
-/************* End of Password *******************************/
-
-
-
-void refreshNotificationCenter() {
-    SBNotificationCenterViewController *viewController = (SBNotificationCenterViewController *)[[%c(SBNotificationCenterController) sharedInstance] viewController];
+static void refreshNotificationCenter() {
+    SBNotificationCenterViewController *viewController = (SBNotificationCenterViewController *)[[objc_getClass("SBNotificationCenterController") sharedInstance] viewController];
     SBNotificationsAllModeViewController *allModeViewController = MSHookIvar<SBNotificationsAllModeViewController *>(viewController, "_allModeViewController");
     if (allModeViewController) {
         SBBulletinViewController *allModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(allModeViewController, "_bulletinViewController");
@@ -179,20 +146,189 @@ void refreshNotificationCenter() {
     }
 }
 
-void killApplicationByAppID(NSString *appID) {
-    SBApplication *foregroundApp = [[%c(SBApplicationController) sharedInstance] applicationWithDisplayIdentifier:appID];
-    int foregroundAppPID = [foregroundApp pid];
-    if (foregroundAppPID) {
-        system([[@"kill -9 " stringByAppendingFormat:@"%d", foregroundAppPID] cStringUsingEncoding:NSASCIIStringEncoding]);
+static void iconsVisibilityChanged() {
+    SBIconModel *iconModel = [(SBIconController *)[objc_getClass("SBIconController") sharedInstance] model];
+    NSSet *_hiddenIconTags = MSHookIvar<NSSet *>(iconModel, "_hiddenIconTags");
+    NSSet *_visibleIconTags = MSHookIvar<NSSet *>(iconModel, "_visibleIconTags");
+    if (_hiddenIconTags!=nil && _visibleIconTags!=nil) {
+        NSMutableSet *hiddenIconTags = [NSMutableSet setWithSet:_hiddenIconTags];
+        NSMutableSet *visibleIconTags = [NSMutableSet setWithSet:_visibleIconTags];
+        [iconModel setVisibilityOfIconsWithVisibleTags:visibleIconTags hiddenTags:hiddenIconTags];
+        [iconModel layout];
+    }
+}
+
+/* End of Helpers */
+
+
+
+/* Toggle Functions */
+
+void _enableProtectiPlus() {
+    if (global_Enable)  //Enabled already
+        return;
+
+    addStatusBarItemIfNecessaryNoMatterGlobalEnable();
+
+    vibrateIfNecessary();
+
+    if (AllowAccessNotificationCenter_IsEnabled) {
+        refreshNotificationCenter();
+    }
+
+    if (HideAppIcons_IsEnabled) {
+        SBIconModel *iconModel = [(SBIconController *)[objc_getClass("SBIconController") sharedInstance] model];
+        global_IconState = [[iconModel iconState] retain];
+    }
+
+    removeProtectedOrHiddenAppsInAppSwitcher();
+
+    global_Enable = YES;
+
+    global_LockScreenCameraNeedReInitSession = YES;
+
+    if (HideAppIcons_IsEnabled) {
+        iconsVisibilityChanged();
+    }
+
+    global_EnableTime = [[NSDate alloc] init];
+
+    if ([[objc_getClass("SBUserAgent") sharedUserAgent] deviceIsLocked]) {
+        killApplicationUnderLockScreenIfNecessary();
+    } else {
+        exitForegroundApplicationIfNecessary();
+    }
+
+    updateIconBadgeView();
+
+//    [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally]; // clean icons badge
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        if (HideAppIcons_IsEnabled) {
+            saveStateObjectForKey(global_IconState, @"iconState");
+        }
+        saveStateObjectForKey(global_EnableTime, @"enableTime");
+        saveStateObjectForKey([NSNumber numberWithBool:global_Enable], @"enable");
+    });
+}
+
+void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    _enableProtectiPlus();
+}
+
+void _disableProtectiPlusWithoutPassword() {
+    removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
+
+    vibrateIfNecessary();
+
+    if (AllowAccessNotificationCenter_IsEnabled) {
+        refreshNotificationCenter();
+    }
+
+    global_Enable = NO;
+
+    global_LockScreenCameraNeedReInitSession = YES;
+
+    if (HideAppIcons_IsEnabled) {
+        iconsVisibilityChanged();
+        if (!global_IconState) {
+            global_IconState = getStateObjectForKey(@"iconState");
+        }
+        [global_IconState writeToFile:[[[objc_getClass("SBDefaultIconModelStore") sharedInstance] currentIconStateURL] path] atomically:YES];
+        iconsVisibilityChanged();
+        //        [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally];
+    }
+
+    global_EnableTime = nil;
+
+    updateIconBadgeView();
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        saveStateObjectForKey([NSNull null], @"enableTime");
+        saveStateObjectForKey([NSNumber numberWithBool:global_Enable], @"enable");
+    });
+}
+
+void _disableProtectiPlus() {
+    if (!global_Enable) //Disabled already
+        return;
+
+    if (
+        EnablePassword_IsEnabled && ![GetValueOf_Password isEqualToString:@""]
+        &&
+        (
+         (
+          global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+          &&
+          (
+           !BypassSystemPasscode_IsEnabled
+           ||
+           (BypassSystemPasscode_IsEnabled && global_OnceUnlockSuccessfully)
+          )
+         )
+         ||
+         !global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+        )
+       ) {
+        PasswordAlertDelegate *passwordDelegate = [[%c(PasswordAlertDelegate) alloc] init];
+        [passwordDelegate showAlert];
+    } else {
+        _disableProtectiPlusWithoutPassword();
+    }
+}
+
+void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    _disableProtectiPlus();
+}
+
+void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    NSLog(@"Toggle Protecti %d", global_Enable);
+    if (global_Enable) {
+        _disableProtectiPlus();
+    } else {
+        _enableProtectiPlus();
+    }
+}
+
+void vibrateIfNecessary() {
+    if (Vibrate_IsEnabled && !global_NoVibrateWhenEnable)
+    {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    }
+}
+
+void updateIconBadgeView() {
+    SBIconModel *iconModel = [[objc_getClass("SBIconViewMap") homescreenMap] iconModel];
+    NSSet *allApplicationIcons = [iconModel _applicationIcons];
+    for (SBApplicationIcon *icon in allApplicationIcons) {
+        [icon noteBadgeDidChange];
+    }
+}
+
+void removeProtectedOrHiddenAppsInAppSwitcher() {
+    NSArray *displayLayouts = [[objc_getClass("SBAppSwitcherModel") sharedInstance] _recentsFromPrefs];
+    for (SBDisplayLayout *displayLayout in displayLayouts) {
+        SBDisplayItem *displayItem = displayLayout.displayItems[0];
+        NSString *appIdentifier = displayItem.displayIdentifier;
+        if (appIdentifierIsInProtectedAppsList(appIdentifier) || appIdentifierIsInHiddenAppsList(appIdentifier)) {
+            [(SBAppSwitcherModel *)[objc_getClass("SBAppSwitcherModel") sharedInstance] remove: displayLayout];
+        }
+    }
+}
+
+void killApplicationUnderLockScreenIfNecessary() {
+    NSString *foregroundAppID = [[objc_getClass("SBUserAgent") sharedUserAgent] foregroundApplicationDisplayID];
+    if (appIdentifierIsInProtectedAppsList(foregroundAppID)) {
+        killApplicationByAppID(foregroundAppID);
     } else {
 
     }
 }
 
 void exitForegroundApplicationIfNecessary() {
-    NSString *foregroundAppID = [[%c(SBUserAgent) sharedUserAgent] foregroundApplicationDisplayID];
+    NSString *foregroundAppID = [[objc_getClass("SBUserAgent") sharedUserAgent] foregroundApplicationDisplayID];
     if (foregroundAppID && appIdentifierIsInProtectedAppsList(foregroundAppID)) {
-        [[%c(SBUIController) sharedInstance] clickedMenuButton];
+        [[objc_getClass("SBUIController") sharedInstance] clickedMenuButton];
 //        [(SBUIController *)[%c(SBUIController) sharedInstance] _handleButtonEventToSuspendDisplays:YES displayWasSuspendedOut:NULL];
         if (![foregroundAppID isEqualToString:@"com.saurik.Cydia"]) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
@@ -203,18 +339,59 @@ void exitForegroundApplicationIfNecessary() {
     }
 }
 
-void killApplicationUnderLockScreenIfNecessary() {
-    NSString *foregroundAppID = [[%c(SBUserAgent) sharedUserAgent] foregroundApplicationDisplayID];
-    if (appIdentifierIsInProtectedAppsList(foregroundAppID)) {
-        killApplicationByAppID(foregroundAppID);
+void killApplicationByAppID(NSString *appID) {
+    SBApplication *foregroundApp = [[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:appID];
+    int foregroundAppPID = [foregroundApp pid];
+    if (foregroundAppPID) {
+        system([[@"kill -9 " stringByAppendingFormat:@"%d", foregroundAppPID] cStringUsingEncoding:NSASCIIStringEncoding]);
     } else {
 
     }
 }
 
+BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier) {
+    return [[PIPreferences.sharedPreferences objectForKey:[@"ProtectedApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
+}
+
+BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
+    return [[PIPreferences.sharedPreferences objectForKey:[@"HiddenApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
+}
+
+/* End Of Toggle Functions */
 
 
 
+/* Status Bar Icon Functions */
+
+void addStatusBarItemIfNecessary() {
+    if (StatusBarIcon_IsEnabled && global_Enable && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
+    {
+//        [[UIApplication sharedApplication] addStatusBarItem:14];
+        [[PIStatusBarIcon sharedInstance] showIcon];
+    }
+}
+//void removeStatusBarItemIfNecessary() {
+//    if (StatusBarIcon_IsEnabled && !global_Enable && [[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
+//    {
+//        [[UIApplication sharedApplication] removeStatusBarItem:14];
+//    }
+//}
+void addStatusBarItemIfNecessaryNoMatterGlobalEnable() {
+    if (StatusBarIcon_IsEnabled && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
+    {
+//        [[UIApplication sharedApplication] addStatusBarItem:14];
+        [[PIStatusBarIcon sharedInstance] showIcon];
+    }
+}
+void removeStatusBarItemIfNecessaryNoMatterGlobalEnable() {
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
+    {
+//        [[UIApplication sharedApplication] removeStatusBarItem:14];
+        [[PIStatusBarIcon sharedInstance] hideIcon];
+    }
+}
+
+/* End Of Status Bar Icon Functions */
 
 
 
@@ -253,38 +430,6 @@ void welcomeCallback (CFUserNotificationRef userNotification, CFOptionFlags resp
  */
 
 
-
-
-
-
-
-
-
-
-
-
-static void updateIconBadgeView() {
-    SBIconModel *iconModel = [[%c(SBIconViewMap) homescreenMap] iconModel];
-    NSSet *allApplicationIcons = [iconModel _applicationIcons];
-    for (SBApplicationIcon *icon in allApplicationIcons) {
-        [icon noteBadgeDidChange];
-    }
-}
-
-
-
-
-static void iconsVisibilityChanged() {
-    SBIconModel *iconModel = [(SBIconController *)[%c(SBIconController) sharedInstance] model];
-    NSSet *_hiddenIconTags = MSHookIvar<NSSet *>(iconModel, "_hiddenIconTags");
-    NSSet *_visibleIconTags = MSHookIvar<NSSet *>(iconModel, "_visibleIconTags");
-    if (_hiddenIconTags!=nil && _visibleIconTags!=nil) {
-        NSMutableSet *hiddenIconTags = [NSMutableSet setWithSet:_hiddenIconTags];
-        NSMutableSet *visibleIconTags = [NSMutableSet setWithSet:_visibleIconTags];
-        [iconModel setVisibilityOfIconsWithVisibleTags:visibleIconTags hiddenTags:hiddenIconTags];
-        [iconModel layout];
-    }
-}
 
 
 void addAndSavePendingNotificationAppID(NSString *appID) {
@@ -417,151 +562,11 @@ void setPendingNotificationApplicationIconIndicatorInRootFolder() {
 
 
 
-
-/********************************** for remove pending notification app icon indicator *****************************
-        [global_PendingNotifications removeObject:[((SBIconView *)arg1).icon applicationBundleID]];
-        saveStateObjectForKey(global_PendingNotifications, @"pendingNotifications");
-/*******************************************************************************************************************/
-
-
-
-
-
-
-
-
-
-
-
 @interface NSDate()
 - (id)initWithString:(NSString *)description;
 @end
 
-void _enableProtectiPlus() {
-    if (global_Enable)  //Enabled already
-        return;
 
-    addStatusBarItemIfNecessaryNoMatterGlobalEnable();
-
-    vibrateIfNecessary();
-
-    if (AllowAccessNotificationCenter_IsEnabled) {
-        refreshNotificationCenter();
-    }
-
-    if (HideAppIcons_IsEnabled) {
-        SBIconModel *iconModel = [(SBIconController *)[objc_getClass("SBIconController") sharedInstance] model];
-        global_IconState = [[iconModel iconState] retain];
-    }
-
-    removeProtectedOrHiddenAppsInAppSwitcher();
-
-    global_Enable = YES;
-
-    global_LockScreenCameraNeedReInitSession = YES;
-
-    if (HideAppIcons_IsEnabled) {
-        iconsVisibilityChanged();
-    }
-
-    global_EnableTime = [[NSDate alloc] init];
-
-    if ([[%c(SBUserAgent) sharedUserAgent] deviceIsLocked]) {
-        killApplicationUnderLockScreenIfNecessary();
-    } else {
-        exitForegroundApplicationIfNecessary();
-    }
-
-    updateIconBadgeView();
-
-//    [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally]; // clean icons badge
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        if (HideAppIcons_IsEnabled) {
-            saveStateObjectForKey(global_IconState, @"iconState");
-        }
-        saveStateObjectForKey(global_EnableTime, @"enableTime");
-        saveStateObjectForKey([NSNumber numberWithBool:global_Enable], @"enable");
-    });
-}
-
-void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
-    _enableProtectiPlus();
-}
-
-void _disableProtectiPlusWithoutPassword() {
-    removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
-
-    vibrateIfNecessary();
-
-    if (AllowAccessNotificationCenter_IsEnabled) {
-        refreshNotificationCenter();
-    }
-
-    global_Enable = NO;
-
-    global_LockScreenCameraNeedReInitSession = YES;
-
-    if (HideAppIcons_IsEnabled) {
-        iconsVisibilityChanged();
-        if (!global_IconState) {
-            global_IconState = getStateObjectForKey(@"iconState");
-        }
-        [global_IconState writeToFile:[[[%c(SBDefaultIconModelStore) sharedInstance] currentIconStateURL] path] atomically:YES];
-        iconsVisibilityChanged();
-        //        [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally];
-    }
-
-    global_EnableTime = nil;
-
-    updateIconBadgeView();
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        saveStateObjectForKey([NSNull null], @"enableTime");
-        saveStateObjectForKey([NSNumber numberWithBool:global_Enable], @"enable");
-    });
-}
-
-void _disableProtectiPlus() {
-    if (!global_Enable) //Disabled already
-        return;
-
-    if (
-        EnablePassword_IsEnabled && ![GetValueOf_Password isEqualToString:@""]
-        &&
-        (
-         (
-          global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
-          &&
-          (
-           !BypassSystemPasscode_IsEnabled
-           ||
-           (BypassSystemPasscode_IsEnabled && global_OnceUnlockSuccessfully)
-          )
-         )
-         ||
-         !global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
-        )
-       ) {
-        PasswordAlertDelegate *passwordDelegate = [[PasswordAlertDelegate alloc] init];
-        [passwordDelegate showAlert];
-    } else {
-        _disableProtectiPlusWithoutPassword();
-    }
-}
-
-void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
-    _disableProtectiPlus();
-}
-
-void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
-    NSLog(@"Toggle Protecti %d", global_Enable);
-    if (global_Enable) {
-        _disableProtectiPlus();
-    } else {
-        _enableProtectiPlus();
-    }
-}
 
 void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
     global_slfe = nil;
@@ -631,13 +636,7 @@ void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef 
     [PIPreferences resetPreferences];
 }
 
-BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier) {
-    return [[PIPreferences.sharedPreferences objectForKey:[@"ProtectedApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
-}
 
-BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
-    return [[PIPreferences.sharedPreferences objectForKey:[@"HiddenApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
-}
 
 
 
@@ -1216,18 +1215,6 @@ void turnOnBacklightIfNecessary() {
 //
 //%end
 
-// Disable App Switcher do not display protected app in app slider
-
-void removeProtectedOrHiddenAppsInAppSwitcher() {
-    NSArray *displayLayouts = [[%c(SBAppSwitcherModel) sharedInstance] _recentsFromPrefs];
-    for (SBDisplayLayout *displayLayout in displayLayouts) {
-        SBDisplayItem *displayItem = displayLayout.displayItems[0];
-        NSString *appIdentifier = displayItem.displayIdentifier;
-        if (appIdentifierIsInProtectedAppsList(appIdentifier) || appIdentifierIsInHiddenAppsList(appIdentifier)) {
-            [(SBAppSwitcherModel *)[%c(SBAppSwitcherModel) sharedInstance] remove: displayLayout];
-        }
-    }
-}
 
 %hook SBAssistantController
 
@@ -1273,60 +1260,6 @@ void removeProtectedOrHiddenAppsInAppSwitcher() {
 
 %end
 */
-
-
-
-
-
-
-
-/***************** avoid tap homebutton directly enter unlock when launch app in lock screen ****************/
-/************************************** FGLE PART1 **********************************************/
-/*
-static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
-
-%hook SBCCQuickLaunchSectionController
-
-- (void)buttonTapped:(id)arg1 {
-    global_NeedFeelDeviceIsPasscodeLocked = YES;
-    %orig;
-}
-%end
-
-%hook SBReturnToLockscreenWorkspaceTransaction
-
-- (void)_commit {
-    global_NeedFeelDeviceIsPasscodeLocked = NO;
-    %orig;
-}
-
-%end
-
-
-
-%hook SBLockScreenCameraController
-
-- (void)_didActivate {
-    global_NeedFeelDeviceIsPasscodeLocked = YES;
-    %orig;
-}
-
-- (void)_setupCameraSlideDownAnimation {
-    global_NeedFeelDeviceIsPasscodeLocked = NO;
-    %orig;
-}
-
-%end
-
-/************************************************************************************************************/
-
-
-
-
-
-
-
-
 
 
 
@@ -1506,107 +1439,6 @@ static BOOL global_NeedFeelDeviceIsPasscodeLocked = NO;
 %end
 
 
-
-
-
-
-
-
-
-
-/******************************** for statues bar icon *************************************************/
-
-#import <libstatusbar/LSStatusBarItem.h>
-
-@interface PIStatusBarIcon : NSObject
-@property (nonatomic, retain) LSStatusBarItem *statusBarItem;
-+ (PIStatusBarIcon *)sharedInstance;
-- (PIStatusBarIcon *)init;
-- (void)delayedInit;
-- (void)showIcon;
-- (void)hideIcon;
-@end
-
-@implementation PIStatusBarIcon
-@synthesize statusBarItem = _statusBarItem;
-+ (PIStatusBarIcon *)sharedInstance {
-  static PIStatusBarIcon* PIStatusBarIcon_sharedInst = nil;
-  @synchronized(self) {
-    if (PIStatusBarIcon_sharedInst == nil) {
-        PIStatusBarIcon_sharedInst = [[PIStatusBarIcon alloc] init];
-    }
-  }
-  return PIStatusBarIcon_sharedInst;
-}
-
-- (PIStatusBarIcon *)init {
-	[self performSelector:@selector(delayedInit) withObject:nil afterDelay:0];
-    return self;
-}
-
-- (void)delayedInit{
-  self.statusBarItem =  [[NSClassFromString(@"LSStatusBarItem") alloc] initWithIdentifier: @"com.gviridis.protectiplus" alignment: StatusBarAlignmentLeft];
-  _statusBarItem.imageName = @"protecti";
-}
-
-- (void)showIcon {
-    self.statusBarItem.visible = YES;
-}
-
-- (void)hideIcon {
-    self.statusBarItem.visible = NO;
-}
-@end
-
-/****************************************************************************************************/
-
-
-
-/******************************** for statues bar icon *************************************************/
-void addStatusBarItemIfNecessary() {
-    if (StatusBarIcon_IsEnabled && global_Enable && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
-    {
-//        [[UIApplication sharedApplication] addStatusBarItem:14];
-        [[PIStatusBarIcon sharedInstance] showIcon];
-    }
-}
-//void removeStatusBarItemIfNecessary() {
-//    if (StatusBarIcon_IsEnabled && !global_Enable && [[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
-//    {
-//        [[UIApplication sharedApplication] removeStatusBarItem:14];
-//    }
-//}
-void addStatusBarItemIfNecessaryNoMatterGlobalEnable() {
-    if (StatusBarIcon_IsEnabled && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
-    {
-//        [[UIApplication sharedApplication] addStatusBarItem:14];
-        [[PIStatusBarIcon sharedInstance] showIcon];
-    }
-}
-void removeStatusBarItemIfNecessaryNoMatterGlobalEnable() {
-    if ([[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
-    {
-//        [[UIApplication sharedApplication] removeStatusBarItem:14];
-        [[PIStatusBarIcon sharedInstance] hideIcon];
-    }
-}
-/****************************************************************************************************/
-
-
-
-
-
-/******************************** for vibrate when enable/disable Protecti+ ************************/
-void vibrateIfNecessary() {
-    if (Vibrate_IsEnabled && !global_NoVibrateWhenEnable)
-    {
-        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-    }
-}
-/****************************************************************************************************/
-
-
-
 /**************************** compitable with CCQuick ***********************************************/
 
 #define kCCQuickDylibPath "/Library/MobileSubstrate/DynamicLibraries/CCQuick.dylib"
@@ -1659,35 +1491,6 @@ BOOL ccquickChangeSpotlightToLockDeviceIsSet() {
     if (global_Enable && DisableActivateAppSlider_IsEnabled) {
         return NO;
     } else {
-        return %orig;
-    }
-}
-
-%end
-
-/****************************************************************************************************************/
-
-
-
-/******************** Hidden option: Disable open folders *******************************************************/
-
-%hook SBIconController
-
-- (void)openFolder:(SBFolder *)arg1 animated:(BOOL)arg2 {
-    if (GetValueOf_DisabledFolders && global_Enable)
-    {
-        NSArray *folders = [GetValueOf_DisabledFolders componentsSeparatedByString:@";"];
-        if ([folders containsObject:[arg1 displayName]])
-        {
-            return;
-        }
-        else
-        {
-            return %orig;
-        }
-    }
-    else
-    {
         return %orig;
     }
 }
