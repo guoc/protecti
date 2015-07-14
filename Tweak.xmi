@@ -2,10 +2,13 @@
 #include <substrate.h>
 #include <time.h>
 #import <IconSupport/ISIconSupport.h>
+
 #include "states.h"
 #include "prefs.h"
-#import "PIStatusBarIcon.h"
 
+#import "compatibility/ccquick.h"
+
+#import "PIStatusBarIcon.h"
 #import "WelcomeAlertDelegate.h"
 #import "PIPreferences.h"
 
@@ -93,10 +96,6 @@ static NSDate *global_EnableTime;
 
 static BOOL global_LockScreenCameraNeedReInitSession = NO;
 
-extern BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;
-extern BOOL global_OnceUnlockSuccessfully;
-extern BOOL global_NoVibrateWhenEnable;
-
 /* End Of Toggle Functions */
 
 
@@ -126,12 +125,12 @@ void vibrateNotificationIfNecessary();
 
 void removeProtectedOrHiddenAppsInAppSwitcher();
 
-BOOL ccquickIsInstalled();
-BOOL ccquickChangeSpotlightToLockDeviceIsSet();
-
 static NSMutableArray *global_PendingNotifications;
 
-#include "disable_open_folders.xm"
+#include "hooks/activate_app_switcher.xm"
+#include "hooks/open_folders.xm"
+#include "hooks/lockscreen_camera_photos.xm"
+#include "hooks/disable_launch_app.xm"
 
 /* Helpers */
 
@@ -1231,35 +1230,6 @@ void turnOnBacklightIfNecessary() {
 
 
 
-%hook CAMApplicationViewController
-
-- (id)initWithSessionID:(id)arg1 usesCameraLocationBundleID:(_Bool)arg2 startPreviewImmediately:(_Bool)arg3 {
-    if (global_Enable) {
-        return %orig(getStateObjectForKey(@"enableTime"), arg2, arg3);
-    } else {
-        return %orig;
-    }
-}
-
-%end
-
-
-// TODO find an alternative class to hook
-/*
-%hook SBLockScreenCameraController
-
-- (void)activateCamera {
-    if (global_LockScreenCameraNeedReInitSession) {
-        global_LockScreenCameraNeedReInitSession = NO;
-        [self _createCameraViewControllerWithNewSessionID];
-    } else {
-
-    }
-    %orig;
-}
-
-%end
-*/
 
 
 
@@ -1437,64 +1407,3 @@ void turnOnBacklightIfNecessary() {
 }
 
 %end
-
-
-/**************************** compitable with CCQuick ***********************************************/
-
-#define kCCQuickDylibPath "/Library/MobileSubstrate/DynamicLibraries/CCQuick.dylib"
-#define kCCQuickSettingsFilePath "/var/mobile/Library/Preferences/com.cunstuck.CCQuick.plist"
-
-BOOL ccquickIsInstalled() {
-    return [[NSFileManager defaultManager]fileExistsAtPath:@kCCQuickDylibPath];
-}
-
-BOOL ccquickChangeSpotlightToLockDeviceIsSet() {
-    if ([[NSFileManager defaultManager] fileExistsAtPath:@kCCQuickSettingsFilePath]) {
-        if ([[[NSDictionary dictionaryWithContentsOfFile:@kCCQuickSettingsFilePath] objectForKey:@"isSpotLock"] boolValue]) {
-            return YES;
-        } else {
-            return NO;
-        }
-    } else {
-        return NO;
-    }
-}
-
-/****************************************************************************************************/
-
-
-
-/********************* Try to disable launch by LastApp and open link in AppStore ******************************/
-/************* Accidentally found the way to disable launch apps in general way. It seems well. ****************/
-
-%hook SBAppToAppWorkspaceTransaction
-
-- (id)initWithAlertManager:(id)alertManager from:(id)from to:(id)to withResult:(id)result {
-    if (global_Enable && appIdentifierIsInProtectedAppsList([to displayIdentifier])) {
-        return nil;
-    } else {
-        return %orig;
-    }
-}
-
-%end
-
-/****************************************************************************************************************/
-
-
-
-/******************** Hidden option: Disable activate App Slider when Protecti+ is enabled **********************/
-
-%hook SBUIController
-
-- (BOOL)_activateAppSwitcher {
-    if (global_Enable && DisableActivateAppSlider_IsEnabled) {
-        return NO;
-    } else {
-        return %orig;
-    }
-}
-
-%end
-
-/****************************************************************************************************************/
