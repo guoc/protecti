@@ -100,10 +100,7 @@ static BOOL global_LockScreenCameraNeedReInitSession = NO;
 
 /* Status Bar Icon Functions */
 
-void addStatusBarItemIfNecessary();
-//void removeStatusBarItemIfNecessary();
-void addStatusBarItemIfNecessaryNoMatterGlobalEnable();
-void removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
+
 
 /* End Of Status Bar Icon Functions */
 
@@ -173,7 +170,7 @@ void _enableProtectiPlus() {
     if (global_Enable)  //Enabled already
         return;
 
-    addStatusBarItemIfNecessaryNoMatterGlobalEnable();
+    [PIStatusBarIcon addStatusBarItemIfNecessary];
 
     vibrateIfNecessary();
 
@@ -222,7 +219,7 @@ void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
 }
 
 void _disableProtectiPlusWithoutPassword() {
-    removeStatusBarItemIfNecessaryNoMatterGlobalEnable();
+    [PIStatusBarIcon removeStatusBarItem];
 
     vibrateIfNecessary();
 
@@ -366,37 +363,7 @@ BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
 
 
 
-/* Status Bar Icon Functions */
 
-void addStatusBarItemIfNecessary() {
-    if (StatusBarIcon_IsEnabled && global_Enable && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
-    {
-//        [[UIApplication sharedApplication] addStatusBarItem:14];
-        [[PIStatusBarIcon sharedInstance] showIcon];
-    }
-}
-//void removeStatusBarItemIfNecessary() {
-//    if (StatusBarIcon_IsEnabled && !global_Enable && [[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
-//    {
-//        [[UIApplication sharedApplication] removeStatusBarItem:14];
-//    }
-//}
-void addStatusBarItemIfNecessaryNoMatterGlobalEnable() {
-    if (StatusBarIcon_IsEnabled && [[UIApplication sharedApplication] respondsToSelector:@selector(addStatusBarImageNamed:)])
-    {
-//        [[UIApplication sharedApplication] addStatusBarItem:14];
-        [[PIStatusBarIcon sharedInstance] showIcon];
-    }
-}
-void removeStatusBarItemIfNecessaryNoMatterGlobalEnable() {
-    if ([[UIApplication sharedApplication] respondsToSelector:@selector(removeStatusBarImageNamed:)])
-    {
-//        [[UIApplication sharedApplication] removeStatusBarItem:14];
-        [[PIStatusBarIcon sharedInstance] hideIcon];
-    }
-}
-
-/* End Of Status Bar Icon Functions */
 
 
 

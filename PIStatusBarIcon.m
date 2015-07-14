@@ -1,7 +1,25 @@
 #import "PIStatusBarIcon.h"
 
+#import "prefs.h"
+#import "PIPreferences.h"
+
+extern BOOL global_Enable;
+
 @implementation PIStatusBarIcon
+
 @synthesize statusBarItem = _statusBarItem;
+
++ (void)addStatusBarItemIfNecessary {
+    if (StatusBarIcon_IsEnabled)
+    {
+        [[PIStatusBarIcon sharedInstance] showIcon];
+    }
+}
+
++ (void)removeStatusBarItem {
+    [[PIStatusBarIcon sharedInstance] hideIcon];
+}
+
 + (PIStatusBarIcon *)sharedInstance {
   static PIStatusBarIcon* PIStatusBarIcon_sharedInst = nil;
   @synchronized(self) {

@@ -1,5 +1,6 @@
-static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3
 extern BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;
+
+static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3
 
 void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
     global_slfe = nil;
@@ -157,7 +158,9 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 %hook SBDeviceLockController
 
 - (BOOL)deviceHasPasscodeSet {
-    addStatusBarItemIfNecessary();  // this is a btw
+    if (global_Enable) {
+        [PIStatusBarIcon addStatusBarItemIfNecessary];  // this is a btw
+    }
     BOOL r = %orig;
     global_HalfSlideUnlock_DeviceHasSystemPasscodeSet = r;
     return r;
