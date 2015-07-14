@@ -63,7 +63,7 @@ static NSMutableArray *global_AllApplicationIcons;
 static BOOL global_NoVibrateWhenEnable = NO;
 
 static id global_slfe;
-static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(float)arg1 percentScrolledVelocity:(float)arg2 targetScrollPercentage:(float)arg3
+static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3
 static BOOL global_OnceUnlockSuccessfully = NO;
 static BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;    //Get value in global_HalfSlideUnlock_DeviceHasSystemPasscodeSet SBDeviceLockController - (BOOL)deviceHasPasscodeSet
 
@@ -1343,7 +1343,7 @@ void turnOnBacklightIfNecessary() {
     }
 }*/
 
-- (void)lockScreenViewWillEndDraggingWithPercentScrolled:(float)arg1 percentScrolledVelocity:(float)arg2 targetScrollPercentage:(float)arg3 {
+- (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3 {
     if (!HalfSlideUnlock_IsEnabled) {
         %orig;
     } else {
@@ -1355,7 +1355,7 @@ void turnOnBacklightIfNecessary() {
     }
 }
 
-- (void)lockScreenViewDidScrollWithNewScrollPercentage:(float)arg1 tracking:(BOOL)arg2 {
+- (void)lockScreenViewDidScrollWithNewScrollPercentage:(double)arg1 tracking:(BOOL)arg2 {
     %orig;
     if (arg1 >= 1.0) {
         if (!HalfSlideUnlock_IsEnabled) {
@@ -1377,11 +1377,11 @@ void turnOnBacklightIfNecessary() {
 
 %hook SBLockScreenSettings
 
-- (float) lockToUnlockSlideCompletionPercentage {
+- (double) lockToUnlockSlideCompletionPercentage {
     if (!HalfSlideUnlock_IsEnabled) {
         return %orig;
     } else {
-        float r = %orig;
+        double r = %orig;
         if (HalfSlideUnlock_IsEnabled) {
             if (GetValueOf_HalfSlideUnlock_MinDistance >= GetValueOf_HalfSlideUnlock_MaxDistance) {
                 return r;
