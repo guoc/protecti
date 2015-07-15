@@ -1,0 +1,256 @@
+#import <BulletinBoard/BBAttachments.h>
+#import <BulletinBoard/BBBulletin.h>
+#import <BulletinBoard/BBSound.h>
+#import <ManagedConfiguration/MCPasscodeManager.h>
+#import <SpringBoard/SBDefaultIconModelStore.h>
+#import <SpringBoard/SBDeviceLockController.h>
+#import <SpringBoard/SBFolder.h>
+#import <SpringBoard/SBFolderIcon.h>
+#import <SpringBoard/SBIcon.h>
+#import <SpringBoard/SBIconController.h>
+#import <SpringBoard/SBIconModel.h>
+#import <SpringBoard/SBLockScreenManager.h>
+#import <SpringBoard/SBLockScreenViewController.h>
+#import <SpringBoard/SBNotificationCenterController.h>
+#import <SpringBoard/SBNotificationCenterViewController.h>
+#import <SpringBoard/SBNotificationsAllModeViewController.h>
+#import <SpringBoard/SBUserAgent.h>
+
+#import <IconSupport/ISIconSupport.h>
+
+#import "compatibility/ccquick.h"
+#import "helpers.h"
+#import "prefs.h"
+#import "states.h"
+#import "PasswordAlertDelegate.h"
+#import "PIPreferences.h"
+#import "PIStatusBarIcon.h"
+#import "WelcomeAlertDelegate.h"
+
+static BOOL global_Enable;
+static BOOL global_NotJustRespring = NO;
+static BOOL global_OnceUnlockSuccessfully = NO;
+static BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;    //Get value in global_HalfSlideUnlock_DeviceHasSystemPasscodeSet SBDeviceLockController - (BOOL)deviceHasPasscodeSet
+static NSDictionary *global_IconState;
+static NSDate *global_EnableTime;
+
+void _enableProtectiPlus();
+void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+void _disableProtectiPlusWithoutPassword();
+void _disableProtectiPlus();
+void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
+
+#include "hooks/activate_app_switcher.xm"
+#include "hooks/bypass_passcode_and_half_slide_unlock.xm"
+#include "hooks/control_center.xm"
+#include "hooks/edit_icon.xm"
+#include "hooks/hide_app_icon.xm"
+#include "hooks/launch_app.xm"
+#include "hooks/lockscreen_camera_photos.xm"
+#include "hooks/notification_center.xm"
+#include "hooks/notification.xm"
+#include "hooks/open_folders.xm"
+#include "hooks/siri.xm"
+#include "hooks/spotlight.xm"
+#include "hooks/switch_app.xm"
+
+
+/* Toggle Functions */
+
+void _enableProtectiPlus() {
+    if (global_Enable)  //Enabled already
+        return;
+
+    [PIStatusBarIcon addStatusBarItemIfNecessary];
+
+    vibrateIfNecessary();
+
+    if (AllowAccessNotificationCenter_IsEnabled) {
+        refreshNotificationCenter();
+    }
+
+    if (HideAppIcons_IsEnabled) {
+        SBIconModel *iconModel = [(SBIconController *)[objc_getClass("SBIconController") sharedInstance] model];
+        global_IconState = [[iconModel iconState] retain];
+    }
+
+    removeProtectedOrHiddenAppsInAppSwitcher();
+
+    global_Enable = YES;
+
+    if (HideAppIcons_IsEnabled) {
+        iconsVisibilityChanged();
+    }
+
+    global_EnableTime = [[NSDate alloc] init];
+
+    if ([[objc_getClass("SBUserAgent") sharedUserAgent] deviceIsLocked]) {
+        killApplicationUnderLockScreenIfNecessary();
+    } else {
+        exitForegroundApplicationIfNecessary();
+    }
+
+    updateIconBadgeView();
+
+//    [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally]; // clean icons badge
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        if (HideAppIcons_IsEnabled) {
+            saveStateObjectForKey(global_IconState, @"iconState");
+        }
+        saveStateObjectForKey(global_EnableTime, @"enableTime");
+        saveStateObjectForKey([NSNumber numberWithBool:global_Enable], @"enable");
+    });
+}
+
+void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    _enableProtectiPlus();
+}
+
+void _disableProtectiPlusWithoutPassword() {
+    [PIStatusBarIcon removeStatusBarItem];
+
+    vibrateIfNecessary();
+
+    if (AllowAccessNotificationCenter_IsEnabled) {
+        refreshNotificationCenter();
+    }
+
+    global_Enable = NO;
+
+    if (HideAppIcons_IsEnabled) {
+        iconsVisibilityChanged();
+        if (!global_IconState) {
+            global_IconState = getStateObjectForKey(@"iconState");
+        }
+        [global_IconState writeToFile:[[[objc_getClass("SBDefaultIconModelStore") sharedInstance] currentIconStateURL] path] atomically:YES];
+        iconsVisibilityChanged();
+        //        [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally];
+    }
+
+    global_EnableTime = nil;
+
+    updateIconBadgeView();
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        saveStateObjectForKey([NSNull null], @"enableTime");
+        saveStateObjectForKey([NSNumber numberWithBool:global_Enable], @"enable");
+    });
+}
+
+void _disableProtectiPlus() {
+    if (!global_Enable) { //Disabled already
+        return;
+    }
+
+    if (
+           EnablePassword_IsEnabled && ![GetValueOf_Password isEqualToString:@""]
+           &&
+           (
+               (
+                   global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+                   &&
+                   (
+                       !BypassSystemPasscode_IsEnabled
+                       ||
+                       (BypassSystemPasscode_IsEnabled && global_OnceUnlockSuccessfully)
+                   )
+               )
+               ||
+               !global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+           )
+       ) {
+        PasswordAlertDelegate *passwordDelegate = [[%c(PasswordAlertDelegate) alloc] init];
+        [passwordDelegate showAlert];
+    } else {
+        _disableProtectiPlusWithoutPassword();
+    }
+}
+
+void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    _disableProtectiPlus();
+}
+
+void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+    NSLog(@"Toggle Protecti %d", global_Enable);
+    if (global_Enable) {
+        _disableProtectiPlus();
+    } else {
+        _enableProtectiPlus();
+    }
+}
+
+/* End Of Toggle Functions */
+
+
+%hook SBLockScreenManager
+
+- (void)_finishUIUnlockFromSource:(int)arg1 withOptions:(id)arg2 {
+    %orig;
+
+/* Deprecated Indicate Missing Notification
+   if (IndicateMissingNotification_IsEnabled && !global_Enable) {
+       setPendingNotificationApplicationIconIndicatorInRootFolder();
+   }
+*/
+
+    if (!global_NotJustRespring) {  // Just respring
+        global_NotJustRespring = YES;
+        if (HideAppIcons_IsEnabled) {
+            iconsVisibilityChanged();
+        }
+    } else {
+
+    }
+
+    if (![getStateObjectForKey(@"hasInstalled") boolValue]) {
+        saveStateObjectForKey([NSNumber numberWithBool:YES], @"hasInstalled");
+        WelcomeAlertDelegate *welcomeDelegate = [[WelcomeAlertDelegate alloc] init];
+        [welcomeDelegate showAlert];
+    }
+}
+
+%end
+
+
+void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+
+    [PIPreferences updatePreferences];
+}
+
+void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+
+    [PIPreferences resetPreferences];
+}
+
+%ctor {
+    dlopen("/Library/MobileSubstrate/DynamicLibraries/IconSupport.dylib", RTLD_NOW);
+    [[objc_getClass("ISIconSupport") sharedInstance] addExtension:@"com.gviridis.protectiplus"];
+
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&enableProtectiPlus,CFSTR("com.gviridis.protectiplus/Enable"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&disableProtectiPlus,CFSTR("com.gviridis.protectiplus/Disable"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&toggleProtectiPlus,CFSTR("com.gviridis.protectiplus/Toggle"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&updatePreferences,CFSTR("com.gviridis.protectiplus/UpdatePreferences"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&resetPreferences,CFSTR("com.gviridis.protectiplus/ResetPreferences"),NULL,0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&handleSystemPasscodeChange,CFSTR("com.gviridis.protectiplus/SystemPasscodeChanged"),NULL,0);
+
+    notify_post("com.gviridis.protectiplus/UpdatePreferences");
+
+    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesStatePath]) {
+        global_Enable = [getStateObjectForKey(@"enable") boolValue];
+        global_IconState = getStateObjectForKey(@"iconState");
+        global_EnableTime = getStateObjectForKey(@"enableTime");
+/* Deprecated Indicate Missing Notification
+        global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
+*/
+    }
+
+/* Deprecated Auto Enable
+    if (AutoEnable_IsEnabled) {
+        _enableProtectiPlus();
+    }
+*/
+}
