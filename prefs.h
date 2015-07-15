@@ -59,13 +59,12 @@
 #define GetValueOf_Password \
 ([PIPreferences.sharedPreferences objectForKey:@"password"] ? : @"")
 
-
+#define GetValueOf_DisabledFolders \
+([PIPreferences.sharedPreferences objectForKey:@"disabledFolders"] ? : nil)
 
 /********************************************* Hidden Options ****************************************************************/
 #define DisableActivateAppSlider_IsEnabled \
 ([PIPreferences.sharedPreferences objectForKey:@"disableActivateAppSlider"] ? [[PIPreferences.sharedPreferences objectForKey:@"disableActivateAppSlider"] boolValue] : NO)
-#define GetValueOf_DisabledFolders \
-([PIPreferences.sharedPreferences objectForKey:@"disabledFolders"] ? : nil)
 /*****************************************************************************************************************************/
 
 #endif
