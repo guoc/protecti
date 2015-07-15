@@ -22,8 +22,10 @@
 - (BOOL)icon:(id)icon launchFromLocation:(int)location context:(id)context {
     if (!global_Enable) {
         BOOL r = %orig;
-//        [global_PendingNotifications removeObject:[arg1 applicationBundleID]];
-//        saveStateObjectForKey(global_PendingNotifications, @"pendingNotifications");
+/* Deprecated Indicate Missing Notification
+       [global_PendingNotifications removeObject:[arg1 applicationBundleID]];
+       saveStateObjectForKey(global_PendingNotifications, @"pendingNotifications");
+*/
         return r;
     } else {
         if (appIdentifierIsInProtectedAppsList([self bundleIdentifier])) {

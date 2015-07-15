@@ -1,17 +1,21 @@
 #import <AudioToolBox/AudioServices.h>
 #import <SpringBoard/SBBacklightController.h>
 
+void turnOnBacklightIfNecessary();
+
 %hook SBBulletinBannerController
 
 // Disable banner notification.
 - (void)observer:(id)observer addBulletin:(id)bulletin forFeed:(unsigned)feed playLightsAndSirens:(BOOL)sirens withReply:(id)reply {
     if (global_Enable) {
         turnOnBacklightIfNecessary();
-//        if (IndicateMissingNotification_IsEnabled && global_Enable) {
-//            addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
-//        } else {
-//
-//        }
+/* Deprecated Indicate Missing Notification
+       if (IndicateMissingNotification_IsEnabled && global_Enable) {
+           addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
+       } else {
+
+       }
+*/
         if (appIdentifierIsInProtectedAppsList([(BBBulletin *)bulletin sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
                 return;
@@ -39,11 +43,13 @@
 - (void)observer:(id)observer addBulletin:(id)bulletin forFeed:(unsigned)feed playLightsAndSirens:(BOOL)sirens withReply:(id)reply {
     if (global_Enable) {
         turnOnBacklightIfNecessary();
-//        if (IndicateMissingNotification_IsEnabled && global_Enable) {
-//            addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
-//        } else {
-//
-//        }
+/* Deprecated Indicate Missing Notification
+       if (IndicateMissingNotification_IsEnabled && global_Enable) {
+           addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
+       } else {
+
+       }
+*/
         if (appIdentifierIsInProtectedAppsList([(BBBulletin *)bulletin sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
                 return;
@@ -87,11 +93,13 @@
 - (void)observer:(id)observer addBulletin:(id)bulletin forFeed:(unsigned)feed playLightsAndSirens:(BOOL)sirens withReply:(id)reply {
     if (global_Enable) {
         turnOnBacklightIfNecessary();
-//        if (IndicateMissingNotification_IsEnabled && global_Enable) {
-//            addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
-//        } else {
-//
-//        }
+/* Deprecated Indicate Missing Notification
+       if (IndicateMissingNotification_IsEnabled && global_Enable) {
+           addAndSavePendingNotificationAppID([(BBBulletin *)arg2 sectionID]);
+       } else {
+
+       }
+*/
         if (appIdentifierIsInProtectedAppsList([(BBBulletin *)bulletin sectionID])) {
             if (NoNotificationsForProtectedApps_IsEnabled) {
                 return;
@@ -253,12 +261,16 @@
 // No effect for Disable badge change, but can used to save pending notifications.
 - (void)setBadge:(id)arg1 {
     if (global_Enable) {
-//        turnOnBacklightIfNecessary();            delete this line cause no backligh when receive badge notification (only badge, not banner, alert etc.
-//        if (IndicateMissingNotification_IsEnabled && global_Enable) {
-//            addAndSavePendingNotificationAppID([self applicationBundleID]);
-//        } else {
-//
-//        }
+        /* delete this line cause no backligh when receive badge notification (only badge, not banner, alert etc.) */
+        /* turnOnBacklightIfNecessary(); */
+
+/* Deprecated Indicate Missing Notification
+       if (IndicateMissingNotification_IsEnabled && global_Enable) {
+           addAndSavePendingNotificationAppID([self applicationBundleID]);
+       } else {
+
+       }
+*/
         return %orig(nil);
     } else {
         return %orig(arg1);

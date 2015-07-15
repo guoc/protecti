@@ -79,21 +79,8 @@ static BOOL global_LockScreenCameraNeedReInitSession = NO;
 /* End Of Status Bar Icon Functions */
 
 
-/* Helpers */
 
-void refreshNotificationCenter();
-void iconsVisibilityChanged();
 
-/* End Of Helpers */
-
-void check();
-
-void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
-
-void turnOnBacklightIfNecessary();
-void vibrateNotificationIfNecessary();
-
-void removeProtectedOrHiddenAppsInAppSwitcher();
 
 #include "hooks/activate_app_switcher.xm"
 #include "hooks/bypass_passcode_and_half_slide_unlock.xm"
@@ -108,9 +95,6 @@ void removeProtectedOrHiddenAppsInAppSwitcher();
 #include "hooks/siri.xm"
 #include "hooks/spotlight.xm"
 #include "hooks/switch_app.xm"
-
-
-
 
 
 /* Toggle Functions */
@@ -242,24 +226,21 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
 }
 
 
+
+
 /* End Of Toggle Functions */
-
-
-
-
-
-
-
-
 
 
 %hook SBLockScreenManager
 
 - (void)_finishUIUnlockFromSource:(int)arg1 withOptions:(id)arg2 {
     %orig;
-//    if (IndicateMissingNotification_IsEnabled && !global_Enable) {
-//        setPendingNotificationApplicationIconIndicatorInRootFolder();
-//    }
+
+/* Deprecated Indicate Missing Notification
+   if (IndicateMissingNotification_IsEnabled && !global_Enable) {
+       setPendingNotificationApplicationIconIndicatorInRootFolder();
+   }
+*/
 
     if (!global_NotJustRespring) {  // Just respring
         global_NotJustRespring = YES;
@@ -280,7 +261,15 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
 %end
 
 
+void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
 
+    [PIPreferences updatePreferences];
+}
+
+void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
+
+    [PIPreferences resetPreferences];
+}
 
 %ctor {
     dlopen("/Library/MobileSubstrate/DynamicLibraries/IconSupport.dylib", RTLD_NOW);
@@ -300,7 +289,9 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
         global_Enable = [getStateObjectForKey(@"enable") boolValue];
         global_IconState = getStateObjectForKey(@"iconState");
         global_EnableTime = getStateObjectForKey(@"enableTime");
-//        global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
+/* Deprecated Indicate Missing Notification
+        global_PendingNotifications = getStateObjectForKey(@"pendingNotifications");
+*/
     }
 
     if (!global_AllApplicationIcons)
@@ -309,38 +300,4 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
     if (AutoEnable_IsEnabled) {
         _enableProtectiPlus();
     }
-}
-
-
-
-
-
-
-
-
-
-
-//=================================================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
-
-    [PIPreferences updatePreferences];
-}
-
-void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
-
-    [PIPreferences resetPreferences];
 }
