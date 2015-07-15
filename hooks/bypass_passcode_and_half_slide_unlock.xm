@@ -1,5 +1,6 @@
 extern BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;
 
+static NSString *global_slfe;
 static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3
 
 void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {

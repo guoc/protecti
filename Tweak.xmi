@@ -1,60 +1,38 @@
-#import <IconSupport/ISIconSupport.h>
-
-#include "states.h"
-#include "prefs.h"
-
-#import "helpers.h"
-#import "compatibility/ccquick.h"
-
-#import "PIStatusBarIcon.h"
-#import "WelcomeAlertDelegate.h"
-#import "PIPreferences.h"
-
-//#import <CoreFoundation/CFUserNotification.h>
-#import <CoreFoundation/CFRunLoop.h>
-
-#import <SpringBoard/SBDefaultIconModelStore.h>
-#import <SpringBoard/SBFolder.h>
-#import <SpringBoard/SBIconModel.h>
-#import <SpringBoard/SBUserAgent.h>
+#import <BulletinBoard/BBAttachments.h>
 #import <BulletinBoard/BBBulletin.h>
-#import <SpringBoard/SBIcon.h>
+#import <BulletinBoard/BBSound.h>
+#import <ManagedConfiguration/MCPasscodeManager.h>
+#import <SpringBoard/SBDefaultIconModelStore.h>
+#import <SpringBoard/SBDeviceLockController.h>
+#import <SpringBoard/SBFolder.h>
 #import <SpringBoard/SBFolderIcon.h>
-//#import <SpringBoard/SBFolderIconBackgroundView.h>
+#import <SpringBoard/SBIcon.h>
+#import <SpringBoard/SBIconController.h>
+#import <SpringBoard/SBIconModel.h>
+#import <SpringBoard/SBLockScreenManager.h>
 #import <SpringBoard/SBLockScreenViewController.h>
-//#import <SpringBoard/PLApplicationCameraViewController.h>
-//#import <SpringBoard/SBLockScreenCameraController.h>
 #import <SpringBoard/SBNotificationCenterController.h>
 #import <SpringBoard/SBNotificationCenterViewController.h>
 #import <SpringBoard/SBNotificationsAllModeViewController.h>
-#import <SpringBoard/SBIconController.h>
-
-#import <ManagedConfiguration/MCPasscodeManager.h>
-#import <SpringBoard/SBDeviceLockController.h>
-#import <SpringBoard/SBLockScreenManager.h>
 #import <SpringBoard/SBUserAgent.h>
 
-#import <BulletinBoard/BBSound.h>
-#import <BulletinBoard/BBAttachments.h>
+#import <IconSupport/ISIconSupport.h>
 
-//#import <UIKit/UIApplication2.h>
-
+#import "compatibility/ccquick.h"
+#import "helpers.h"
+#import "prefs.h"
+#import "states.h"
 #import "PasswordAlertDelegate.h"
+#import "PIPreferences.h"
+#import "PIStatusBarIcon.h"
+#import "WelcomeAlertDelegate.h"
 
 static BOOL global_Enable;
-
 static BOOL global_NotJustRespring = NO;
-
-static NSMutableArray *global_AllApplicationIcons;
-
-static id global_slfe;
 static BOOL global_OnceUnlockSuccessfully = NO;
 static BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;    //Get value in global_HalfSlideUnlock_DeviceHasSystemPasscodeSet SBDeviceLockController - (BOOL)deviceHasPasscodeSet
-
-//
-
-/* Toggle Functions */
-
+static NSDictionary *global_IconState;
+static NSDate *global_EnableTime;
 
 void _enableProtectiPlus();
 void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
@@ -63,24 +41,7 @@ void _disableProtectiPlus();
 void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
-
-static NSDictionary *global_IconState;
-static NSDate *global_EnableTime;
-
-static BOOL global_LockScreenCameraNeedReInitSession = NO;
-
-/* End Of Toggle Functions */
-
-
-/* Status Bar Icon Functions */
-
-
-
-/* End Of Status Bar Icon Functions */
-
-
-
-
+void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 
 #include "hooks/activate_app_switcher.xm"
 #include "hooks/bypass_passcode_and_half_slide_unlock.xm"
@@ -119,8 +80,6 @@ void _enableProtectiPlus() {
     removeProtectedOrHiddenAppsInAppSwitcher();
 
     global_Enable = YES;
-
-    global_LockScreenCameraNeedReInitSession = YES;
 
     if (HideAppIcons_IsEnabled) {
         iconsVisibilityChanged();
@@ -162,8 +121,6 @@ void _disableProtectiPlusWithoutPassword() {
 
     global_Enable = NO;
 
-    global_LockScreenCameraNeedReInitSession = YES;
-
     if (HideAppIcons_IsEnabled) {
         iconsVisibilityChanged();
         if (!global_IconState) {
@@ -185,25 +142,26 @@ void _disableProtectiPlusWithoutPassword() {
 }
 
 void _disableProtectiPlus() {
-    if (!global_Enable) //Disabled already
+    if (!global_Enable) { //Disabled already
         return;
+    }
 
     if (
-        EnablePassword_IsEnabled && ![GetValueOf_Password isEqualToString:@""]
-        &&
-        (
-         (
-          global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
-          &&
-          (
-           !BypassSystemPasscode_IsEnabled
-           ||
-           (BypassSystemPasscode_IsEnabled && global_OnceUnlockSuccessfully)
-          )
-         )
-         ||
-         !global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
-        )
+           EnablePassword_IsEnabled && ![GetValueOf_Password isEqualToString:@""]
+           &&
+           (
+               (
+                   global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+                   &&
+                   (
+                       !BypassSystemPasscode_IsEnabled
+                       ||
+                       (BypassSystemPasscode_IsEnabled && global_OnceUnlockSuccessfully)
+                   )
+               )
+               ||
+               !global_HalfSlideUnlock_DeviceHasSystemPasscodeSet
+           )
        ) {
         PasswordAlertDelegate *passwordDelegate = [[%c(PasswordAlertDelegate) alloc] init];
         [passwordDelegate showAlert];
@@ -224,9 +182,6 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
         _enableProtectiPlus();
     }
 }
-
-
-
 
 /* End Of Toggle Functions */
 
@@ -281,11 +236,10 @@ void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef 
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&updatePreferences,CFSTR("com.gviridis.protectiplus/UpdatePreferences"),NULL,0);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&resetPreferences,CFSTR("com.gviridis.protectiplus/ResetPreferences"),NULL,0);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),NULL,&handleSystemPasscodeChange,CFSTR("com.gviridis.protectiplus/SystemPasscodeChanged"),NULL,0);
+
     notify_post("com.gviridis.protectiplus/UpdatePreferences");
 
-    if (![[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesStatePath]) {
-
-    } else {
+    if ([[NSFileManager defaultManager]fileExistsAtPath:@kPreferencesStatePath]) {
         global_Enable = [getStateObjectForKey(@"enable") boolValue];
         global_IconState = getStateObjectForKey(@"iconState");
         global_EnableTime = getStateObjectForKey(@"enableTime");
@@ -294,10 +248,9 @@ void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef 
 */
     }
 
-    if (!global_AllApplicationIcons)
-        global_AllApplicationIcons = [[NSMutableArray alloc] init];
-
+/* Deprecated Auto Enable
     if (AutoEnable_IsEnabled) {
         _enableProtectiPlus();
     }
+*/
 }
