@@ -1,3 +1,6 @@
+#import <AudioToolBox/AudioServices.h>
+#import <SpringBoard/SBBacklightController.h>
+
 %hook SBBulletinBannerController
 
 // Disable banner notification.
@@ -263,3 +266,20 @@
 }
 
 %end
+
+
+void vibrateNotificationIfNecessary() {
+    if (global_Enable && VibrateNotifications_IsEnabled) {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    }
+}
+
+/* Backligh for new messages */
+void turnOnBacklightIfNecessary() {
+    if (TurnOnBacklighWhenReceiveNewNotifications_IsEnabled && global_Enable) {
+        [[objc_getClass("SBBacklightController") sharedInstance] resetLockScreenIdleTimer];
+        [[objc_getClass("SBBacklightController") sharedInstance] turnOnScreenFullyWithBacklightSource:0];
+    } else {
+
+    }
+}

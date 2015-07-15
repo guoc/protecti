@@ -3,7 +3,7 @@ export ARCHS=armv7 arm64
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = ProtectiPlus
-ProtectiPlus_FILES = Tweak.xmi WelcomeAlertDelegate.m PIPreferences.m PasswordAlertDelegate.xm PIStatusBarIcon.m compatibility/ccquick.mm
+ProtectiPlus_FILES = Tweak.xmi helpers.mm WelcomeAlertDelegate.m PIPreferences.m PasswordAlertDelegate.xm PIStatusBarIcon.m compatibility/ccquick.mm
 #ProtectiPlus_CFLAGS = -Qunused-arguments
 ProtectiPlus_FRAMEWORKS = UIKit AudioToolBox Security
 ProtectiPlus_LIBRARIES = MobileGestalt cephei

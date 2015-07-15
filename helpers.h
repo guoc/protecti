@@ -1,0 +1,10 @@
+void refreshNotificationCenter();
+void iconsVisibilityChanged();
+void vibrateIfNecessary();
+void updateIconBadgeView();
+void removeProtectedOrHiddenAppsInAppSwitcher();
+void killApplicationUnderLockScreenIfNecessary();
+void exitForegroundApplicationIfNecessary();
+void killApplicationByAppID(NSString *appID);
+BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier);
+BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier);

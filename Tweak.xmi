@@ -1,37 +1,24 @@
-#import <notify.h>
-#include <substrate.h>
-#include <time.h>
 #import <IconSupport/ISIconSupport.h>
 
 #include "states.h"
 #include "prefs.h"
 
+#import "helpers.h"
 #import "compatibility/ccquick.h"
 
 #import "PIStatusBarIcon.h"
 #import "WelcomeAlertDelegate.h"
 #import "PIPreferences.h"
 
-#import <AudioToolBox/AudioServices.h>
 //#import <CoreFoundation/CFUserNotification.h>
 #import <CoreFoundation/CFRunLoop.h>
 
-#import <SpringBoard/SBApplication.h>
-#import <SpringBoard/SBApplicationIcon.h>
-#import <SpringBoard/SBAppSwitcherModel.h>
 #import <SpringBoard/SBDefaultIconModelStore.h>
-#import <SpringBoard/SBDisplayItem.h>
-#import <SpringBoard/SBDisplayLayout.h>
 #import <SpringBoard/SBFolder.h>
 #import <SpringBoard/SBIconModel.h>
-#import <SpringBoard/SBIconController.h>
 #import <SpringBoard/SBUserAgent.h>
-#import <SpringBoard/SBUIController.h>
-#import <SpringBoard/SBApplicationController.h>
 #import <BulletinBoard/BBBulletin.h>
 #import <SpringBoard/SBIcon.h>
-#import <SpringBoard/SBIconView.h>
-#import <SpringBoard/SBIconViewMap.h>
 #import <SpringBoard/SBFolderIcon.h>
 //#import <SpringBoard/SBFolderIconBackgroundView.h>
 #import <SpringBoard/SBLockScreenViewController.h>
@@ -40,7 +27,7 @@
 #import <SpringBoard/SBNotificationCenterController.h>
 #import <SpringBoard/SBNotificationCenterViewController.h>
 #import <SpringBoard/SBNotificationsAllModeViewController.h>
-#import <SpringBoard/SBBulletinViewController.h>
+#import <SpringBoard/SBIconController.h>
 
 #import <ManagedConfiguration/MCPasscodeManager.h>
 #import <SpringBoard/SBDeviceLockController.h>
@@ -52,15 +39,13 @@
 
 //#import <UIKit/UIApplication2.h>
 
-#import <SpringBoard/SBBacklightController.h>
-
 #import "PasswordAlertDelegate.h"
+
+static BOOL global_Enable;
 
 static BOOL global_NotJustRespring = NO;
 
 static NSMutableArray *global_AllApplicationIcons;
-
-static BOOL global_NoVibrateWhenEnable = NO;
 
 static id global_slfe;
 static BOOL global_OnceUnlockSuccessfully = NO;
@@ -70,7 +55,6 @@ static BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;    //Get value in
 
 /* Toggle Functions */
 
-static BOOL global_Enable;
 
 void _enableProtectiPlus();
 void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
@@ -79,16 +63,6 @@ void _disableProtectiPlus();
 void disableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
 void updatePreferences(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo);
-
-void vibrateIfNecessary();
-void removeProtectedOrHiddenAppsInAppSwitcher();
-void killApplicationUnderLockScreenIfNecessary();
-void exitForegroundApplicationIfNecessary();
-void updateIconBadgeView();
-void killApplicationByAppID(NSString *appID);
-
-BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier);
-BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier);
 
 static NSDictionary *global_IconState;
 static NSDate *global_EnableTime;
@@ -107,8 +81,8 @@ static BOOL global_LockScreenCameraNeedReInitSession = NO;
 
 /* Helpers */
 
-static void refreshNotificationCenter();
-static void iconsVisibilityChanged();
+void refreshNotificationCenter();
+void iconsVisibilityChanged();
 
 /* End Of Helpers */
 
@@ -135,32 +109,7 @@ void removeProtectedOrHiddenAppsInAppSwitcher();
 #include "hooks/spotlight.xm"
 #include "hooks/switch_app.xm"
 
-/* Helpers */
 
-static void refreshNotificationCenter() {
-    SBNotificationCenterViewController *viewController = (SBNotificationCenterViewController *)[[objc_getClass("SBNotificationCenterController") sharedInstance] viewController];
-    SBNotificationsAllModeViewController *allModeViewController = MSHookIvar<SBNotificationsAllModeViewController *>(viewController, "_allModeViewController");
-    if (allModeViewController) {
-        SBBulletinViewController *allModeBulletinViewController = MSHookIvar<SBBulletinViewController *>(allModeViewController, "_bulletinViewController");
-        if (allModeBulletinViewController) {
-            [allModeBulletinViewController setTableViewNeedsReload];
-        }
-    }
-}
-
-static void iconsVisibilityChanged() {
-    SBIconModel *iconModel = [(SBIconController *)[objc_getClass("SBIconController") sharedInstance] model];
-    NSSet *_hiddenIconTags = MSHookIvar<NSSet *>(iconModel, "_hiddenIconTags");
-    NSSet *_visibleIconTags = MSHookIvar<NSSet *>(iconModel, "_visibleIconTags");
-    if (_hiddenIconTags!=nil && _visibleIconTags!=nil) {
-        NSMutableSet *hiddenIconTags = [NSMutableSet setWithSet:_hiddenIconTags];
-        NSMutableSet *visibleIconTags = [NSMutableSet setWithSet:_visibleIconTags];
-        [iconModel setVisibilityOfIconsWithVisibleTags:visibleIconTags hiddenTags:hiddenIconTags];
-        [iconModel layout];
-    }
-}
-
-/* End of Helpers */
 
 
 
@@ -292,72 +241,6 @@ void toggleProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
     }
 }
 
-void vibrateIfNecessary() {
-    if (Vibrate_IsEnabled && !global_NoVibrateWhenEnable)
-    {
-        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-    }
-}
-
-void updateIconBadgeView() {
-    SBIconModel *iconModel = [[objc_getClass("SBIconViewMap") homescreenMap] iconModel];
-    NSSet *allApplicationIcons = [iconModel _applicationIcons];
-    for (SBApplicationIcon *icon in allApplicationIcons) {
-        [icon noteBadgeDidChange];
-    }
-}
-
-void removeProtectedOrHiddenAppsInAppSwitcher() {
-    NSArray *displayLayouts = [[objc_getClass("SBAppSwitcherModel") sharedInstance] _recentsFromPrefs];
-    for (SBDisplayLayout *displayLayout in displayLayouts) {
-        SBDisplayItem *displayItem = displayLayout.displayItems[0];
-        NSString *appIdentifier = displayItem.displayIdentifier;
-        if (appIdentifierIsInProtectedAppsList(appIdentifier) || appIdentifierIsInHiddenAppsList(appIdentifier)) {
-            [(SBAppSwitcherModel *)[objc_getClass("SBAppSwitcherModel") sharedInstance] remove: displayLayout];
-        }
-    }
-}
-
-void killApplicationUnderLockScreenIfNecessary() {
-    NSString *foregroundAppID = [[objc_getClass("SBUserAgent") sharedUserAgent] foregroundApplicationDisplayID];
-    if (appIdentifierIsInProtectedAppsList(foregroundAppID)) {
-        killApplicationByAppID(foregroundAppID);
-    } else {
-
-    }
-}
-
-void exitForegroundApplicationIfNecessary() {
-    NSString *foregroundAppID = [[objc_getClass("SBUserAgent") sharedUserAgent] foregroundApplicationDisplayID];
-    if (foregroundAppID && appIdentifierIsInProtectedAppsList(foregroundAppID)) {
-        [[objc_getClass("SBUIController") sharedInstance] clickedMenuButton];
-//        [(SBUIController *)[%c(SBUIController) sharedInstance] _handleButtonEventToSuspendDisplays:YES displayWasSuspendedOut:NULL];
-        if (![foregroundAppID isEqualToString:@"com.saurik.Cydia"]) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                sleep(1);
-                killApplicationByAppID(foregroundAppID);
-            });
-        }
-    }
-}
-
-void killApplicationByAppID(NSString *appID) {
-    SBApplication *foregroundApp = [[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:appID];
-    int foregroundAppPID = [foregroundApp pid];
-    if (foregroundAppPID) {
-        system([[@"kill -9 " stringByAppendingFormat:@"%d", foregroundAppPID] cStringUsingEncoding:NSASCIIStringEncoding]);
-    } else {
-
-    }
-}
-
-BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier) {
-    return [[PIPreferences.sharedPreferences objectForKey:[@"ProtectedApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
-}
-
-BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
-    return [[PIPreferences.sharedPreferences objectForKey:[@"HiddenApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
-}
 
 /* End Of Toggle Functions */
 
@@ -461,23 +344,3 @@ void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef 
 
     [PIPreferences resetPreferences];
 }
-
-
-void vibrateNotificationIfNecessary() {
-    if (global_Enable && VibrateNotifications_IsEnabled) {
-        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-    }
-}
-
-/****************** Backligh for new messages *********************/
-
-void turnOnBacklightIfNecessary() {
-    if (TurnOnBacklighWhenReceiveNewNotifications_IsEnabled && global_Enable) {
-        [[%c(SBBacklightController) sharedInstance] resetLockScreenIdleTimer];
-        [[%c(SBBacklightController) sharedInstance] turnOnScreenFullyWithBacklightSource:0];
-    } else {
-
-    }
-}
-
-/******************************************************************/

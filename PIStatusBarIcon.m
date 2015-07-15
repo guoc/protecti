@@ -3,8 +3,6 @@
 #import "prefs.h"
 #import "PIPreferences.h"
 
-extern BOOL global_Enable;
-
 @implementation PIStatusBarIcon
 
 @synthesize statusBarItem = _statusBarItem;

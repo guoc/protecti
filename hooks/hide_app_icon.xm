@@ -1,6 +1,6 @@
 %hook SBIconModel
 
-- (BOOL)isIconVisible:(SBApplicationIcon *)icon {
+- (BOOL)isIconVisible:(SBIcon *)icon {
     BOOL r = %orig;
     if (HideAppIcons_IsEnabled && global_Enable && appIdentifierIsInHiddenAppsList([icon applicationBundleID])) {
         return NO;
