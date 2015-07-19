@@ -57,13 +57,13 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 
 %hook SBLockScreenManager
 
-- (BOOL)attemptUnlockWithPasscode:(id)arg1 {
+- (BOOL)attemptUnlockWithPasscode:(id)passcode {
     if (!BypassSystemPasscode_IsEnabled)
         return %orig;
 
-    BOOL r = %orig(arg1);
-    if (r) {
-        global_slfe = [[NSString stringWithString:arg1] retain];
+    BOOL r = %orig(passcode);
+    if (r && passcode != nil && [passcode isKindOfClass: [NSString class]]) {
+        global_slfe = [[NSString stringWithString:passcode] retain];
         global_OnceUnlockSuccessfully = YES;
     } else {
         global_OnceUnlockSuccessfully = NO;
