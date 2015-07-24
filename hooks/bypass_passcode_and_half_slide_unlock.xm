@@ -2,6 +2,7 @@ extern BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;
 
 static NSString *global_slfe;
 static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3
+static BOOL global_DisplayTurnedOnToUnlock = NO;
 
 void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
     global_slfe = nil;
@@ -9,29 +10,57 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 }
 
 
+
+%hook SBLockScreenViewController
+
+-(void)_handleDisplayTurnedOn:(id)arg1 {
+    %orig;
+    global_DisplayTurnedOnToUnlock = YES;
+}
+
+%end
+
+
+
+%hook SBLockScreenViewController
+
+- (_Bool)wantsPasscodeLockForUIUnlockFromSource:(int)arg1 withOptions:(id)arg2 {
+    BOOL r = %orig;
+    if (BypassSystemPasscode_IsEnabled && global_slfe && [[%c(SBDeviceLockController) sharedController] deviceHasPasscodeSet]) {
+        return NO;
+    } else {
+        return r;
+    }
+}
+
+%end
+
+
+
 %hook SBLockScreenManager
+
 - (void)unlockUIFromSource:(int)arg1 withOptions:(id)arg2 {
     if (BypassSystemPasscode_IsEnabled && global_slfe && [[%c(SBDeviceLockController) sharedController] deviceHasPasscodeSet]) {
         [[%c(MCPasscodeManager) sharedManager] unlockDeviceWithPasscode:global_slfe outError:NULL];
     }
+    global_DisplayTurnedOnToUnlock = NO;
     %orig;
 }
+
 %end
 
 
+
 %hook SBDeviceLockController
+
 - (BOOL)isPasscodeLocked {
     BOOL r = %orig;
     if (!BypassSystemPasscode_IsEnabled) {
         return r;
     } else {
-        if (global_HalfSlideUnlock_DeviceHasSystemPasscodeSet) {
-            if (global_OnceUnlockSuccessfully) {
-                if ([[%c(SBLockScreenManager) sharedInstance] isUILocked]) {
-                    return NO;
-                } else {
-                    return r;
-                }
+        if (global_OnceUnlockSuccessfully) {
+            if (global_DisplayTurnedOnToUnlock) {
+                return NO;
             } else {
                 return r;
             }
@@ -39,20 +68,10 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
             return r;
         }
     }
-//    if (!BypassSystemPasscode_IsEnabled) {
-//        return %orig;
-//    } else {
-//        BOOL r = %orig;
-//        if (!global_HalfSlideUnlock_DeviceHasSystemPasscodeSet) {
-//            return r;
-//        } else if (global_NeedFeelDeviceIsPasscodeLocked) {
-//            return YES; // FGLE PART2
-//        } else {
-//            return global_HalfSlideUnlock_DeviceIsPasscodeLocked ? YES : NO;
-//        }
-//    }
 }
+
 %end
+
 
 
 %hook SBLockScreenManager
@@ -85,22 +104,8 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 %end
 
 
-%hook SBLockScreenViewController
-/*
-- (void)attemptToUnlockUIFromNotification {
-    if (!BypassSystemPasscode_IsEnabled)
-        return %orig;
-    if (!global_HalfSlideUnlock_DeviceIsPasscodeLocked && BypassSystemPasscode_IsEnabled) {
-        if ([[%c(SBLockScreenManager) sharedInstance] attemptUnlockWithPasscode:global_slfe]) {
-            global_HalfSlideUnlock_DeviceIsPasscodeLocked = NO;
-        } else {
-            global_HalfSlideUnlock_DeviceIsPasscodeLocked = YES;
-            [self _addRemoveOrChangePasscodeViewIfNecessary];
-        }
-    } else {
 
-    }
-}*/
+%hook SBLockScreenViewController
 
 - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3 {
     if (!HalfSlideUnlock_IsEnabled) {
@@ -134,6 +139,7 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 %end
 
 
+
 %hook SBLockScreenSettings
 
 - (double) lockToUnlockSlideCompletionPercentage {
@@ -154,6 +160,7 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 }
 
 %end
+
 
 
 %hook SBDeviceLockController

@@ -24,7 +24,9 @@ void _disableProtectiPlusWithoutPassword();
 %new
 - (void)showAlert {
     NSBundle *bundle = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ProtectiPlusSettings.bundle"];
-    self.alertView = [[[UIAlertView alloc] initWithTitle:LOCAL(@"PASSWORD_ALERT_TITLE") message:LOCAL(@"PASSWORD_ALERT_MESSAGE") delegate:self cancelButtonTitle:LOCAL(@"PASSWORD_ALERT_DISMISS") otherButtonTitles:nil] autorelease];
+    NSString *alertTitle = HidePasswordAlertMessage_IsEnabled ? @"" : LOCAL(@"PASSWORD_ALERT_TITLE");
+    NSString *alertMessage = HidePasswordAlertMessage_IsEnabled ? @"" : LOCAL(@"PASSWORD_ALERT_MESSAGE");
+    self.alertView = [[[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:self cancelButtonTitle:LOCAL(@"PASSWORD_ALERT_DISMISS") otherButtonTitles:nil] autorelease];
     self.alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
 
     NSString * password = GetValueOf_Password;
