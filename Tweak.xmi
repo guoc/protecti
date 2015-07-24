@@ -49,7 +49,6 @@ void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef 
 #include "hooks/edit_icon.xm"
 #include "hooks/hide_app_icon.xm"
 #include "hooks/launch_app.xm"
-#include "hooks/lockscreen_camera_photos.xm"
 #include "hooks/notification_center.xm"
 #include "hooks/notification.xm"
 #include "hooks/open_folders.xm"

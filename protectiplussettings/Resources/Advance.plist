@@ -56,6 +56,14 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Photos Access</string>
+			<key>detail</key>
+			<string>ProtectiPlusSettingsListControllerForPhotosAccess</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
 			<string>NO_LOAD_PROTECTIPLUS_SETTINGS_FOOTERTEXT</string>

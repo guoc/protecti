@@ -2,9 +2,9 @@ export ARCHS=armv7 arm64
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = ProtectiPlusSettings
-ProtectiPlusSettings_FILES = ProtectiPlusSettings.mm
+ProtectiPlusSettings_FILES = ProtectiPlusSettings.mm ../PIPreferences.m
 ProtectiPlusSettings_INSTALL_PATH = /Library/PreferenceBundles
-ProtectiPlusSettings_LIBRARIES = applist MobileGestalt
+ProtectiPlusSettings_LIBRARIES = applist MobileGestalt cephei
 ProtectiPlusSettings_FRAMEWORKS = UIKit Security
 ProtectiPlusSettings_PRIVATE_FRAMEWORKS = Preferences
 

@@ -2,47 +2,8 @@
 #include "../states.h"
 #include "../prefs.h"
 
-#import <UIKit/UIKit.h>
-
-%hook UIImagePickerController
-
-- (UIImagePickerControllerSourceType)sourceType {
-    BOOL r = %orig;
-    if ([[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesStatePath] objectForKey:@"enable"] boolValue]
-        &&
-        [[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesPath] objectForKey:@"enableStopThirdpartyAppPhotosAccess"] boolValue]) {
-        return UIImagePickerControllerSourceTypeCamera;
-    } else {
-        return r;
-    }
-}
-
-- (void)setSourceType:(UIImagePickerControllerSourceType)type {
-    if ([[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesStatePath] objectForKey:@"enable"] boolValue]
-        &&
-        [[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesPath] objectForKey:@"enableStopThirdpartyAppPhotosAccess"] boolValue]) {
-        return %orig(UIImagePickerControllerSourceTypeCamera);
-    } else {
-        return %orig;
-    }
-}
-
-%end
-
-
-
-%hook ALAssetsLibraryPrivate
-
-- (id)photoLibrary {
-    if ([[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesStatePath] objectForKey:@"enable"] boolValue]
-        &&
-        [[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesPath] objectForKey:@"enableStopThirdpartyAppPhotosAccess"] boolValue])
-        return nil;
-    else
-        return %orig;
-}
-
-%end
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <Photos/Photos.h>
 
 
 
@@ -52,6 +13,85 @@
     BOOL r = %orig;
     notify_post("com.gviridis.protectiplus/SystemPasscodeChanged");
     return r;
+}
+
+%end
+
+
+
+%hook UIImagePickerController
+
++ (NSArray *)availableMediaTypesForSourceType:(UIImagePickerControllerSourceType)sourceType {
+    if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
+        return %orig;
+    }
+    if (sourceType != UIImagePickerControllerSourceTypePhotoLibrary && sourceType != UIImagePickerControllerSourceTypeSavedPhotosAlbum) {
+        return %orig;
+    }
+    return [NSArray array];
+}
+
++ (BOOL)isSourceTypeAvailable:(UIImagePickerControllerSourceType)sourceType {
+    if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
+        return %orig;
+    }
+    if (sourceType != UIImagePickerControllerSourceTypePhotoLibrary && sourceType != UIImagePickerControllerSourceTypeSavedPhotosAlbum) {
+        return %orig;
+    }
+    return NO;
+}
+
+%end
+
+
+
+%hook ALAssetsLibrary
+
++ (ALAuthorizationStatus)authorizationStatus {
+    ALAuthorizationStatus r = %orig;
+    if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
+        return r;
+    }
+    return ALAuthorizationStatusDenied;
+}
+
+/* Prevent TweetBot access last photo taken */
+- (void)enumerateGroupsWithTypes:(ALAssetsGroupType)types usingBlock:(ALAssetsLibraryGroupsEnumerationResultsBlock)enumerationBlock failureBlock:(ALAssetsLibraryAccessFailureBlock)failureBlock {
+    failureBlock(nil);
+}
+
+%end
+
+
+
+%hook PHPhotoLibrary
+
++ (PHAuthorizationStatus)authorizationStatus {
+    PHAuthorizationStatus r = %orig;
+    if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
+        return r;
+    }
+    return PHAuthorizationStatusDenied;
+}
+
+%end
+
+
+
+%hook CAMCameraView
+
+- (BOOL)_shouldEnableImageWell {
+    if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
+        return %orig;
+    }
+    return NO;
+}
+
+- (BOOL)_shouldHideImageWellForMode:(int)arg1 {
+    if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
+        return %orig;
+    }
+    return YES;
 }
 
 %end
