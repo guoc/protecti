@@ -18,6 +18,7 @@ static NSString *const kPIPreferencesEnableIndicateMissingNotificationKey = @"en
 static NSString *const kPIPreferencesMissingNotificationIndicatorStyleKey = @"missingNotificationIndicatorStyle";
 static NSString *const kPIPreferencesHalfSlideUnlock_MinDistanceKey = @"halfSlideUnlock_MinDistance";
 static NSString *const kPIPreferencesHalfSlideUnlock_MaxDistanceKey = @"halfSlideUnlock_MaxDistance";
+static NSString *const kPIPreferencesNoLoadSettingsWhenEnableKey = @"noLoadSettingsWhenEnable";
 
 static NSString *const kPIPreferencesDisableAccessPhotos = @"disableAccessPhotos";
 

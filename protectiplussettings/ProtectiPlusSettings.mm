@@ -19,7 +19,7 @@
 @implementation ProtectiPlusSettingsListController
 - (id)specifiers {
 	if(_specifiers == nil) {
-        if (!([[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesStatePath] objectForKey:@"enable"] boolValue] && [[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesPath] objectForKey:@"noLoadSettingsWhenEnable"] boolValue]))
+        if (!([[[NSDictionary dictionaryWithContentsOfFile:@kPreferencesStatePath] objectForKey:@"enable"] boolValue] && NoLoadSettingsWhenEnable_IsEnabled))
             _specifiers = [[self loadSpecifiersFromPlistName:@"ProtectiPlusSettings" target:self] retain];
 	}
 	return _specifiers;
