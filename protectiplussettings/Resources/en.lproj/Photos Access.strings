@@ -1,3 +1,3 @@
-"PHOTOS_ACCESS_FOOTERTEXT" = "Turn ON this to DISABLE third-party apps access your photos when Protecti+ enabled.
+"PHOTOS_ACCESS_FOOTERTEXT" = "Turn ON this to DISABLE apps access your photos when Protecti+ enabled.
 
-NOTICE: This feature is invalid for system apps such as Photos, Camera, etc.";
+NOTICE: Apps may have accessed and saved photos before Protecti+ enabled.";

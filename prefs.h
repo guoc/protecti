@@ -1,6 +1,8 @@
 #ifndef _prefs_h
 #define _prefs_h
 
+#import "PIPreferences.h"
+
 #define kPreferencesPath "/var/mobile/Library/Preferences/com.gviridis.protectiplus.plist"
 #define kPreferencesKeyPath "/var/mobile/Library/Preferences/com.gviridis.protectiplus.key"
 
@@ -61,6 +63,10 @@
 
 #define GetValueOf_DisabledFolders \
 ([PIPreferences.sharedPreferences objectForKey:@"disabledFolders"] ? : nil)
+
+/* Options cross dylibs, another method is applied to get their preference value */
+#define DisableAccessPhotos_IsEnabled \
+([[[[NSUserDefaults standardUserDefaults] persistentDomainForName:kPIPreferencesDomain] objectForKey:kPIPreferencesDisableAccessPhotos] boolValue])
 
 /********************************************* Hidden Options ****************************************************************/
 #define DisableActivateAppSlider_IsEnabled \

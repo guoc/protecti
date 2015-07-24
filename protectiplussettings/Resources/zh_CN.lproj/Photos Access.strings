@@ -1,5 +1,5 @@
-"PHOTOS_ACCESS_FOOTERTEXT" = "启用该选项，开启Protecti+时将禁止第三方应用访问您的照片库。
+"PHOTOS_ACCESS_FOOTERTEXT" = "启用该选项，开启Protecti+时将禁止应用程序访问您的照片库。
 
-注意：该功能对系统应用如照片、相机等无效。";
-"Disable Apps Access Photos" = "禁止第三方应用访问照片库";
+注意：在开启Protecti+之前，某些应用程序可能已经访问并保存了照片。";
+"Disable Apps Access Photos" = "禁止应用程序访问照片库";
 "Photos Access" = "访问照片库";

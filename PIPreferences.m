@@ -30,6 +30,8 @@
     kPIPreferencesEnablePasswordKey: @NO, \
     kPIPreferencesPasswordKey: @"", \
     \
+    kPIPreferencesDisableAccessPhotos: @NO, \
+    \
     kPIPreferencesDisableActivateAppSliderKey: @NO \
 }
 
