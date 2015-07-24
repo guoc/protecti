@@ -60,6 +60,8 @@
 ([PIPreferences.sharedPreferences objectForKey:kPIPreferencesEnablePasswordKey] ? [[PIPreferences.sharedPreferences objectForKey:kPIPreferencesEnablePasswordKey] boolValue] : NO)
 #define GetValueOf_Password \
 ([PIPreferences.sharedPreferences objectForKey:kPIPreferencesPasswordKey] ? : @"")
+#define HidePasswordAlertMessage_IsEnabled \
+([PIPreferences.sharedPreferences objectForKey:kPIPreferencesHidePasswordAlertMessageKey] ? [[PIPreferences.sharedPreferences objectForKey:kPIPreferencesHidePasswordAlertMessageKey] boolValue] : NO)
 
 #define GetValueOf_DisabledFolders \
 ([PIPreferences.sharedPreferences objectForKey:kPIPreferencesDisabledFoldersKey] ? : nil)

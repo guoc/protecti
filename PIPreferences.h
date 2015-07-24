@@ -36,6 +36,7 @@ static NSString *const kPIPreferencesAutoEnableKey = @"autoEnable";
 
 static NSString *const kPIPreferencesEnablePasswordKey = @"enablePassword";
 static NSString *const kPIPreferencesPasswordKey = @"password";
+static NSString *const kPIPreferencesHidePasswordAlertMessageKey = @"hidePasswordAlertMessage";
 
 static NSString *const kPIPreferencesDisableActivateAppSliderKey = @"disableActivateAppSlider";
 static NSString *const kPIPreferencesDisabledFoldersKey = @"disabledFolders";
