@@ -76,8 +76,6 @@ void _enableProtectiPlus() {
         global_IconState = [[iconModel iconState] retain];
     }
 
-    removeProtectedOrHiddenAppsInAppSwitcher();
-
     global_Enable = YES;
 
     if (HideAppIcons_IsEnabled) {
@@ -97,6 +95,8 @@ void _enableProtectiPlus() {
 //    [[%c(SBIconController) sharedInstance] noteIconStateChangedExternally]; // clean icons badge
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        removeProtectedOrHiddenAppsInAppSwitcher();
+
         if (HideAppIcons_IsEnabled) {
             saveStateObjectForKey(global_IconState, @"iconState");
         }

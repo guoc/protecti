@@ -65,14 +65,16 @@ void updateIconBadgeView() {
 }
 
 void removeProtectedOrHiddenAppsInAppSwitcher() {
-    NSArray *displayLayouts = [[objc_getClass("SBAppSwitcherModel") sharedInstance] _recentsFromPrefs];
+    SBAppSwitcherModel *appSwitcherModel = (SBAppSwitcherModel *)[objc_getClass("SBAppSwitcherModel") sharedInstance];
+    NSArray *displayLayouts = [appSwitcherModel _recentsFromPrefs];
     for (SBDisplayLayout *displayLayout in displayLayouts) {
         SBDisplayItem *displayItem = displayLayout.displayItems[0];
         NSString *appIdentifier = displayItem.displayIdentifier;
         if (appIdentifierIsInProtectedAppsList(appIdentifier) || appIdentifierIsInHiddenAppsList(appIdentifier)) {
-            [(SBAppSwitcherModel *)[objc_getClass("SBAppSwitcherModel") sharedInstance] remove: displayLayout];
+            [appSwitcherModel remove: displayLayout];
         }
     }
+    [appSwitcherModel _saveRecents];
 }
 
 void killApplicationUnderLockScreenIfNecessary() {
