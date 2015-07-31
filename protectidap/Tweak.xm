@@ -21,16 +21,6 @@
 
 %hook UIImagePickerController
 
-+ (NSArray *)availableMediaTypesForSourceType:(UIImagePickerControllerSourceType)sourceType {
-    if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
-        return %orig;
-    }
-    if (sourceType != UIImagePickerControllerSourceTypePhotoLibrary && sourceType != UIImagePickerControllerSourceTypeSavedPhotosAlbum) {
-        return %orig;
-    }
-    return [NSArray array];
-}
-
 + (BOOL)isSourceTypeAvailable:(UIImagePickerControllerSourceType)sourceType {
     if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
         return %orig;
@@ -57,6 +47,9 @@
 
 /* Prevent TweetBot access last photo taken */
 - (void)enumerateGroupsWithTypes:(ALAssetsGroupType)types usingBlock:(ALAssetsLibraryGroupsEnumerationResultsBlock)enumerationBlock failureBlock:(ALAssetsLibraryAccessFailureBlock)failureBlock {
+    if (![getStateObjectForKey(@"enable") boolValue] || DisableAccessPhotos_IsEnabled) {
+        return %orig;
+    }
     failureBlock(nil);
 }
 
