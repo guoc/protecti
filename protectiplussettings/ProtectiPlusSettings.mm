@@ -12,7 +12,32 @@
 
 #define LOCAL(key) [bundle localizedStringForKey:key value:key table:nil]
 
-@interface ProtectiPlusSettingsListController: PSListController {
+@interface PIPSListController: PSListController
+- (id) readPreferenceValue:(PSSpecifier*)specifier;
+- (void) setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier;
+@end
+
+@implementation PIPSListController
+// http://iphonedevwiki.net/index.php/PreferenceBundles#Loading_Preferences_into_sandboxed.2Funsandboxed_processes_in_iOS_8
+- (id) readPreferenceValue:(PSSpecifier*)specifier {
+	NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:@kPreferencesPath];
+	if (!prefs[specifier.properties[@"key"]]) {
+		return specifier.properties[@"default"];
+	}
+	return prefs[specifier.properties[@"key"]];
+}
+
+- (void) setPreferenceValue:(id)value specifier:(PSSpecifier*)specifier {
+	NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
+	[defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:@kPreferencesPath]];
+	[defaults setObject:value forKey:specifier.properties[@"key"]];
+	[defaults writeToFile:@kPreferencesPath atomically:YES];
+	CFStringRef toPost = (CFStringRef)specifier.properties[@"PostNotification"];
+	if(toPost) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), toPost, NULL, NULL, YES);
+}
+@end
+
+@interface ProtectiPlusSettingsListController: PIPSListController {
 }
 @end
 
@@ -50,7 +75,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForTutorial: PSListController {
+@interface ProtectiPlusSettingsListControllerForTutorial: PIPSListController {
 }
 @end
 
@@ -60,7 +85,7 @@
 
 
 
-//@interface ProtectiPlusSettingsListControllerForProtectedMode: PSListController {
+//@interface ProtectiPlusSettingsListControllerForProtectedMode: PIPSListController {
 //}
 //@end
 //
@@ -70,7 +95,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForChooseGestures: PSListController {
+@interface ProtectiPlusSettingsListControllerForChooseGestures: PIPSListController {
 }
 @end
 
@@ -80,7 +105,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForProtectedAppNotifications: PSListController {
+@interface ProtectiPlusSettingsListControllerForProtectedAppNotifications: PIPSListController {
 }
 @end
 
@@ -95,7 +120,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForProtectedActions: PSListController {
+@interface ProtectiPlusSettingsListControllerForProtectedActions: PIPSListController {
 }
 @end
 
@@ -110,7 +135,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForHideAppIcons: PSListController {
+@interface ProtectiPlusSettingsListControllerForHideAppIcons: PIPSListController {
 }
 @end
 
@@ -120,7 +145,7 @@
 
 
 
-//@interface ProtectiPlusSettingsListControllerForUnprotectedMode: PSListController {
+//@interface ProtectiPlusSettingsListControllerForUnprotectedMode: PIPSListController {
 //}
 //@end
 //
@@ -130,7 +155,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForUnprotectedAppNotifications: PSListController {
+@interface ProtectiPlusSettingsListControllerForUnprotectedAppNotifications: PIPSListController {
 }
 @end
 
@@ -145,7 +170,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForIndicateMissingNotifications: PSListController {
+@interface ProtectiPlusSettingsListControllerForIndicateMissingNotifications: PIPSListController {
 }
 @end
 
@@ -155,7 +180,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForVibrateAndIcon: PSListController {
+@interface ProtectiPlusSettingsListControllerForVibrateAndIcon: PIPSListController {
 }
 @end
 
@@ -172,7 +197,7 @@
 /******************************** Advance *********************************/
 
 
-@interface ProtectiPlusSettingsListControllerForAdvance: PSListController {
+@interface ProtectiPlusSettingsListControllerForAdvance: PIPSListController {
 }
 @end
 
@@ -187,7 +212,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForPassword: PSListController {
+@interface ProtectiPlusSettingsListControllerForPassword: PIPSListController {
 }
 @end
 
@@ -197,7 +222,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForBypassSystemPasscode: PSListController {
+@interface ProtectiPlusSettingsListControllerForBypassSystemPasscode: PIPSListController {
 }
 @end
 
@@ -207,7 +232,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForDisableOpenFolders: PSListController {
+@interface ProtectiPlusSettingsListControllerForDisableOpenFolders: PIPSListController {
 }
 @end
 
@@ -217,7 +242,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForHalfSlideUnlock: PSListController {
+@interface ProtectiPlusSettingsListControllerForHalfSlideUnlock: PIPSListController {
 }
 @end
 
@@ -227,7 +252,7 @@
 
 
 
-@interface ProtectiPlusSettingsListControllerForPhotosAccess: PSListController {
+@interface ProtectiPlusSettingsListControllerForPhotosAccess: PIPSListController {
 }
 @end
 
@@ -241,7 +266,7 @@
 /******************************** About *********************************/
 
 
-@interface ProtectiPlusSettingsListControllerForAbout: PSListController {
+@interface ProtectiPlusSettingsListControllerForAbout: PIPSListController {
 }
 @end
 
