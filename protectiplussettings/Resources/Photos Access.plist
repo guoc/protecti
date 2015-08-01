@@ -18,7 +18,7 @@
 			<key>defaults</key>
 			<string>com.gviridis.protectiplus</string>
 			<key>key</key>
-			<string>enableStopThirdpartyAppPhotosAccess</string>
+			<string>disableAccessPhotos</string>
 			<key>label</key>
 			<string>Disable Apps Access Photos</string>
 		</dict>

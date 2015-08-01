@@ -68,7 +68,7 @@
 
 /* Options cross dylibs, another method is applied to get their preference value */
 #define DisableAccessPhotos_IsEnabled \
-([[[[NSUserDefaults standardUserDefaults] persistentDomainForName:kPIPreferencesDomain] objectForKey:kPIPreferencesDisableAccessPhotos] boolValue])
+([[NSDictionary dictionaryWithContentsOfFile:@kPreferencesPath][kPIPreferencesDisableAccessPhotos] boolValue])    // Default value is NO.
 
 /********************************************* Hidden Options ****************************************************************/
 #define DisableActivateAppSlider_IsEnabled \
