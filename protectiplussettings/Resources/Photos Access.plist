@@ -21,6 +21,10 @@
 			<string>disableAccessPhotos</string>
 			<key>label</key>
 			<string>Disable Apps Access Photos</string>
+			<key>get</key>
+			<string>readPreferenceValue:</string>
+			<key>set</key>
+			<string>setPreferenceValue:specifier:</string>
 		</dict>
 	</array>
 	<key>title</key>
