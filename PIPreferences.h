@@ -38,8 +38,12 @@ static NSString *const kPIPreferencesEnablePasswordKey = @"enablePassword";
 static NSString *const kPIPreferencesPasswordKey = @"password";
 static NSString *const kPIPreferencesHidePasswordAlertMessageKey = @"hidePasswordAlertMessage";
 
-static NSString *const kPIPreferencesDisableActivateAppSliderKey = @"disableActivateAppSlider";
 static NSString *const kPIPreferencesDisabledFoldersKey = @"disabledFolders";
+
+/********************************************* Hidden Options ****************************************************************/
+static NSString *const kPIPreferencesDisableActivateAppSliderKey = @"disableActivateAppSlider";
+static NSString *const kPIPreferencesEnableEditIconsKey = @"enableEditIcons";
+/*****************************************************************************************************************************/
 
 typedef enum MissingNotificationIndicatorStyle : NSUInteger {
     kNone = 0,

@@ -73,6 +73,8 @@
 /********************************************* Hidden Options ****************************************************************/
 #define DisableActivateAppSlider_IsEnabled \
 ([PIPreferences.sharedPreferences objectForKey:kPIPreferencesDisableActivateAppSliderKey] ? [[PIPreferences.sharedPreferences objectForKey:kPIPreferencesDisableActivateAppSliderKey] boolValue] : NO)
+#define EnableEditIcons_IsEnabled \
+([PIPreferences.sharedPreferences objectForKey:kPIPreferencesEnableEditIconsKey] ? [[PIPreferences.sharedPreferences objectForKey:kPIPreferencesEnableEditIconsKey] boolValue] : NO)
 /*****************************************************************************************************************************/
 
 #endif
