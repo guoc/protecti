@@ -1,7 +1,7 @@
 extern BOOL global_HalfSlideUnlock_DeviceHasSystemPasscodeSet;
 
 static NSString *global_slfe;
-static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3
+static BOOL global_HalfSlideUnlock_SlideToRightRange;    // Init in SBLockScreenViewController - (void)lockScreenViewWillEndDraggingWithPercentScrolled:(CGFloat)arg1 percentScrolledVelocity:(CGFloat)arg2 targetScrollPercentage:(CGFloat)arg3
 static BOOL global_DisplayTurnedOnToUnlock = NO;
 
 void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CFStringRef name,const void *object,CFDictionaryRef userInfo) {
@@ -107,7 +107,7 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 
 %hook SBLockScreenViewController
 
-- (void)lockScreenViewWillEndDraggingWithPercentScrolled:(double)arg1 percentScrolledVelocity:(double)arg2 targetScrollPercentage:(double)arg3 {
+- (void)lockScreenViewWillEndDraggingWithPercentScrolled:(CGFloat)arg1 percentScrolledVelocity:(CGFloat)arg2 targetScrollPercentage:(CGFloat)arg3 {
     if (!HalfSlideUnlock_IsEnabled) {
         %orig;
     } else {
@@ -119,7 +119,7 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
     }
 }
 
-- (void)lockScreenViewDidScrollWithNewScrollPercentage:(double)arg1 tracking:(BOOL)arg2 {
+- (void)lockScreenViewDidScrollWithNewScrollPercentage:(CGFloat)arg1 tracking:(BOOL)arg2 {
     %orig;
     if (arg1 >= 1.0) {
         if (!HalfSlideUnlock_IsEnabled) {
@@ -142,11 +142,11 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 
 %hook SBLockScreenSettings
 
-- (double) lockToUnlockSlideCompletionPercentage {
+- (CGFloat) lockToUnlockSlideCompletionPercentage {
     if (!HalfSlideUnlock_IsEnabled) {
         return %orig;
     } else {
-        double r = %orig;
+        CGFloat r = %orig;
         if (HalfSlideUnlock_IsEnabled) {
             if (GetValueOf_HalfSlideUnlock_MinDistance >= GetValueOf_HalfSlideUnlock_MaxDistance) {
                 return r;
