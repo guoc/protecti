@@ -88,3 +88,28 @@
 }
 
 %end
+
+
+
+@interface PSListController
+- (id)table;
+- (int)indexForIndexPath:(id)arg1;
+- (id)specifierAtIndex:(int)arg1;
+@end
+@interface PrefsListController : PSListController
+@end
+
+%hook PrefsListController
+
+- (void)tableView:(id)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (![getStateObjectForKey(@"enable") boolValue] || !DisableAccessPhotos_IsEnabled) {
+        return %orig;
+    }
+    id specifier = [self specifierAtIndex: [self indexForIndexPath: indexPath]];
+    if (![[specifier identifier] isEqualToString: @"Wallpaper"]) {
+        return %orig;
+    }
+    [[self table] deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+%end
