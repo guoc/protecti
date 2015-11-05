@@ -28,6 +28,10 @@
 static BOOL global_NoVibrateWhenEnable = NO;
 
 void refreshNotificationCenter() {
+    if (IS_IOS_OR_NEWER(iOS_9_0)) {
+        // TODO crash on iOS 9, so just return.
+        return;
+    }
     SBNotificationCenterViewController *viewController = (SBNotificationCenterViewController *)[[objc_getClass("SBNotificationCenterController") sharedInstance] viewController];
     SBNotificationsAllModeViewController *allModeViewController = MSHookIvar<SBNotificationsAllModeViewController *>(viewController, "_allModeViewController");
     if (allModeViewController) {
