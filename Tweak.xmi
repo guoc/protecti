@@ -18,6 +18,7 @@
 
 #import <IconSupport/ISIconSupport.h>
 
+#import "version.h"
 #import "compatibility/ccquick.h"
 #import "helpers.h"
 #import "prefs.h"
@@ -62,6 +63,12 @@ void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef 
 void _enableProtectiPlus() {
     if (global_Enable)  //Enabled already
         return;
+
+    if (IS_IOS_OR_NEWER(iOS_9_0)) {
+        updateSpotlight_ios9();
+    }
+
+    cacheAndModifyTagePrefsSwipeSideEnabledIfNecessary();
 
     [PIStatusBarIcon addStatusBarItemIfNecessary];
 
@@ -110,6 +117,12 @@ void enableProtectiPlus(CFNotificationCenterRef center,void *observer,CFStringRe
 }
 
 void _disableProtectiPlusWithoutPassword() {
+    if (IS_IOS_OR_NEWER(iOS_9_0)) {
+        updateSpotlight_ios9();
+    }
+
+    restoreTagePrefsSwipeSideEnabledIfNecessaryWithDelay(0.0);
+
     [PIStatusBarIcon removeStatusBarItem];
 
     vibrateIfNecessary();
@@ -226,6 +239,13 @@ void resetPreferences(CFNotificationCenterRef center,void *observer,CFStringRef 
 }
 
 %ctor {
+    %init;
+    if (IS_IOS_OR_NEWER(iOS_9_0)) {
+        %init(iOS_9);
+    } else {
+        %init(iOS_8);
+    }
+
     dlopen("/Library/MobileSubstrate/DynamicLibraries/IconSupport.dylib", RTLD_NOW);
     [[objc_getClass("ISIconSupport") sharedInstance] addExtension:@"com.gviridis.protectiplus"];
 

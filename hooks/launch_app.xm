@@ -1,8 +1,15 @@
 /********************* Try to disable launch by LastApp and open link in AppStore ******************************/
 /************* Accidentally found the way to disable launch apps in general way. It seems well. ****************/
 
-%hook SBAppToAppWorkspaceTransaction
+#import <SpringBoard/SBWorkspaceTransitionRequest.h>
+#import <SpringBoard/SBWorkspaceApplication.h>
 
+@interface SBAppToAppWorkspaceTransaction
+@property(readonly, retain, nonatomic) SBWorkspaceTransitionRequest *transitionRequest;
+@end
+
+%group iOS_8
+%hook SBAppToAppWorkspaceTransaction
 - (id)initWithAlertManager:(id)alertManager from:(id)from to:(id)to withResult:(id)result {
     if (global_Enable && appIdentifierIsInProtectedAppsList([to displayIdentifier])) {
         return nil;
@@ -10,7 +17,24 @@
         return %orig;
     }
 }
+%end
+%end
 
+%group iOS_9
+%hook SBMainWorkspace
+- (_Bool)_setCurrentTransactionForRequest:(id)request fallbackProvider:(id)arg2 {
+    if (![request isKindOfClass:[%c(SBWorkspaceTransitionRequest) class]]) {
+        return %orig;
+    }
+    NSSet *activatingApps = ((SBWorkspaceTransitionRequest *)request).activatingApps;
+    SBApplication *app = ((SBWorkspaceApplication *)[activatingApps anyObject]).application;
+    if (global_Enable && appIdentifierIsInProtectedAppsList([app bundleIdentifier])) {
+        return NO;
+    } else {
+        return %orig;
+    }
+}
+%end
 %end
 
 /****************************************************************************************************************/
@@ -41,6 +65,7 @@
 
 %hook SBUIController
 
+%group iOS_8
 - (void)activateApplicationAnimatedFromIcon:(id)arg1 fromLocation:(int)arg2 {
     if (!global_Enable) {
         return %orig;
@@ -63,6 +88,33 @@
         }
     }
 }
+%end
+
+%group iOS_9
+- (void)activateApplication:(id)arg1 fromIcon:(id)arg2 location:(int)arg3 {
+    if (!global_Enable) {
+        return %orig;
+    } else {
+        if (appIdentifierIsInProtectedAppsList([arg1 bundleIdentifier])) {
+            return;
+        } else {
+            return %orig;
+        }
+    }
+}
+- (void)activateApplication:(id)arg1 {
+    if (!global_Enable) {
+        return %orig;
+    } else {
+        if (appIdentifierIsInProtectedAppsList([arg1 bundleIdentifier])) {
+            return;
+        } else {
+            return %orig;
+        }
+    }
+}
+%end
+
 %end
 
 
