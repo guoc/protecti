@@ -7,6 +7,7 @@ ProtectiPlus_FILES = Tweak.xmi helpers.mm WelcomeAlertDelegate.m PIPreferences.m
 #ProtectiPlus_CFLAGS = -Qunused-arguments
 ProtectiPlus_FRAMEWORKS = UIKit AudioToolBox Security
 ProtectiPlus_LIBRARIES = MobileGestalt cephei
+ProtectiPlus_LDFLAGS += -Wl,-segalign,4000
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

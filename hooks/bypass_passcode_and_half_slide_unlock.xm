@@ -24,6 +24,7 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
 
 %hook SBLockScreenViewController
 
+%group iOS_8
 - (_Bool)wantsPasscodeLockForUIUnlockFromSource:(int)arg1 withOptions:(id)arg2 {
     BOOL r = %orig;
     if (BypassSystemPasscode_IsEnabled && global_slfe && [[%c(SBDeviceLockController) sharedController] deviceHasPasscodeSet]) {
@@ -32,6 +33,19 @@ void handleSystemPasscodeChange(CFNotificationCenterRef center,void *observer,CF
         return r;
     }
 }
+%end
+
+%group iOS_9
+- (_Bool)isPasscodeLockVisible {
+    // this method is also available in ios8
+    BOOL r = %orig;
+    if (BypassSystemPasscode_IsEnabled && global_slfe && [[%c(SBDeviceLockController) sharedController] deviceHasPasscodeSet]) {
+        return NO;
+    } else {
+        return r;
+    }
+}
+%end
 
 %end
 

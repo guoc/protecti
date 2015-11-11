@@ -2,6 +2,7 @@
 
 #include <substrate.h>
 
+#import "version.h"
 #include "prefs.h"
 
 #import "PIPreferences.h"
@@ -27,6 +28,10 @@
 static BOOL global_NoVibrateWhenEnable = NO;
 
 void refreshNotificationCenter() {
+    if (IS_IOS_OR_NEWER(iOS_9_0)) {
+        // TODO crash on iOS 9, so just return.
+        return;
+    }
     SBNotificationCenterViewController *viewController = (SBNotificationCenterViewController *)[[objc_getClass("SBNotificationCenterController") sharedInstance] viewController];
     SBNotificationsAllModeViewController *allModeViewController = MSHookIvar<SBNotificationsAllModeViewController *>(viewController, "_allModeViewController");
     if (allModeViewController) {
@@ -66,12 +71,19 @@ void updateIconBadgeView() {
 
 void removeProtectedOrHiddenAppsInAppSwitcher() {
     SBAppSwitcherModel *appSwitcherModel = (SBAppSwitcherModel *)[objc_getClass("SBAppSwitcherModel") sharedInstance];
-    NSArray *displayLayouts = [appSwitcherModel _recentsFromPrefs];
-    for (SBDisplayLayout *displayLayout in displayLayouts) {
-        SBDisplayItem *displayItem = displayLayout.displayItems[0];
+    // recents is an array of SBDisplayLayout in iOS 8, or an array of SBDisplayItem in iOS 9
+    NSArray *recents = [appSwitcherModel _recentsFromPrefs];
+
+    for (id recent in recents) {
+        SBDisplayItem *displayItem = nil;
+        if (IS_IOS_OR_NEWER(iOS_9_0)) {
+            displayItem = recent;
+        } else {
+            displayItem = ((SBDisplayLayout *)recent).displayItems[0];
+        }
         NSString *appIdentifier = displayItem.displayIdentifier;
         if (appIdentifierIsInProtectedAppsList(appIdentifier) || appIdentifierIsInHiddenAppsList(appIdentifier)) {
-            [appSwitcherModel remove: displayLayout];
+            [appSwitcherModel remove: recent];
         }
     }
     [appSwitcherModel _saveRecents];
@@ -101,7 +113,12 @@ void exitForegroundApplicationIfNecessary() {
 }
 
 void killApplicationByAppID(NSString *appID) {
-    SBApplication *foregroundApp = [[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:appID];
+    SBApplication *foregroundApp = nil;
+    if (IS_IOS_OR_NEWER(iOS_9_0)) {
+        foregroundApp = [[objc_getClass("SBApplicationController") sharedInstance] applicationWithBundleIdentifier:appID];
+    } else {
+        foregroundApp = [[objc_getClass("SBApplicationController") sharedInstance] applicationWithDisplayIdentifier:appID];
+    }
     int foregroundAppPID = [foregroundApp pid];
     if (foregroundAppPID) {
         system([[@"kill -9 " stringByAppendingFormat:@"%d", foregroundAppPID] cStringUsingEncoding:NSASCIIStringEncoding]);
@@ -110,10 +127,63 @@ void killApplicationByAppID(NSString *appID) {
     }
 }
 
+void updateSpotlight_ios9() {
+    if (!IS_IOS_OR_NEWER(iOS_9_0)) {
+        return;
+    }
+    [[objc_getClass("SPUISearchModel") sharedInstance ] performSelector: @selector(postSearchAgentClearedResultsToDelegate)];
+    [[objc_getClass("SPUISearchViewController") sharedInstance ] performSelector: @selector(_updateTableContents)];
+}
+
 BOOL appIdentifierIsInProtectedAppsList(NSString *appIdentifier) {
     return [[PIPreferences.sharedPreferences objectForKey:[@"ProtectedApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
 }
 
 BOOL appIdentifierIsInHiddenAppsList(NSString *appIdentifier) {
     return [[PIPreferences.sharedPreferences objectForKey:[@"HiddenApp_" stringByAppendingString:(appIdentifier?:@"")]] boolValue];
+}
+
+/************* Compatible with Tage **************/
+
+#define TAGE_DOMAIN "com.clezz.tage"
+#define TAGE_PREF(method, key, defaultValue) (!CFPreferencesCopyAppValue(CFSTR(key), CFSTR(TAGE_DOMAIN)) ? (defaultValue) : [(id)CFPreferencesCopyAppValue(CFSTR(key), CFSTR(TAGE_DOMAIN)) method])
+
+NSString *const TageDylibPath = @"/Library/MobileSubstrate/DynamicLibraries/Tage.dylib";
+int const tagePrefsSwipeSideEnabledDefaultValue = 1;
+static int tagePrefsSwipeSideEnabled = -1;
+static BOOL tagePrefsSwipeSideEnabledCaching = NO;
+
+BOOL tageIsInstalled() {
+    return [[NSFileManager defaultManager]fileExistsAtPath:TageDylibPath];
+}
+
+int readTagePrefsSwipeSideEnabled() {
+    CFPreferencesAppSynchronize(CFSTR(TAGE_DOMAIN));
+    return TAGE_PREF(intValue, "SwipeSideEnabled", tagePrefsSwipeSideEnabledDefaultValue);
+}
+
+void writeTagePrefsSwipeSideEnabled(int value) {
+    NSNumber *number = [NSNumber numberWithInt: value];
+    CFPreferencesSetAppValue (CFSTR("SwipeSideEnabled"), number, CFSTR(TAGE_DOMAIN));
+    CFPreferencesAppSynchronize(CFSTR(TAGE_DOMAIN));
+    notify_post("com.clezz.tage.preferences-changed");
+}
+
+void cacheAndModifyTagePrefsSwipeSideEnabledIfNecessary() {
+    if (!tagePrefsSwipeSideEnabledCaching && tageIsInstalled()) {
+        tagePrefsSwipeSideEnabled = readTagePrefsSwipeSideEnabled();
+        tagePrefsSwipeSideEnabledCaching = YES;
+        writeTagePrefsSwipeSideEnabled(0);
+    }
+}
+
+void restoreTagePrefsSwipeSideEnabledIfNecessaryWithDelay(CGFloat delay) {
+    if (tagePrefsSwipeSideEnabledCaching && tageIsInstalled()) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            if (tagePrefsSwipeSideEnabledCaching) {
+                tagePrefsSwipeSideEnabledCaching = NO;
+                writeTagePrefsSwipeSideEnabled(tagePrefsSwipeSideEnabled);
+            }
+        });
+    }
 }
