@@ -7,6 +7,7 @@ ProtectiPlusSettings_INSTALL_PATH = /Library/PreferenceBundles
 ProtectiPlusSettings_LIBRARIES = applist MobileGestalt cephei
 ProtectiPlusSettings_FRAMEWORKS = UIKit Security
 ProtectiPlusSettings_PRIVATE_FRAMEWORKS = Preferences
+ProtectiPlusSettings_LDFLAGS += -Wl,-segalign,4000
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
