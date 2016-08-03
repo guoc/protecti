@@ -62,7 +62,10 @@ void vibrateIfNecessary() {
 }
 
 void updateIconBadgeView() {
-    SBIconModel *iconModel = [[objc_getClass("SBIconViewMap") homescreenMap] iconModel];
+    SBIconViewMap *iconViewMap = [UIDevice.currentDevice.systemVersion floatValue] >= 9.2 ?
+                                 [[NSClassFromString(@"SBIconController") sharedInstance] homescreenIconViewMap] :
+                                 [objc_getClass("SBIconViewMap") homescreenMap];
+    SBIconModel *iconModel = [iconViewMap iconModel];
     NSSet *allApplicationIcons = [iconModel _applicationIcons];
     for (SBApplicationIcon *icon in allApplicationIcons) {
         [icon noteBadgeDidChange];
